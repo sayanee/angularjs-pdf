@@ -2,7 +2,7 @@
 
   'use strict';
 
-  app.directive('ngPdf', function($window) {
+  angular.module('pdf', []).directive('ngPdf', function($window) {
     return {
       restrict: 'E',
       templateUrl: function(element, attr) {
