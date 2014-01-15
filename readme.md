@@ -14,7 +14,7 @@ Integrate PDF files right into web pages.
 1. next / previous page
 1. zoom in / out
 1. rotate clockwise
-1. type in the page number to view it directly
+1. jump to a page number
 1. when scrolling, the pdf controls will get fixed position at the top
 1. define the view template
 1. define the path to pdf with scope variable
@@ -29,7 +29,7 @@ Integrate PDF files right into web pages.
 1. include the path to the direcitve file in `index.html`
 
     ```
-    <script src="js/vendor/angularj-pdf/dist/angular-pdf.js"></script>
+    <script src="js/vendor/angularjs-pdf/dist/angular-pdf.js"></script>
     ```  
   
 1. include the directive as a dependency when defining the angular app:
