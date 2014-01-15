@@ -1,0 +1,7 @@
+.wrapper {margin: 0 auto; width: 960px; }
+.pdf-controls { width: 100%; display: block;}
+.rotate0 {-webkit-transform: rotate(0deg); transform: rotate(0deg); }
+.rotate90 {-webkit-transform: rotate(90deg); transform: rotate(90deg); }
+.rotate180 {-webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.rotate270 {-webkit-transform: rotate(270deg); transform: rotate(270deg); }
+.fixed {position: fixed; top: 0; left: 0; z-index: 100; width: 100% }
