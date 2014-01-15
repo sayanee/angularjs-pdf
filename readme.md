@@ -1,4 +1,4 @@
-# angular-pdf
+# angular-pdf ![Build Status](https://travis-ci.org/sayanee/angularjs-pdf.png)
 
 
 >An [AngularJS](http://angularjs.org/) [directive](http://docs.angularjs.org/guide/directive) `ng-pdf` to display PDF files with [PDFJS](http://mozilla.github.io/pdf.js/).
@@ -30,8 +30,8 @@ Integrate PDF files right into web pages.
 
     ```
     <script src="js/vendor/angularjs-pdf/dist/angular-pdf.js"></script>
-    ```  
-  
+    ```
+
 1. include the directive as a dependency when defining the angular app:
 
     ```
@@ -74,13 +74,13 @@ Integrate PDF files right into web pages.
 1. **Rotate clockwise**: Include the controls in the view file as defined in the attribute `template-url` and the initial class `rotate0`
 
     ```
-    <button ng-click="rotate()">90</span></button> 
+    <button ng-click="rotate()">90</span></button>
     ...
-    <canvas id="pdf-canvas" class="rotate0"></canvas>   
+    <canvas id="pdf-canvas" class="rotate0"></canvas>
     ```
-    
+
     include the css styles:
-    
+
     ```
     .rotate0 {-webkit-transform: rotate(0deg); transform: rotate(0deg); }
     .rotate90 {-webkit-transform: rotate(90deg); transform: rotate(90deg); }
@@ -99,14 +99,14 @@ Integrate PDF files right into web pages.
     ...
     </nav>
     ```
-    
+
     And include the relevant css styles as required:
-    
+
     ```
     .pdf-controls { width: 100%; display: block; background: #eee; padding: 1em;}
     .fixed { position: fixed; top: 0; left: calc(50% - 480px); z-index: 100; width: 100%; padding: 1em; background: rgba(238, 238, 238,.9); width: 960px; }
     ```
-1. open the file `index.html` with a web server    
+1. open the file `index.html` with a web server
 
 
 ##Requirements
