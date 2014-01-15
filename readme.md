@@ -106,6 +106,7 @@ Integrate PDF files right into web pages.
     .pdf-controls { width: 100%; display: block; background: #eee; padding: 1em;}
     .fixed { position: fixed; top: 0; left: calc(50% - 480px); z-index: 100; width: 100%; padding: 1em; background: rgba(238, 238, 238,.9); width: 960px; }
     ```
+1. open the file `index.html` with a web server    
 
 
 ##Requirements
