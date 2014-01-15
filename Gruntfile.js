@@ -4,6 +4,19 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
 
+    copy: {
+      main: {
+        files: [
+          {
+            expand: true,
+            cwd: 'example/js/directives',
+            src: ['angular-pdf.js'],
+            dest: 'dist/'
+          }
+        ]
+      }
+    },
+
     jshint: {
       all: {
         options: {
@@ -29,6 +42,7 @@ module.exports = function(grunt) {
 
   });
 
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-jsonlint');
 
