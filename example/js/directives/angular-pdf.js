@@ -8,7 +8,7 @@
       templateUrl: function(element, attr) {
         return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html'
       },
-      link: function (scope) {
+      link: function (scope, element, attrs) {
         var url = scope.pdfUrl,
           pdfDoc = null,
           pageNum = 1,
@@ -19,9 +19,7 @@
 
         windowEl.on('scroll', function() {
           scope.$apply(function() {
-            scope.scroll = windowEl.scrollTop();
-            console.log('helloooooooooo')
-            console.log(scope.sroll);
+            scope.scroll = windowEl[0].scrollY;
           });
         });
 
