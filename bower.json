@@ -1,0 +1,31 @@
+{
+  "name": "angular-pdf",
+  "version": "0.1.0",
+  "authors": [
+    "Sayanee <sayanee@gmail.com>"
+  ],
+  "description": "dist/angular-pdf.js",
+  "main": "dist/angular-pdf.js",
+  "keywords": [
+    "angularjs",
+    "pdfjs",
+    "directive",
+    "pdf",
+    "viewer",
+    "viewer",
+    "zoom",
+    "next",
+    "previous",
+    "controls",
+    "pdf"
+  ],
+  "license": "MIT",
+  "homepage": "http://github.com/sayanee/angular-pdf",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
