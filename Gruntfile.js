@@ -42,6 +42,20 @@ module.exports = function(grunt) {
           '.jshintrc'
         ]
       }
+    },
+
+    uglify: {
+      production: {
+        options: {
+          mangle: false,
+          compress: true,
+          beautify: false
+        },
+        files: {
+          'dist/angular-pdf.min.js': ['dist/angular-pdf.js']
+        }
+      }
+
     }
 
   });
@@ -50,12 +64,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-jsonlint');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.registerTask('default', [
     'clean',
     'jsonlint',
     'jshint',
-    'copy'
+    'copy',
+    'uglify'
   ]);
 
 
