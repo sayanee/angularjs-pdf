@@ -36,10 +36,10 @@ module.exports = function(grunt) {
     jsonlint: {
       all: {
         src: [
-        'bower.json',
-        'package.json',
-        '.jscs.json',
-        '.jshintrc'
+          'bower.json',
+          'package.json',
+          '.jscs.json',
+          '.jshintrc'
         ]
       }
     }
@@ -50,5 +50,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-jsonlint');
+
+  grunt.registerTask('default', [
+    'clean',
+    'jsonlint',
+    'jshint',
+    'copy'
+  ]);
+
 
 };
