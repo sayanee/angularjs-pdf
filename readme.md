@@ -7,29 +7,26 @@
 
 Integrate PDF files right into web pages.
 
-![]()
+![Angular PDF](ng-pdf.gif)
 
 ## Getting Started
 
-**Dependencies** [AngularJS](http://angularjs.org/) and [PDFJS](http://mozilla.github.io/pdf.js/).
-
-```
-bower install angular-pdf
-```
-
-## Angular directive
-
-...
-
-### Usage
+1. install or copy over the file `dist/angular-pdf.min.js`
+    
+    ```
+    bower install angular-pdf
+    ```
 
 
+##Requirements
 
-## Options
+1. [AngularJS](http://angularjs.org/) 
+1. [PDFJS](http://mozilla.github.io/pdf.js/).
 
+##Similar projects
 
+1. [ng-pdfviewer](https://github.com/akrennmair/ng-pdfviewer)
 
-### Usage examples
 
 ##Credit
 
