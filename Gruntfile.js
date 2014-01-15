@@ -4,6 +4,10 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
 
+    clean: {
+      all: ['dist/*.js']
+    },
+
     copy: {
       main: {
         files: [
@@ -42,6 +46,7 @@ module.exports = function(grunt) {
 
   });
 
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-jsonlint');
