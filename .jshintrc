@@ -3,7 +3,7 @@
   "camelcase": true,
   "curly": true,
   "eqeqeq": true,
-  "es3": false, // sometimes ES5 might be used
+  "es3": false,
   "forin": true,
   "freeze": true,
   "immed": true,

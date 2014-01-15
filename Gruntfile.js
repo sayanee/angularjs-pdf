@@ -14,10 +14,22 @@ module.exports = function(grunt) {
           'example/js/*.js'
         ]
       }
+    },
+
+    jsonlint: {
+      all: {
+        src: [
+        'bower.json',
+        'package.json',
+        '.jscs.json',
+        '.jshintrc'
+        ]
+      }
     }
 
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-jsonlint');
 
 };
