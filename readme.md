@@ -1,4 +1,4 @@
-# angular-pdf [![Build Status](https://travis-ci.org/addyosmani/grunt-uncss.png?branch=master)](https://travis-ci.org/addyosmani/grunt-uncss)
+# angular-pdf
 
 
 >An [AngularJS](http://angularjs.org/) [directive](http://docs.angularjs.org/guide/directive) `ng-pdf` to display PDF files with [PDFJS](http://mozilla.github.io/pdf.js/).
@@ -16,29 +16,8 @@ Integrate PDF files right into web pages.
 1. rotate clockwise
 1. type in the page number to view it directly
 1. when scrolling, the pdf controls will get fixed position at the top
-1. define the template with attribute `template-url`
- 
-    ```
-    <ng-pdf template-url="/partials/viewer.html"></ng-pdf>
-    ```
-1. define the path to pdf dynamically with a controller scope variable
-
-    ```
-    // in contoller javascript file
-    app.controller('DocCtrl', function($scope) {
-    
-    $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
-    $scope.pdfUrl = '/pdf/relativity.pdf';
-    $scope.scroll = 0;
-    
-    });
-    
-    // in html file
-    <div ng-controller="DocCtrl">
-        <ng-pdf template-url="/partials/viewer.html"></ng-pdf>
-    </div>  
-    ```
-
+1. define the view template
+1. define the path to pdf with scope variable
 
 ## Getting Started
 
