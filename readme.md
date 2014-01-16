@@ -1,9 +1,9 @@
-# angular-pdf ![Build Status](https://travis-ci.org/sayanee/angularjs-pdf.png)
+# angular-pdf [![Build Status](https://travis-ci.org/sayanee/angularjs-pdf.png)](https://travis-ci.org/sayanee/angularjs-pdf) [![Dependency Status](https://gemnasium.com/sayanee/angularjs-pdf.png)](https://gemnasium.com/sayanee/angularjs-pdf)
 
 
 >An [AngularJS](http://angularjs.org/) [directive](http://docs.angularjs.org/guide/directive) `ng-pdf` to display PDF files with [PDFJS](http://mozilla.github.io/pdf.js/).
 
-## Overview
+## Overview [[demo](http://sayan.ee/angularjs-pdf/)]
 
 Integrate PDF files right into web pages.
 
@@ -18,6 +18,11 @@ Integrate PDF files right into web pages.
 1. when scrolling, the pdf controls will get fixed position at the top
 1. define the view template
 1. define the path to pdf with scope variable
+
+##Requirements
+
+1. [AngularJS](http://angularjs.org/) - get the latest [angular.min.js](https://developers.google.com/speed/libraries/devguide#angularjs)
+1. [PDFJS](http://mozilla.github.io/pdf.js/) - build the files [`pdf.js` and `pdf.worker.js`](https://github.com/mozilla/pdf.js#building-pdfjs)
 
 ## Getting Started
 
@@ -108,11 +113,6 @@ Integrate PDF files right into web pages.
     ```
 1. open the file `index.html` with a web server
 
-
-##Requirements
-
-1. [AngularJS](http://angularjs.org/)
-1. [PDFJS](http://mozilla.github.io/pdf.js/).
 
 ##Similar projects
 
