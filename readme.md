@@ -34,7 +34,7 @@ Integrate PDF files right into web pages.
 1. include the path to the direcitve file in `index.html`
 
     ```
-    <script src="js/vendor/angularjs-pdf/dist/angular-pdf.js"></script>
+    <script src="js/vendor/angular-pdf/dist/angular-pdf.js"></script>
     ```
 
 1. include the directive as a dependency when defining the angular app:
