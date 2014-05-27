@@ -12,8 +12,8 @@
         var url = scope.pdfUrl,
           pdfDoc = null,
           pageNum = 1,
-          scale = 1,
-          canvas = document.getElementById('pdf-canvas'),
+          scale = (attrs.scale ? attrs.scale : 1),
+          canvas = (attrs.canvasid ? document.getElementById(attrs.canvasid) : document.getElementById('pdf-canvas')),
           ctx = canvas.getContext('2d'),
           windowEl = angular.element($window);
 

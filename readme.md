@@ -42,11 +42,14 @@ Integrate PDF files right into web pages.
     ```
     var app = angular.module('App', ['pdf']);
     ```
-1. include the directive with the attribute path to the partial under a controller
+1. include the directive with the 3 attribute:
+	1.  `template-url`: path to the partial under a controller
+	1. `canvasid`: `id` of the `canvas` tag you intend put in the next step 5
+	1. `scale`: initial scale of the pdf
 
     ```
     <div class="wrapper" ng-controller="DocCtrl">
-        <ng-pdf template-url="/partials/viewer.html"></ng-pdf>
+        <ng-pdf template-url="/partials/viewer.html" canvasid="pdf-canvas" scale="1"></ng-pdf>
     </div>
     ```
 1. include the `canvas` element to display the pdf in the template-url file
