@@ -42,7 +42,6 @@
 
           });
 
-          scope.pageCount = pdfDoc.numPages;
         };
 
         scope.goPrevious = function() {
@@ -58,13 +57,13 @@
         };
 
         scope.zoomIn = function() {
-          scale += 0.2;
+          scale = parseFloat(scale) + 0.2;
           scope.renderPage(scope.pageNum);
           return scale;
         };
 
         scope.zoomOut = function() {
-          scale -= 0.2;
+          scale = parseFloat(scale) - 0.2;
           scope.renderPage(scope.pageNum);
           return scale;
         };
@@ -86,9 +85,12 @@
         };
 
         PDFJS.getDocument(url).then(function (_pdfDoc) {
-          scope.pageCount = _pdfDoc.numPages;
           pdfDoc = _pdfDoc;
           scope.renderPage(scope.pageNum);
+
+          scope.$apply(function() {
+            scope.pageCount = _pdfDoc.numPages;
+          });
         });
 
         scope.$watch('pageNum', function (newVal) {
