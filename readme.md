@@ -103,9 +103,18 @@ Integrate PDF files right into web pages.
 1. **Fixed pdf controls upon scrolling**: Wrap the controls in the view file as defined in the attribute `template-url` with a tag `nav` with an `ng-class`. Amend the scroll amount as required.
 
     ```
-    <nav ng-class="{'pdf-controls fixed': scroll > 100, 'pdf-controls': scroll <= 100}">
+    <nav ng-class="getNavStyle(scroll)">
     ...
     </nav>
+    ```
+    
+    Declare the `ng-class` logic in the controller `js/controllers/docCtrl.js`
+    
+    ```
+    $scope.getNavStyle = function(scroll) {
+	    if(scroll > 100) return 'pdf-controls fixed';
+	    else return 'pdf-controls';
+	 }
     ```
 
     And include the relevant css styles as required:
