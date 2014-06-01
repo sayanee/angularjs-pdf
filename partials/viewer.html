@@ -1,4 +1,4 @@
-<nav ng-class="{'pdf-controls fixed': scroll > 100, 'pdf-controls': scroll <= 100}">
+<nav ng-class="getNavStyle(scroll)">
   <button ng-click="goPrevious()"><</span></button>
   <button ng-click="goNext()">></span></button>
 
