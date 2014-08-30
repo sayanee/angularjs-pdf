@@ -4,6 +4,30 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
 
+    bump: {
+      options: {
+        files: [
+          'package.json',
+          'bower.json',
+          'readme.md'
+        ],
+        updateConfigs: [],
+        commit: true,
+        commitMessage: 'Release v%VERSION%',
+        commitFiles: [
+          'package.json',
+          'bower.json',
+          'readme.md'
+        ],
+        createTag: true,
+        tagName: '%VERSION%',
+        tagMessage: 'Version %VERSION%',
+        push: true,
+        pushTo: 'origin',
+        gitDescribeOptions: '--tags --always --abbrev=1'
+      }
+    },
+
     clean: {
       all: ['dist/*.js']
     },
@@ -60,6 +84,7 @@ module.exports = function(grunt) {
 
   });
 
+  grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');

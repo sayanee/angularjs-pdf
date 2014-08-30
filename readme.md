@@ -1,4 +1,4 @@
-# angular-pdf [![Build Status](https://travis-ci.org/sayanee/angularjs-pdf.png)](https://travis-ci.org/sayanee/angularjs-pdf) [![Dependency Status](https://gemnasium.com/sayanee/angularjs-pdf.png)](https://gemnasium.com/sayanee/angularjs-pdf)
+# angular-pdf `0.2.2` [![Build Status](https://travis-ci.org/sayanee/angularjs-pdf.png)](https://travis-ci.org/sayanee/angularjs-pdf) [![Dependency Status](https://gemnasium.com/sayanee/angularjs-pdf.png)](https://gemnasium.com/sayanee/angularjs-pdf)
 
 
 >An [AngularJS](http://angularjs.org/) [directive](http://docs.angularjs.org/guide/directive) `ng-pdf` to display PDF files with [PDFJS](http://mozilla.github.io/pdf.js/).
@@ -9,6 +9,11 @@ Integrate PDF files right into web pages.
 
 ![Angular PDF](ng-pdf.gif)
 
+##Requirements
+
+1. [AngularJS](http://angularjs.org/) - get the latest [angular.min.js](https://developers.google.com/speed/libraries/devguide#angularjs)
+1. [PDFJS](http://mozilla.github.io/pdf.js/) - build the files [`pdf.js` and `pdf.worker.js`](https://github.com/mozilla/pdf.js#building-pdfjs)
+
 ###Features
 
 1. next / previous page
@@ -18,11 +23,6 @@ Integrate PDF files right into web pages.
 1. when scrolling, the pdf controls will get fixed position at the top
 1. define the view template
 1. define the path to pdf with scope variable
-
-##Requirements
-
-1. [AngularJS](http://angularjs.org/) - get the latest [angular.min.js](https://developers.google.com/speed/libraries/devguide#angularjs)
-1. [PDFJS](http://mozilla.github.io/pdf.js/) - build the files [`pdf.js` and `pdf.worker.js`](https://github.com/mozilla/pdf.js#building-pdfjs)
 
 ## Getting Started
 
@@ -42,14 +42,11 @@ Integrate PDF files right into web pages.
     ```
     var app = angular.module('App', ['pdf']);
     ```
-1. include the directive with the 3 attribute:
-	1.  `template-url`: path to the partial under a controller
-	1. `canvasid`: `id` of the `canvas` tag you intend put in the next step 5
-	1. `scale`: initial scale of the pdf
+1. include the directive with the attribute path to the partial under a controller
 
     ```
     <div class="wrapper" ng-controller="DocCtrl">
-        <ng-pdf template-url="/partials/viewer.html" canvasid="pdf-canvas" scale="1"></ng-pdf>
+        <ng-pdf template-url="/partials/viewer.html"></ng-pdf>
     </div>
     ```
 1. include the `canvas` element to display the pdf in the template-url file
@@ -103,18 +100,9 @@ Integrate PDF files right into web pages.
 1. **Fixed pdf controls upon scrolling**: Wrap the controls in the view file as defined in the attribute `template-url` with a tag `nav` with an `ng-class`. Amend the scroll amount as required.
 
     ```
-    <nav ng-class="getNavStyle(scroll)">
+    <nav ng-class="{'pdf-controls fixed': scroll > 100, 'pdf-controls': scroll <= 100}">
     ...
     </nav>
-    ```
-    
-    Declare the `ng-class` logic in the controller `js/controllers/docCtrl.js`
-    
-    ```
-    $scope.getNavStyle = function(scroll) {
-	    if(scroll > 100) return 'pdf-controls fixed';
-	    else return 'pdf-controls';
-	 }
     ```
 
     And include the relevant css styles as required:
