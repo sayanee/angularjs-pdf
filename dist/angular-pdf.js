@@ -1,3 +1,4 @@
+/*! Angular-PDF v0.2.3 | (C) Sayanee Basu 2014, released under an MIT license */
 (function () {
 
   'use strict';

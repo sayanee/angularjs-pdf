@@ -9,7 +9,10 @@ module.exports = function(grunt) {
         files: [
           'package.json',
           'bower.json',
-          'readme.md'
+          'readme.md',
+          'example/js/directives/angular-pdf.js',
+          'dist/angular-pdf.js',
+          'dist/angular-pdf.min.js'
         ],
         updateConfigs: [],
         commit: true,
@@ -17,7 +20,10 @@ module.exports = function(grunt) {
         commitFiles: [
           'package.json',
           'bower.json',
-          'readme.md'
+          'readme.md',
+          'example/js/directives/angular-pdf.js',
+          'dist/angular-pdf.js',
+          'dist/angular-pdf.min.js'
         ],
         createTag: true,
         tagName: '%VERSION%',
@@ -73,7 +79,8 @@ module.exports = function(grunt) {
         options: {
           mangle: false,
           compress: true,
-          beautify: false
+          beautify: false,
+          preserveComments: 'all'
         },
         files: {
           'dist/angular-pdf.min.js': ['dist/angular-pdf.js']
