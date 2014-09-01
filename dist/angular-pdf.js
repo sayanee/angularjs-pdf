@@ -1,20 +1,19 @@
-/*! Angular-PDF Version: 0.2.4 | (C) Sayanee Basu 2014, released under an MIT license */
+/*! Angular-PDF Version: 0.2.5 | (C) Sayanee Basu 2014, released under an MIT license */
 (function () {
 
   'use strict';
 
-  angular.module('pdf', []).directive('ngPdf', function($window) {
+  angular.module('pdf', []).directive('ngPdf', function($window, $log, $pdfDelegate) {
     return {
       restrict: 'E',
-      templateUrl: function(element, attr) {
-        return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html'
-      },
+      template: '<canvas class="rotate0"></canvas>',
+      scope: true,
       link: function (scope, element, attrs) {
-        var url = scope.pdfUrl,
+        var url = scope.$eval(attrs.url),
           pdfDoc = null,
           pageNum = 1,
           scale = (attrs.scale ? attrs.scale : 1),
-          canvas = (attrs.canvasid ? document.getElementById(attrs.canvasid) : document.getElementById('pdf-canvas')),
+          canvas = element.find('canvas')[0],
           ctx = canvas.getContext('2d'),
           windowEl = angular.element($window);
 
@@ -28,7 +27,6 @@
         scope.pageNum = pageNum;
 
         scope.renderPage = function(num) {
-
           pdfDoc.getPage(num).then(function(page) {
             var viewport = page.getViewport(scale);
             canvas.height = viewport.height;
@@ -49,12 +47,14 @@
           if (scope.pageNum <= 1)
             return;
           scope.pageNum = parseInt(scope.pageNum, 10) - 1;
+          scope.renderPage(scope.pageNum);
         };
 
         scope.goNext = function() {
           if (scope.pageNum >= pdfDoc.numPages)
             return;
           scope.pageNum = parseInt(scope.pageNum, 10) + 1;
+          scope.renderPage(scope.pageNum);
         };
 
         scope.zoomIn = function() {
@@ -91,16 +91,92 @@
 
           scope.$apply(function() {
             scope.pageCount = _pdfDoc.numPages;
+            $pdfDelegate.register(scope, attrs.delegateHandle);
           });
-        });
+        }, $log.error);
 
-        scope.$watch('pageNum', function (newVal) {
-          if (pdfDoc !== null)
+        scope.getPageCount = function() {
+          return scope.pageCount;
+        };
+
+        scope.currentPage = function () {
+          return scope.pageNum;
+        };
+
+        scope.goToPage = function(newVal) {
+          if (pdfDoc !== null) {
+            scope.pageNum = newVal;
             scope.renderPage(newVal);
+          }
+        };
+
+        scope.$on('$destroy', function () {
+          $pdfDelegate.unregister(attrs.delegateHandle);
         });
 
       }
     };
   });
 
+})();
+/*! Angular-PDF Version: 0.2.5 | (C) Sayanee Basu 2014, released under an MIT license */
+(function () {
+
+  angular.module('pdf')
+    .provider('$pdfDelegate', function() {
+
+      var self = this;
+      self.DEFAULT_PDF_ID = '__DEFAULT_PDF_ID__';
+
+      this.$get = ['$q', function($q) {
+
+        var pdfStore = {},
+            exports = {},
+            initStoreForId,
+            resolveInStoreById;
+
+        exports.get = function(id) {
+          var id = id || self.DEFAULT_PDF_ID;
+          if(!pdfStore.hasOwnProperty(id)) {
+            initStoreForId(id);
+          }
+          return pdfStore[id].deferred.promise;
+        };
+
+        exports.register = function(pdf, _id) {
+          var id = _id || self.DEFAULT_PDF_ID;
+          if(!pdfStore.hasOwnProperty(id)) {
+            initStoreForId(id);
+          }
+          if(pdfStore[id].isResolved) {
+            initStoreForId(id);
+          }
+          resolveInStoreById(pdf, id);
+        };
+
+        exports.unregister = function(_id) {
+          var id = _id || self.DEFAULT_PDF_ID;
+          if(pdfStore.hasOwnProperty(id)) {
+            delete pdfStore[id];
+          }
+        };
+
+        initStoreForId = function(id) {
+          pdfStore[id] = {
+            deferred: $q.defer(),
+            isResolved: false
+          };
+        };
+
+        resolveInStoreById = function(pdf, id) {
+          pdfStore[id].deferred.resolve(pdf);
+          pdfStore[id].isResolved = true;
+        };
+
+        return exports;
+      }];
+
+      return this;
+
+    });
 })();
