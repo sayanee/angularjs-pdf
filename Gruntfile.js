@@ -10,7 +10,8 @@ module.exports = function(grunt) {
           'package.json',
           'bower.json',
           'readme.md',
-          'example/js/directives/angular-pdf.js',
+          'example/js/angularjs-pdf/angular-pdf.js',
+          'example/js/angularjs-pdf/angular-pdf-delegate.js',
           'dist/angular-pdf.js',
           'dist/angular-pdf.min.js'
         ],
@@ -21,7 +22,8 @@ module.exports = function(grunt) {
           'package.json',
           'bower.json',
           'readme.md',
-          'example/js/directives/angular-pdf.js',
+          'example/js/angularjs-pdf/angular-pdf.js',
+          'example/js/angularjs-pdf/angular-pdf.js',
           'dist/angular-pdf.js',
           'dist/angular-pdf.min.js'
         ],
@@ -36,19 +38,6 @@ module.exports = function(grunt) {
 
     clean: {
       all: ['dist/*.js']
-    },
-
-    copy: {
-      main: {
-        files: [
-          {
-            expand: true,
-            cwd: 'example/js/directives',
-            src: ['angular-pdf.js'],
-            dest: 'dist/'
-          }
-        ]
-      }
     },
 
     jshint: {
@@ -71,6 +60,19 @@ module.exports = function(grunt) {
           '.jscs.json',
           '.jshintrc'
         ]
+      }
+    },
+
+    concat: {
+      options: {
+        separator: ''
+      },
+      dist: {
+        src: [
+          'example/js/angularjs-pdf/angular-pdf.js',
+          'example/js/angularjs-pdf/angular-pdf-delegate.js'
+        ],
+        dest: 'dist/angular-pdf.js'
       }
     },
 
@@ -97,12 +99,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-jsonlint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-concat');
 
   grunt.registerTask('default', [
     'clean',
     'jsonlint',
     'jshint',
-    'copy',
+    'concat',
     'uglify'
   ]);
 

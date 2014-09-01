@@ -1,6 +1,6 @@
 # angular-pdf [![Build Status](https://travis-ci.org/sayanee/angularjs-pdf.png)](https://travis-ci.org/sayanee/angularjs-pdf) [![Dependency Status](https://gemnasium.com/sayanee/angularjs-pdf.png)](https://gemnasium.com/sayanee/angularjs-pdf)
 
-Version: 0.2.4
+Version: 0.2.5
 
 >An [AngularJS](http://angularjs.org/) [directive](http://docs.angularjs.org/guide/directive) `ng-pdf` to display PDF files with [PDFJS](http://mozilla.github.io/pdf.js/).
 
@@ -27,62 +27,64 @@ Integrate PDF files right into web pages.
 
 ## Getting Started
 
-1. install or copy over the file `dist/angular-pdf.min.js` or `dist/angular-pdf.js`
+1. install or copy over the file `dist/angular-pdf.min.js` or `dist/angular-pdf.js`:
 
     ```
     bower install angular-pdf
     ```
-1. include the path to the direcitve file in `index.html`
+1. include the path to the lib file in `index.html`:
 
     ```
     <script src="js/vendor/angular-pdf/dist/angular-pdf.js"></script>
     ```
 
-1. include the directive as a dependency when defining the angular app:
+1. include the lib as a dependency when defining the angular app:
 
     ```
     var app = angular.module('App', ['pdf']);
     ```
-1. include the directive with the attribute path to the partial under a controller
+1. include the directive with the following attributes: url, delegate-handle and scale:
 
     ```
     <div class="wrapper" ng-controller="DocCtrl">
-        <ng-pdf template-url="/partials/viewer.html"></ng-pdf>
+        <ng-pdf delegate-handle="pdf-one" url="pdfUrl" scale="1.5"></ng-pdf>
     </div>
     ```
-1. include the `canvas` element to display the pdf in the template-url file
 
-    ```
-    <canvas id="pdf-canvas"></canvas>
-    ```
-1. include the path to the pdf file in the controller
+
+### Delegate Service
+
+The delegate service allows you to access and control individual instances of a directive. This allows us to have multiple instances of the same directive in the same controller.
+
+1. You can fetch an instance using it's delegate handle. Make sure to inject the `$pdfDelegate` service into your controller:
 
     ```
     app.controller('DocCtrl', function($scope) {
-        $scope.pdfUrl = '/pdf/relativity.pdf';
+        $pdfDelegate.get('pdf-one')
+            .then(function (_pdf) {
+                $scope.pdfOne = _pdf;
+            }, $log.error);
     });
     ```
 
-###Options
-
-1. **Next / Previous page**: Include the controls in the view file as defined in the attribute `template-url`
+1. **Next / Previous page**
 
     ```
-    <button ng-click="goPrevious()"><</span></button>
-    <button ng-click="goNext()">></span></button>
+    $scope.pdfOne.goNext();
+    $scope.pdfOne.goPrevious();
     ```
-1. **Zoom in / out**: Include the controls in the view file as defined in the attribute `template-url`
+
+1. **Zoom in / out**
 
     ```
-    <button ng-click="zoomIn()">+</span></button>
-    <button ng-click="zoomOut()">-</span></button>
+    pdfOne.zoomIn()
+    pdfOne.zoomOut()
     ```
-1. **Rotate clockwise**: Include the controls in the view file as defined in the attribute `template-url` and the initial class `rotate0`
+
+1. **Rotate clockwise**
 
     ```
-    <button ng-click="rotate()">90</span></button>
-    ...
-    <canvas id="pdf-canvas" class="rotate0"></canvas>
+    pdfOne.rotate()
     ```
 
     include the css styles:
@@ -93,25 +95,21 @@ Integrate PDF files right into web pages.
     .rotate180 {-webkit-transform: rotate(180deg); transform: rotate(180deg); }
     .rotate270 {-webkit-transform: rotate(270deg); transform: rotate(270deg); }
     ```
-1. **Jump to page number**: Include the controls in the view file as defined in the attribute `template-url`
+
+1. **Jump to page number**
 
     ```
-    <span>Page: </span><input type="text" min=1 ng-model="pageNum"><span> / {{pageCount}}</span>
-    ```
-1. **Fixed pdf controls upon scrolling**: Wrap the controls in the view file as defined in the attribute `template-url` with a tag `nav` with an `ng-class`. Amend the scroll amount as required.
-
-    ```
-    <nav ng-class="{'pdf-controls fixed': scroll > 100, 'pdf-controls': scroll <= 100}">
-    ...
-    </nav>
+    $scope.pdfOne.goToPage(pageNum);
     ```
 
-    And include the relevant css styles as required:
+1. **Get current page number and total page count**
 
     ```
-    .pdf-controls { width: 100%; display: block; background: #eee; padding: 1em;}
-    .fixed { position: fixed; top: 0; left: calc(50% - 480px); z-index: 100; width: 100%; padding: 1em; background: rgba(238, 238, 238,.9); width: 960px; }
+    $scope.pdfOne.currentPage();
+    $scope.pdfOne.getPageCount();
     ```
+
+
 1. open the file `index.html` with a web server
 
 
