@@ -1,5 +1,5 @@
 /*! Angular-PDF Version: 0.2.4 | (C) Sayanee Basu 2014, released under an MIT license */
-(function () {
+(function() {
 
   'use strict';
 
@@ -9,7 +9,7 @@
       templateUrl: function(element, attr) {
         return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html'
       },
-      link: function (scope, element, attrs) {
+      link: function(scope, element, attrs) {
         var url = scope.pdfUrl,
           pdfDoc = null,
           pageNum = 1,
@@ -30,11 +30,13 @@
         scope.renderPage = function(num) {
 
           pdfDoc.getPage(num).then(function(page) {
-            var viewport = page.getViewport(scale);
+            var viewport = page.getViewport(scale),
+              renderContext = {};
+
             canvas.height = viewport.height;
             canvas.width = viewport.width;
 
-            var renderContext = {
+            renderContext = {
               canvasContext: ctx,
               viewport: viewport
             };
@@ -46,14 +48,16 @@
         };
 
         scope.goPrevious = function() {
-          if (scope.pageNum <= 1)
+          if (scope.pageNum <= 1) {
             return;
+          }
           scope.pageNum = parseInt(scope.pageNum, 10) - 1;
         };
 
         scope.goNext = function() {
-          if (scope.pageNum >= pdfDoc.numPages)
+          if (scope.pageNum >= pdfDoc.numPages) {
             return;
+          }
           scope.pageNum = parseInt(scope.pageNum, 10) + 1;
         };
 
@@ -85,7 +89,7 @@
           }
         };
 
-        PDFJS.getDocument(url).then(function (_pdfDoc) {
+        PDFJS.getDocument(url).then(function(_pdfDoc) {
           pdfDoc = _pdfDoc;
           scope.renderPage(scope.pageNum);
 
@@ -94,9 +98,10 @@
           });
         });
 
-        scope.$watch('pageNum', function (newVal) {
-          if (pdfDoc !== null)
+        scope.$watch('pageNum', function(newVal) {
+          if (pdfDoc !== null) {
             scope.renderPage(newVal);
+          }
         });
 
       }

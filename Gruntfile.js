@@ -35,7 +35,7 @@ module.exports = function(grunt) {
     },
 
     clean: {
-      all: ['dist/*.js']
+      all: [ 'dist/*.js' ]
     },
 
     copy: {
@@ -44,10 +44,20 @@ module.exports = function(grunt) {
           {
             expand: true,
             cwd: 'example/js/directives',
-            src: ['angular-pdf.js'],
+            src: [ 'angular-pdf.js' ],
             dest: 'dist/'
           }
         ]
+      }
+    },
+
+    jscs: {
+      src: [
+        'Gruntfile.js',
+        'example/js/directives/angular-pdf.js'
+      ],
+      options: {
+        config: '.jscsrc'
       }
     },
 
@@ -83,7 +93,7 @@ module.exports = function(grunt) {
           preserveComments: 'all'
         },
         files: {
-          'dist/angular-pdf.min.js': ['dist/angular-pdf.js']
+          'dist/angular-pdf.min.js': [ 'dist/angular-pdf.js' ]
         }
       }
 
@@ -95,16 +105,17 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-jscs');
   grunt.loadNpmTasks('grunt-jsonlint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.registerTask('default', [
     'clean',
     'jsonlint',
+    'jscs',
     'jshint',
     'copy',
     'uglify'
   ]);
-
 
 };
