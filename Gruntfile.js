@@ -35,7 +35,10 @@ module.exports = function(grunt) {
     },
 
     clean: {
-      all: [ 'dist/*.js' ]
+      all: [
+        'dist/*.js',
+        'example/js/lib/*.js'
+      ]
     },
 
     copy: {
