@@ -42,7 +42,6 @@
             };
 
             page.render(renderContext);
-
           });
 
         };
@@ -99,8 +98,9 @@
         });
 
         scope.$watch('pageNum', function(newVal) {
+          scope.pageNum = parseInt(newVal);
           if (pdfDoc !== null) {
-            scope.renderPage(newVal);
+            scope.renderPage(scope.pageNum);
           }
         });
 
