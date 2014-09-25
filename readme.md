@@ -117,6 +117,10 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     ```
 1. open the file `index.html` with a web server
 
+##Variations
+
+1. If using with [Angular UI modal](http://angular-ui.github.io/bootstrap/#/modal), `pageNum` attribute is no longer required. [Checkout the implementation](https://github.com/sayanee/angularjs-pdf/issues/12)
+
 
 ##Similar projects
 
