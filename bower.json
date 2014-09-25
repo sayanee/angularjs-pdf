@@ -4,5 +4,9 @@
   "description": "An Angularjs directive <ng-pdf> to display PDF in the browser with PDFJS.",
   "main": "./dist/angular-pdf.js",
   "license": "MIT",
-  "homepage": "http://github.com/sayanee/angularjs-pdf"
+  "homepage": "http://github.com/sayanee/angularjs-pdf",
+  "dependencies": {
+     "angular-latest": "1.2.25",
+     "pdfjs-dist": "1.0.89"
+  }
 }
