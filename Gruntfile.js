@@ -128,4 +128,10 @@ module.exports = function(grunt) {
     'uglify'
   ]);
 
+  grunt.registerTask('check', [
+    'jsonlint',
+    'jscs',
+    'jshint'
+  ]);
+
 };
