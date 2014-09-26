@@ -131,6 +131,29 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 
 PDF example used is [Relativity: The Special and General Theory by Albert Einstein](http://www.gutenberg.org/ebooks/30155) as kindly organized and made available free by [Project Gutenberg](http://www.gutenberg.org/wiki/Main_Page).
 
+#Contribute
+
+Please see [`CONTRIBUTING.md`](CONTRIBUTING.md) for details.
+
+#Versioning
+
+This repository follows the [Semantic Versioning](http://semver.org/) guidelines:
+
+1. For **patches**, run the command:
+
+	```
+	grunt bump
+	```
+- For **minor release**, run the command:
+
+	```
+	grunt bump:minor
+	```
+- For **major release**, run the command:
+
+	```
+	grunt bump:major
+	```
 
 ## License
 
