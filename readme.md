@@ -124,7 +124,8 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 
 ##Similar projects
 
-1. [ng-pdfviewer](https://github.com/akrennmair/ng-pdfviewer)
+1. [angular-pdf-viewer](https://github.com/winkerVSbecks/angular-pdf-viewer) - a more self-contained directive
+- [ng-pdfviewer](https://github.com/akrennmair/ng-pdfviewer)
 
 
 ##Credit
