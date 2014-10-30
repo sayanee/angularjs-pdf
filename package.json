@@ -1,6 +1,6 @@
 {
   "name": "angular-pdf",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "author": "Sayanee <sayanee@gmail.com>",
   "description": "An Angularjs directive <ng-pdf> to display PDF in the browser with PDFJS.",
   "repository": {
