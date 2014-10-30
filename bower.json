@@ -8,5 +8,9 @@
   "dependencies": {
      "angular-latest": "1.3.0",
      "pdfjs-dist": "1.0.935"
-  }
+  },
+  "ignore": [
+    "**/.*",
+    "package.json"
+  ]
 }
