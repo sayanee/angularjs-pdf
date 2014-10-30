@@ -22,8 +22,8 @@ if (typeof PDFJS === 'undefined') {
   (typeof window !== 'undefined' ? window : this).PDFJS = {};
 }
 
-PDFJS.version = '1.0.833';
-PDFJS.build = '9c56c6f';
+PDFJS.version = '1.0.935';
+PDFJS.build = 'a737e5b';
 
 (function pdfjsWrapper() {
   // Use strict in our context only - users might not want it
@@ -1737,7 +1737,7 @@ PDFJS.verbosity = (PDFJS.verbosity === undefined ?
                    PDFJS.VERBOSITY_LEVELS.warnings : PDFJS.verbosity);
 
 /**
- * The maximum supported canvas size in total pixels e.g. width * height. 
+ * The maximum supported canvas size in total pixels e.g. width * height.
  * The default value is 4096 * 4096. Use -1 for no limit.
  * @var {number}
  */
@@ -1880,9 +1880,19 @@ var PDFDocumentProxy = (function PDFDocumentProxyClosure() {
     /**
      * @return {Promise} A promise that is resolved with a lookup table for
      * mapping named destinations to reference numbers.
+     *
+     * This can be slow for large documents: use getDestination instead
      */
     getDestinations: function PDFDocumentProxy_getDestinations() {
       return this.transport.getDestinations();
+    },
+    /**
+     * @param {string} id The named destination to get.
+     * @return {Promise} A promise that is resolved with all information
+     * of the given named destination.
+     */
+    getDestination: function PDFDocumentProxy_getDestination(id) {
+      return this.transport.getDestination(id);
     },
     /**
      * @return {Promise} A promise that is resolved with a lookup table for
@@ -2010,7 +2020,7 @@ var PDFDocumentProxy = (function PDFDocumentProxyClosure() {
  *                      rendering call the function that is the first argument
  *                      to the callback.
  */
- 
+
 /**
  * PDF page operator list.
  *
@@ -2540,7 +2550,7 @@ var WorkerTransport = (function WorkerTransportClosure() {
               this.commonObjs.resolve(id, error);
               break;
             } else {
-              font = new FontFace(exportedData);
+              font = new FontFaceObject(exportedData);
             }
 
             FontLoader.bind(
@@ -2653,6 +2663,7 @@ var WorkerTransport = (function WorkerTransportClosure() {
 
     fetchDocument: function WorkerTransport_fetchDocument(source) {
       source.disableAutoFetch = PDFJS.disableAutoFetch;
+      source.disableStream = PDFJS.disableStream;
       source.chunkedViewerLoading = !!this.pdfDataRangeTransport;
       this.messageHandler.send('GetDocRequest', {
         source: source,
@@ -2702,6 +2713,10 @@ var WorkerTransport = (function WorkerTransportClosure() {
 
     getDestinations: function WorkerTransport_getDestinations() {
       return this.messageHandler.sendWithPromise('GetDestinations', null);
+    },
+
+    getDestination: function WorkerTransport_getDestination(id) {
+      return this.messageHandler.sendWithPromise('GetDestination', { id: id } );
     },
 
     getAttachments: function WorkerTransport_getAttachments() {
@@ -3096,6 +3111,8 @@ var Metadata = PDFJS.Metadata = (function MetadataClosure() {
 
 // Minimal font size that would be used during canvas fillText operations.
 var MIN_FONT_SIZE = 16;
+// Maximum font size that would be used during canvas fillText operations.
+var MAX_FONT_SIZE = 100;
 var MAX_GROUP_SIZE = 4096;
 
 var COMPILE_TYPE3_GLYPHS = true;
@@ -4296,9 +4313,9 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
       // Keeping the font at minimal size and using the fontSizeScale to change
       // the current transformation matrix before the fillText/strokeText.
       // See https://bugzilla.mozilla.org/show_bug.cgi?id=726227
-      var browserFontSize = size >= MIN_FONT_SIZE ? size : MIN_FONT_SIZE;
-      this.current.fontSizeScale = browserFontSize !== MIN_FONT_SIZE ? 1.0 :
-                                   size / MIN_FONT_SIZE;
+      var browserFontSize = size < MIN_FONT_SIZE ? MIN_FONT_SIZE :
+                            size > MAX_FONT_SIZE ? MAX_FONT_SIZE : size;
+      this.current.fontSizeScale = size / browserFontSize;
 
       var rule = italic + ' ' + bold + ' ' + browserFontSize + 'px ' + typeface;
       this.ctx.font = rule;
@@ -4533,9 +4550,11 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
       var textHScale = current.textHScale * fontDirection;
       var fontMatrix = current.fontMatrix || FONT_IDENTITY_MATRIX;
       var glyphsLength = glyphs.length;
+      var isTextInvisible =
+        current.textRenderingMode === TextRenderingMode.INVISIBLE;
       var i, glyph, width;
 
-      if (fontSize === 0) {
+      if (isTextInvisible || fontSize === 0) {
         return;
       }
 
@@ -6045,6 +6064,10 @@ var FontLoader = {
     if (styleElement) {
       styleElement.parentNode.removeChild(styleElement);
     }
+    this.nativeFontFaces.forEach(function(nativeFontFace) {
+      document.fonts.delete(nativeFontFace);
+    });
+    this.nativeFontFaces.length = 0;
   },
   get loadTestFont() {
     // This is a CFF font with 1 glyph for '.' that fills its entire width and
@@ -6101,10 +6124,21 @@ var FontLoader = {
     return false;
   })(),
 
+  nativeFontFaces: [],
+
+  isFontLoadingAPISupported: !isWorker && !!document.fonts,
+
+  addNativeFontFace: function fontLoader_addNativeFontFace(nativeFontFace) {
+    this.nativeFontFaces.push(nativeFontFace);
+    document.fonts.add(nativeFontFace);
+  },
+
   bind: function fontLoaderBind(fonts, callback) {
     assert(!isWorker, 'bind() shall be called from main thread');
 
-    var rules = [], fontsToLoad = [];
+    var rules = [];
+    var fontsToLoad = [];
+    var fontLoadPromises = [];
     for (var i = 0, ii = fonts.length; i < ii; i++) {
       var font = fonts[i];
 
@@ -6115,15 +6149,26 @@ var FontLoader = {
       }
       font.attached = true;
 
-      var rule = font.bindDOM();
-      if (rule) {
-        rules.push(rule);
-        fontsToLoad.push(font);
+      if (this.isFontLoadingAPISupported) {
+        var nativeFontFace = font.createNativeFontFace();
+        if (nativeFontFace) {
+          fontLoadPromises.push(nativeFontFace.loaded);
+        }
+      } else {
+        var rule = font.bindDOM();
+        if (rule) {
+          rules.push(rule);
+          fontsToLoad.push(font);
+        }
       }
     }
 
     var request = FontLoader.queueLoadingCallback(callback);
-    if (rules.length > 0 && !this.isSyncFontLoadingSupported) {
+    if (this.isFontLoadingAPISupported) {
+      Promise.all(fontsToLoad).then(function() {
+        request.complete();
+      });
+    } else if (rules.length > 0 && !this.isSyncFontLoadingSupported) {
       FontLoader.prepareFontLoadEvent(rules, fontsToLoad, request);
     } else {
       request.complete();
@@ -6258,8 +6303,8 @@ var FontLoader = {
   }
 };
 
-var FontFace = (function FontFaceClosure() {
-  function FontFace(name, file, properties) {
+var FontFaceObject = (function FontFaceObjectClosure() {
+  function FontFaceObject(name, file, properties) {
     this.compiledGlyphs = {};
     if (arguments.length === 1) {
       // importing translated data
@@ -6270,8 +6315,29 @@ var FontFace = (function FontFaceClosure() {
       return;
     }
   }
-  FontFace.prototype = {
-    bindDOM: function FontFace_bindDOM() {
+  FontFaceObject.prototype = {
+    createNativeFontFace: function FontFaceObject_createNativeFontFace() {
+      if (!this.data) {
+        return null;
+      }
+
+      if (PDFJS.disableFontFace) {
+        this.disableFontFace = true;
+        return null;
+      }
+
+      var nativeFontFace = new FontFace(this.loadedName, this.data, {});
+
+      FontLoader.addNativeFontFace(nativeFontFace);
+
+      if (PDFJS.pdfBug && 'FontInspector' in globalScope &&
+          globalScope['FontInspector'].enabled) {
+        globalScope['FontInspector'].fontAdded(this);
+      }
+      return nativeFontFace;
+    },
+
+    bindDOM: function FontFaceObject_bindDOM() {
       if (!this.data) {
         return null;
       }
@@ -6298,7 +6364,7 @@ var FontFace = (function FontFaceClosure() {
       return rule;
     },
 
-    getPathGenerator: function (objs, character) {
+    getPathGenerator: function FontLoader_getPathGenerator(objs, character) {
       if (!(character in this.compiledGlyphs)) {
         var js = objs.get(this.loadedName + '_path_' + character);
         /*jshint -W054 */
@@ -6307,7 +6373,7 @@ var FontFace = (function FontFaceClosure() {
       return this.compiledGlyphs[character];
     }
   };
-  return FontFace;
+  return FontFaceObject;
 })();
 
 
@@ -6777,7 +6843,7 @@ var SVGExtraState = (function SVGExtraStateClosure() {
     this.lineJoin = '';
     this.lineCap = '';
     this.miterLimit = 0;
-    
+
     this.dashArray = [];
     this.dashPhase = 0;
 
@@ -7004,7 +7070,7 @@ var SVGGraphics = (function SVGGraphicsClosure() {
       }
       return opListToTree(opList);
     },
-    
+
     executeOpTree: function SVGGraphics_executeOpTree(opTree) {
       var opTreeLen = opTree.length;
       for(var x = 0; x < opTreeLen; x++) {
