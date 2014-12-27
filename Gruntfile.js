@@ -56,6 +56,13 @@ module.exports = function(grunt) {
             dest: 'example/js/lib',
             flatten: true,
             expand: true
+          },
+          {
+            cwd: 'bower_components/angular',
+            src: [ 'angular.min.js', 'angular.min.js.map' ],
+            dest: 'example/js/lib',
+            flatten: true,
+            expand: true
           }
         ]
       }
