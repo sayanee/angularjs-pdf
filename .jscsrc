@@ -1,8 +1,0 @@
-{
-  "preset": "jquery",
-  "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
-  "validateQuoteMarks": "'",
-  "maximumLineLength": {
-    "value": 1000
-  }
-}
