@@ -27,7 +27,8 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 - when scrolling, the pdf controls will get fixed position at the top
 - define the view template
 - define the path to pdf with scope variable
-- handles error
+- handles error 
+- show loading
 
 ## Getting Started
 
@@ -128,6 +129,21 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     	// console.log(error);
   	}
 	```
+
+###Show loading
+
+1. in the controller, you can call the function `$scope.onLoad` when the pdf succesfully loaded:
+
+	```js
+	$scope.loading = 'loading';
+	
+	$scope.onLoad = function() {
+    // do something when pdf is fully loaded
+    // $scope.loading = '';
+  }
+  ```
+
+
 
 ##Variations
 
