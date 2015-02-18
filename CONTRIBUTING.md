@@ -7,7 +7,7 @@
 	npm install
 	```
 - Create a new feature/patch branch
-- Code code code and amend the `example` folder
+- Code code code and amend the `example` folder 
 - Run `grunt` to create the build files in folder `dist`
 - Code code code
 - Run `grunt check` to ensure the [build](https://travis-ci.org/sayanee/angularjs-pdf) will pass

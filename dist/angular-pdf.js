@@ -28,7 +28,6 @@
         scope.pageNum = pageNum;
 
         scope.renderPage = function(num) {
-
           pdfDoc.getPage(num).then(function(page) {
             var viewport = page.getViewport(scale),
               renderContext = {};
@@ -43,25 +42,20 @@
 
             page.render(renderContext);
           });
-
         };
 
         scope.goPrevious = function() {
           if (scope.pageToDisplay <= 1) {
             return;
           }
-          scope.pageToDisplay = scope.pageToDisplay - 1;
-          scope.pageNum = scope.pageNum - 1;
-          scope.renderPage(scope.pageToDisplay);
+          scope.pageNum = parseInt(scope.pageNum) - 1;
         };
 
         scope.goNext = function() {
           if (scope.pageToDisplay >= pdfDoc.numPages) {
             return;
           }
-          scope.pageToDisplay = scope.pageToDisplay + 1;
-          scope.pageNum = scope.pageNum + 1;
-          scope.renderPage(scope.pageToDisplay);
+          scope.pageNum = parseInt(scope.pageNum) + 1;
         };
 
         scope.zoomIn = function() {
