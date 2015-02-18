@@ -28,7 +28,8 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 - define the view template
 - define the path to pdf with scope variable
 - handles error 
-- show loading
+- show loading of pdf
+- show progress percentage of loading pdf
 
 ## Getting Started
 
@@ -140,6 +141,18 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 	$scope.onLoad = function() {
     // do something when pdf is fully loaded
     // $scope.loading = '';
+  }
+  ```
+
+###Show progress percentage
+
+1. in the controller, you can call the function `$scope.onProgress`
+
+	```js
+	$scope.onProgress = function(progress) {
+		// handle a progress bar
+    	// progress% = progress.loaded / progress.total 
+    	// console.log(progress);
   }
   ```
 
