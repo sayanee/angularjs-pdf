@@ -86,14 +86,20 @@
           }
         };
 
-        PDFJS.getDocument(url).then(function(_pdfDoc) {
-          pdfDoc = _pdfDoc;
-          scope.renderPage(scope.pageToDisplay);
+        PDFJS.getDocument(url).then(
+          function(_pdfDoc) {
+            pdfDoc = _pdfDoc;
+            scope.renderPage(scope.pageToDisplay);
 
-          scope.$apply(function() {
-            scope.pageCount = _pdfDoc.numPages;
-          });
-        });
+            scope.$apply(function() {
+              scope.pageCount = _pdfDoc.numPages;
+            });
+          }, function(error) {
+            if (error) {
+              console.log('ERROR in getting document: ' + error);
+            }
+          }
+        );
 
         scope.$watch('pageNum', function(newVal) {
           scope.pageToDisplay = parseInt(newVal);
