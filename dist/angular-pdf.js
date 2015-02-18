@@ -86,7 +86,7 @@
           }
         };
 
-        PDFJS.getDocument(url).then(
+        PDFJS.getDocument(url, null, null, scope.onProgress).then(
           function(_pdfDoc) {
             if (typeof scope.onLoad === 'function' ) {
               scope.onLoad();
