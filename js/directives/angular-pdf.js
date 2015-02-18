@@ -96,7 +96,9 @@
             });
           }, function(error) {
             if (error) {
-              console.log('ERROR in getting document: ' + error);
+              if (typeof scope.onError === 'function') {
+                scope.onError(error);
+              }
             }
           }
         );

@@ -9,4 +9,8 @@ app.controller('DocCtrl', function($scope) {
     else return 'pdf-controls';
   }
 
+  $scope.onError = function(error) {
+    console.log(error);
+  }
+
 });
