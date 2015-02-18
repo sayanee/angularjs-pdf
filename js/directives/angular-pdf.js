@@ -48,14 +48,14 @@
           if (scope.pageToDisplay <= 1) {
             return;
           }
-          scope.pageNum = scope.pageNum - 1;
+          scope.pageNum = parseInt(scope.pageNum) - 1;
         };
 
         scope.goNext = function() {
           if (scope.pageToDisplay >= pdfDoc.numPages) {
             return;
           }
-          scope.pageNum = scope.pageNum + 1;
+          scope.pageNum = parseInt(scope.pageNum) + 1;
         };
 
         scope.zoomIn = function() {
