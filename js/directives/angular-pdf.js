@@ -1,4 +1,4 @@
-/*! Angular-PDF Version: 0.3.5 | (C) Sayanee Basu 2014, released under an MIT license */
+/*! Angular-PDF Version: 0.3.6 | (C) Sayanee Basu 2014, released under an MIT license */
 (function() {
 
   'use strict';
@@ -86,8 +86,12 @@
           }
         };
 
-        PDFJS.getDocument(url).then(
+        PDFJS.getDocument(url, null, null, scope.onProgress).then(
           function(_pdfDoc) {
+            if (typeof scope.onLoad === 'function' ) {
+              scope.onLoad();
+            }
+
             pdfDoc = _pdfDoc;
             scope.renderPage(scope.pageToDisplay);
 
