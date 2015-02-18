@@ -51,6 +51,7 @@
             return;
           }
           scope.pageToDisplay = scope.pageToDisplay - 1;
+          scope.pageNum = scope.pageNum - 1;
           scope.renderPage(scope.pageToDisplay);
         };
 
@@ -59,6 +60,7 @@
             return;
           }
           scope.pageToDisplay = scope.pageToDisplay + 1;
+          scope.pageNum = scope.pageNum + 1;
           scope.renderPage(scope.pageToDisplay);
         };
 
