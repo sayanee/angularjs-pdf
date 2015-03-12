@@ -3,7 +3,7 @@
 
   'use strict';
 
-  angular.module('pdf', []).directive('ngPdf', function($window) {
+  angular.module('pdf', []).directive('ngPdf', ['$window', function($window) {
     return {
       restrict: 'E',
       templateUrl: function(element, attr) {
@@ -116,6 +116,6 @@
 
       }
     };
-  });
+  }]);
 
 })();
