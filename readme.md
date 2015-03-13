@@ -1,6 +1,6 @@
 # angular-pdf [![Build Status](https://travis-ci.org/sayanee/angularjs-pdf.png)](https://travis-ci.org/sayanee/angularjs-pdf) [![Dependency Status](https://gemnasium.com/sayanee/angularjs-pdf.png)](https://gemnasium.com/sayanee/angularjs-pdf)
 
-Version: 0.3.8
+Version: 0.3.9
 
 >An [AngularJS](http://angularjs.org/) [directive](http://docs.angularjs.org/guide/directive) `ng-pdf` to display PDF files with [PDFJS](http://mozilla.github.io/pdf.js/).
 
