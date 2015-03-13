@@ -1,9 +1,9 @@
-/*! Angular-PDF Version: 0.3.6 | (C) Sayanee Basu 2014, released under an MIT license */
+/*! Angular-PDF Version: 0.3.7 | (C) Sayanee Basu 2014, released under an MIT license */
 (function() {
 
   'use strict';
 
-  angular.module('pdf', []).directive('ngPdf', ['$window', function($window) {
+  angular.module('pdf', []).directive('ngPdf', [ '$window', function($window) {
     return {
       restrict: 'E',
       templateUrl: function(element, attr) {
@@ -116,6 +116,6 @@
 
       }
     };
-  }]);
+  } ]);
 
 })();
