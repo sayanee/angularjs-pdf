@@ -40,7 +40,12 @@
               viewport: viewport
             };
 
-            page.render(renderContext);
+            var pageRendering = page.render(renderContext);
+            pageRendering.promise.then(function() {
+              if (typeof scope.onPageRender === 'function' ) {
+                scope.onPageRender();
+              }
+            });
           });
         };
 
