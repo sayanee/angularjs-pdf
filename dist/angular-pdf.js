@@ -10,9 +10,9 @@
         return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html'
       },
       link: function(scope, element, attrs) {
-        var url = scope.pdfUrl,
+        var src = scope.src,
           pdfDoc = null,
-          pageNum = 1,
+          pageNum = (attrs.pageNum ? attrs.pageNum : 1),
           scale = (attrs.scale ? attrs.scale : 1),
           canvas = (attrs.canvasid ? document.getElementById(attrs.canvasid) : document.getElementById('pdf-canvas')),
           ctx = canvas.getContext('2d'),
@@ -86,7 +86,7 @@
           }
         };
 
-        PDFJS.getDocument(url, null, null, scope.onProgress).then(
+        PDFJS.getDocument(src, null, null, scope.onProgress).then(
           function(_pdfDoc) {
             if (typeof scope.onLoad === 'function' ) {
               scope.onLoad();
