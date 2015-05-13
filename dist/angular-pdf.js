@@ -10,7 +10,9 @@
         return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html'
       },
       link: function(scope, element, attrs) {
-        var src = scope.src,
+        var url = scope.pdfUrl,
+          httpHeaders = scope.httpHeaders,
+          docInitParams = (httpHeaders ? {url: url, httpHeaders: httpHeaders} : url),
           pdfDoc = null,
           pageNum = (attrs.pageNum ? attrs.pageNum : 1),
           scale = (attrs.scale ? attrs.scale : 1),
@@ -86,7 +88,7 @@
           }
         };
 
-        PDFJS.getDocument(src, null, null, scope.onProgress).then(
+        PDFJS.getDocument(docInitParams, null, null, scope.onProgress).then(
           function(_pdfDoc) {
             if (typeof scope.onLoad === 'function' ) {
               scope.onLoad();
