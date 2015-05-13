@@ -12,7 +12,7 @@
       link: function(scope, element, attrs) {
         var url = scope.pdfUrl,
           pdfDoc = null,
-          pageNum = 1,
+          pageNum = (attrs.page ? attrs.page : 1),
           scale = (attrs.scale ? attrs.scale : 1),
           canvas = (attrs.canvasid ? document.getElementById(attrs.canvasid) : document.getElementById('pdf-canvas')),
           ctx = canvas.getContext('2d'),
