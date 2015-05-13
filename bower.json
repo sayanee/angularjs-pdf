@@ -1,5 +1,5 @@
 {
-  "name": "angular-pdf",
+  "name": "matejhustava-angular-pdf",
   "version": "0.3.9",
   "description": "An Angularjs directive <ng-pdf> to display PDF in the browser with PDFJS.",
   "main": "./dist/angular-pdf.js",
