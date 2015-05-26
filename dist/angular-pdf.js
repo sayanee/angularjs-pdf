@@ -29,6 +29,12 @@
 
         scope.renderPage = function(num) {
           pdfDoc.getPage(num).then(function(page) {
+            if (scale === 'page-fit') {
+              var viewport = page.getViewport(1);
+              var pageWidthScale = element.get(0).clientWidth / viewport.width;
+              var pageHeightScale = element.get(0).clientHeight / viewport.height;
+              scale = Math.min(pageWidthScale, pageHeightScale);
+            }
             var viewport = page.getViewport(scale),
               renderContext = {};
 
