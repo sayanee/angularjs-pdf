@@ -32,7 +32,8 @@
             var viewport,
               pageWidthScale,
               pageHeightScale,
-              renderContext = {};
+              renderContext = {},
+              pageRendering;
 
             if (attrs.scale === 'page-fit' && !scale) {
               viewport = page.getViewport(1);
@@ -51,8 +52,7 @@
               viewport: viewport
             };
 
-            var pageRendering = page.render(renderContext);
-            pageRendering.promise.then(function() {
+            page.render(renderContext).promise.then(function() {
               if (typeof scope.onPageRender === 'function' ) {
                 scope.onPageRender();
               }
