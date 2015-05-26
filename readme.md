@@ -67,6 +67,11 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
         ```html
         <ng-pdf template-url="/partials/viewer.html" scale="page-fit"></ng-pdf>
         ```
+    - `page` as an option for initial page number
+
+        ```html
+        <ng-pdf template-url="/partials/viewer.html" page=12></ng-pdf>
+        ```
 
 1. include the `canvas` element to display the pdf in the template-url file
 
