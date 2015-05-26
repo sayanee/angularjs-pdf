@@ -12,8 +12,8 @@
       link: function(scope, element, attrs) {
         var url = scope.pdfUrl,
           pdfDoc = null,
-          pageNum = 1,
-          scale = (attrs.scale ? attrs.scale : 1),
+          pageNum = (attrs.page ? attrs.page : 1),
+          scale = attrs.scale > 0 ? attrs.scale : 1,
           canvas = (attrs.canvasid ? document.getElementById(attrs.canvasid) : document.getElementById('pdf-canvas')),
           ctx = canvas.getContext('2d'),
           windowEl = angular.element($window);
@@ -29,8 +29,20 @@
 
         scope.renderPage = function(num) {
           pdfDoc.getPage(num).then(function(page) {
-            var viewport = page.getViewport(scale),
-              renderContext = {};
+            var viewport,
+              pageWidthScale,
+              pageHeightScale,
+              renderContext = {},
+              pageRendering;
+
+            if (attrs.scale === 'page-fit' && !scale) {
+              viewport = page.getViewport(1);
+              pageWidthScale = element[0].clientWidth / viewport.width;
+              pageHeightScale = element[0].clientHeight / viewport.height;
+              scale = Math.min(pageWidthScale, pageHeightScale);
+            } else {
+              viewport = page.getViewport(scale)
+            }
 
             canvas.height = viewport.height;
             canvas.width = viewport.width;
@@ -40,7 +52,11 @@
               viewport: viewport
             };
 
-            page.render(renderContext);
+            page.render(renderContext).promise.then(function() {
+              if (typeof scope.onPageRender === 'function' ) {
+                scope.onPageRender();
+              }
+            });
           });
         };
 
