@@ -27,7 +27,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 - when scrolling, the pdf controls will get fixed position at the top
 - define the view template
 - define the path to pdf with scope variable
-- handles error 
+- handles error
 - show loading of pdf
 - show progress percentage of loading pdf
 
@@ -56,6 +56,18 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
         <ng-pdf template-url="/partials/viewer.html"></ng-pdf>
     </div>
     ```
+    - `scale` as an option
+
+        ```html
+        <ng-pdf template-url="/partials/viewer.html" scale=1></ng-pdf>
+        ```
+
+        `scale` attribute can also be `page-fit`
+
+        ```html
+        <ng-pdf template-url="/partials/viewer.html" scale="page-fit"></ng-pdf>
+        ```
+
 1. include the `canvas` element to display the pdf in the template-url file
 
     ```html
@@ -137,7 +149,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 
 	```js
 	$scope.loading = 'loading';
-	
+
 	$scope.onLoad = function() {
     // do something when pdf is fully loaded
     // $scope.loading = '';
@@ -151,7 +163,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 	```js
 	$scope.onProgress = function(progress) {
 		// handle a progress bar
-    	// progress% = progress.loaded / progress.total 
+    	// progress% = progress.loaded / progress.total
     	// console.log(progress);
   }
   ```

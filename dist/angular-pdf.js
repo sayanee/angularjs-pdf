@@ -13,7 +13,7 @@
         var url = scope.pdfUrl,
           pdfDoc = null,
           pageNum = 1,
-          scale = (attrs.scale ? attrs.scale : 1),
+          scale = attrs.scale > 0 ? attrs.scale : 1,
           canvas = (attrs.canvasid ? document.getElementById(attrs.canvasid) : document.getElementById('pdf-canvas')),
           ctx = canvas.getContext('2d'),
           windowEl = angular.element($window);
@@ -29,14 +29,19 @@
 
         scope.renderPage = function(num) {
           pdfDoc.getPage(num).then(function(page) {
-            if (scale === 'page-fit') {
-              var viewport = page.getViewport(1);
-              var pageWidthScale = element.get(0).clientWidth / viewport.width;
-              var pageHeightScale = element.get(0).clientHeight / viewport.height;
-              scale = Math.min(pageWidthScale, pageHeightScale);
-            }
-            var viewport = page.getViewport(scale),
+            var viewport,
+              pageWidthScale,
+              pageHeightScale,
               renderContext = {};
+
+            if (attrs.scale === 'page-fit' && !scale) {
+              viewport = page.getViewport(1);
+              pageWidthScale = element[0].clientWidth / viewport.width;
+              pageHeightScale = element[0].clientHeight / viewport.height;
+              scale = Math.min(pageWidthScale, pageHeightScale);
+            } else {
+              viewport = page.getViewport(scale)
+            }
 
             canvas.height = viewport.height;
             canvas.width = viewport.width;
