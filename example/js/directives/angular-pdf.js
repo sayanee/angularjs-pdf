@@ -136,7 +136,7 @@
 
         scope.$watch('pdfUrl', function(newVal) {
           if (newVal !== '') {
-            console.log("pdfUrl value change detected: ", scope.pdfUrl);
+            console.log('pdfUrl value change detected: ', scope.pdfUrl);
             url = newVal;
             scope.pageToDisplay = 1;
             renderPDF();
