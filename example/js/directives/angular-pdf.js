@@ -102,11 +102,11 @@
           }
         };
 
-        function renderPDF(){
-          if(url && url.length){
+        function renderPDF() {
+          if (url && url.length) {
             PDFJS.getDocument(url, null, null, scope.onProgress).then(
                 function(_pdfDoc) {
-                  if (typeof scope.onLoad === 'function' ) {
+                  if (typeof scope.onLoad === 'function') {
                     scope.onLoad();
                   }
 
@@ -135,7 +135,7 @@
         });
 
         scope.$watch('pdfUrl', function(newVal) {
-          if(newVal !== ""){
+          if (newVal !== "") {
             console.log("pdfUrl value change detected: ", scope.pdfUrl);
             url = newVal;
             scope.pageToDisplay = 1;
