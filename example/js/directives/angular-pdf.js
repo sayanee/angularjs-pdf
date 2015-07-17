@@ -102,31 +102,44 @@
           }
         };
 
-        PDFJS.getDocument(url, null, null, scope.onProgress).then(
-          function(_pdfDoc) {
-            if (typeof scope.onLoad === 'function' ) {
-              scope.onLoad();
-            }
+        function renderPDF(){
+          if(url && url.length){
+            PDFJS.getDocument(url, null, null, scope.onProgress).then(
+                function(_pdfDoc) {
+                  if (typeof scope.onLoad === 'function' ) {
+                    scope.onLoad();
+                  }
 
-            pdfDoc = _pdfDoc;
-            scope.renderPage(scope.pageToDisplay);
+                  pdfDoc = _pdfDoc;
+                  scope.renderPage(scope.pageToDisplay);
 
-            scope.$apply(function() {
-              scope.pageCount = _pdfDoc.numPages;
-            });
-          }, function(error) {
-            if (error) {
-              if (typeof scope.onError === 'function') {
-                scope.onError(error);
-              }
-            }
+                  scope.$apply(function() {
+                    scope.pageCount = _pdfDoc.numPages;
+                  });
+                }, function(error) {
+                  if (error) {
+                    if (typeof scope.onError === 'function') {
+                      scope.onError(error);
+                    }
+                  }
+                }
+            );
           }
-        );
+        }
 
         scope.$watch('pageNum', function(newVal) {
           scope.pageToDisplay = parseInt(newVal);
           if (pdfDoc !== null) {
             scope.renderPage(scope.pageToDisplay);
+          }
+        });
+
+        scope.$watch('pdfUrl', function(newVal) {
+          if(newVal !== ""){
+            console.log("pdfUrl value change detected: ", scope.pdfUrl);
+            url = newVal;
+            scope.pageToDisplay = 1;
+            renderPDF();
           }
         });
 
