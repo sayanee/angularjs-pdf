@@ -4,6 +4,28 @@
   'use strict';
 
   angular.module('pdf', []).directive('ngPdf', [ '$window', function($window) {
+    var backingScale = function (canvas) {
+      var ctx = canvas.getContext("2d"),
+          dpr = window.devicePixelRatio || 1,
+          bsr = ctx.webkitBackingStorePixelRatio ||
+              ctx.mozBackingStorePixelRatio ||
+              ctx.msBackingStorePixelRatio ||
+              ctx.oBackingStorePixelRatio ||
+              ctx.backingStorePixelRatio || 1;
+
+      return dpr / bsr;
+    };
+
+
+    var setCanvasDimensions = function(canvas, w, h) {
+      var ratio = backingScale(canvas);
+      canvas.width = w * ratio;
+      canvas.height = h * ratio;
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+      canvas.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
+      return canvas;
+    };
     return {
       restrict: 'E',
       templateUrl: function(element, attr) {
@@ -44,8 +66,7 @@
               viewport = page.getViewport(scale)
             }
 
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+            setCanvasDimensions(canvas, viewport.width, viewport.height);
 
             renderContext = {
               canvasContext: ctx,
