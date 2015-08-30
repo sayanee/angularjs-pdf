@@ -217,4 +217,4 @@ This repository follows the [Semantic Versioning](http://semver.org/) guidelines
 
 ## License
 
-(C) Sayanee Basu 2014, released under an MIT license
+(C) Sayanee Basu 2015, released under an MIT license
