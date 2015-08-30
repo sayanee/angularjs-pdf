@@ -31,6 +31,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 - show loading of pdf
 - show progress percentage of loading pdf
 - dynamically change the pdf url
+- support retina canvas
 
 ## Getting Started
 
