@@ -193,6 +193,10 @@ PDF example used is [Relativity: The Special and General Theory by Albert Einste
 
 #Contribute
 
+This project is an **OPEN Open Source Project**. This means that:
+
+> Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit. This project is more like an open wiki than a standard guarded open source project.
+
 Please see [`CONTRIBUTING.md`](CONTRIBUTING.md) for details.
 
 #Versioning
