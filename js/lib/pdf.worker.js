@@ -22,8 +22,8 @@ if (typeof PDFJS === 'undefined') {
   (typeof window !== 'undefined' ? window : this).PDFJS = {};
 }
 
-PDFJS.version = '1.1.337';
-PDFJS.build = '61f9052';
+PDFJS.version = '1.1.399';
+PDFJS.build = '23cb01c';
 
 (function pdfjsWrapper() {
   // Use strict in our context only - users might not want it
@@ -1508,6 +1508,10 @@ function MessageHandler(name, comObj) {
             data: result
           });
         }, function (reason) {
+          if (reason instanceof Error) {
+            // Serialize error to avoid "DataCloneError"
+            reason = reason + '';
+          }
           comObj.postMessage({
             isReply: true,
             callbackId: data.callbackId,
@@ -1634,18 +1638,15 @@ var NetworkManager = (function NetworkManagerClosure() {
   }
 
   var supportsMozChunked = (function supportsMozChunkedClosure() {
-    var x = new XMLHttpRequest();
     try {
+      var x = new XMLHttpRequest();
       // Firefox 37- required .open() to be called before setting responseType.
       // https://bugzilla.mozilla.org/show_bug.cgi?id=707484
-      x.open('GET', 'https://example.com');
-    } catch (e) {
       // Even though the URL is not visited, .open() could fail if the URL is
       // blocked, e.g. via the connect-src CSP directive or the NoScript addon.
       // When this error occurs, this feature detection method will mistakenly
       // report that moz-chunked-arraybuffer is not supported in Firefox 37-.
-    }
-    try {
+      x.open('GET', 'https://example.com');
       x.responseType = 'moz-chunked-arraybuffer';
       return x.responseType === 'moz-chunked-arraybuffer';
     } catch (e) {
@@ -2820,10 +2821,12 @@ var Page = (function PageClosure() {
     get annotations() {
       var annotations = [];
       var annotationRefs = this.getInheritedPageProp('Annots') || [];
+      var annotationFactory = new AnnotationFactory();
       for (var i = 0, n = annotationRefs.length; i < n; ++i) {
         var annotationRef = annotationRefs[i];
-        var annotation = Annotation.fromRef(this.xref, annotationRef);
-        if (annotation) {
+        var annotation = annotationFactory.create(this.xref, annotationRef);
+        if (annotation &&
+            (annotation.isViewable() || annotation.isPrintable())) {
           annotations.push(annotation);
         }
       }
@@ -3611,6 +3614,19 @@ var Catalog = (function CatalogClosure() {
       var obj = this.catDict.get('Names');
 
       var javaScript = [];
+      function appendIfJavaScriptDict(jsDict) {
+        var type = jsDict.get('S');
+        if (!isName(type) || type.name !== 'JavaScript') {
+          return;
+        }
+        var js = jsDict.get('JS');
+        if (isStream(js)) {
+          js = bytesToString(js.getBytes());
+        } else if (!isString(js)) {
+          return;
+        }
+        javaScript.push(stringToPDFString(js));
+      }
       if (obj && obj.has('JavaScript')) {
         var nameTree = new NameTree(obj.getRaw('JavaScript'), xref);
         var names = nameTree.getAll();
@@ -3621,36 +3637,25 @@ var Catalog = (function CatalogClosure() {
           // We don't really use the JavaScript right now. This code is
           // defensive so we don't cause errors on document load.
           var jsDict = names[name];
-          if (!isDict(jsDict)) {
-            continue;
+          if (isDict(jsDict)) {
+            appendIfJavaScriptDict(jsDict);
           }
-          var type = jsDict.get('S');
-          if (!isName(type) || type.name !== 'JavaScript') {
-            continue;
-          }
-          var js = jsDict.get('JS');
-          if (!isString(js) && !isStream(js)) {
-            continue;
-          }
-          if (isStream(js)) {
-            js = bytesToString(js.getBytes());
-          }
-          javaScript.push(stringToPDFString(js));
         }
       }
 
       // Append OpenAction actions to javaScript array
       var openactionDict = this.catDict.get('OpenAction');
-      if (isDict(openactionDict)) {
-        var objType = openactionDict.get('Type');
+      if (isDict(openactionDict, 'Action')) {
         var actionType = openactionDict.get('S');
-        var action = openactionDict.get('N');
-        var isPrintAction = (isName(objType) && objType.name === 'Action' &&
-                            isName(actionType) && actionType.name === 'Named' &&
-                            isName(action) && action.name === 'Print');
-
-        if (isPrintAction) {
-          javaScript.push('print(true);');
+        if (isName(actionType) && actionType.name === 'Named') {
+          // The named Print action is not a part of the PDF 1.7 specification,
+          // but is supported by many PDF readers/writers (including Adobe's).
+          var action = openactionDict.get('N');
+          if (isName(action) && action.name === 'Print') {
+            javaScript.push('print({});');
+          }
+        } else {
+          appendIfJavaScriptDict(openactionDict);
         }
       }
 
@@ -4900,7 +4905,54 @@ var ExpertSubsetCharset = [
 
 
 var DEFAULT_ICON_SIZE = 22; // px
-var SUPPORTED_TYPES = ['Link', 'Text', 'Widget'];
+
+/**
+ * @constructor
+ */
+function AnnotationFactory() {}
+AnnotationFactory.prototype = {
+  /**
+   * @param {XRef} xref
+   * @param {Object} ref
+   * @returns {Annotation}
+   */
+  create: function AnnotationFactory_create(xref, ref) {
+    var dict = xref.fetchIfRef(ref);
+    if (!isDict(dict)) {
+      return;
+    }
+
+    // Determine the annotation's subtype.
+    var subtype = dict.get('Subtype');
+    subtype = isName(subtype) ? subtype.name : '';
+
+    // Return the right annotation object based on the subtype and field type.
+    var parameters = {
+      dict: dict,
+      ref: ref
+    };
+
+    switch (subtype) {
+      case 'Link':
+        return new LinkAnnotation(parameters);
+
+      case 'Text':
+        return new TextAnnotation(parameters);
+
+      case 'Widget':
+        var fieldType = Util.getInheritableProperty(dict, 'FT');
+        if (isName(fieldType) && fieldType.name === 'Tx') {
+          return new TextWidgetAnnotation(parameters);
+        }
+        return new WidgetAnnotation(parameters);
+
+      default:
+        warn('Unimplemented annotation type "' + subtype + '", ' +
+             'falling back to base annotation');
+        return new Annotation(parameters);
+    }
+  }
+};
 
 var Annotation = (function AnnotationClosure() {
   // 12.5.5: Algorithm: Appearance streams
@@ -5071,13 +5123,9 @@ var Annotation = (function AnnotationClosure() {
 
     isInvisible: function Annotation_isInvisible() {
       var data = this.data;
-      if (data && SUPPORTED_TYPES.indexOf(data.subtype) !== -1) {
-        return false;
-      } else {
-        return !!(data &&
-                  data.annotationFlags &&            // Default: not invisible
-                  data.annotationFlags & 0x1);       // Invisible
-      }
+      return !!(data &&
+                data.annotationFlags &&            // Default: not invisible
+                data.annotationFlags & 0x1);       // Invisible
     },
 
     isViewable: function Annotation_isViewable() {
@@ -5150,70 +5198,6 @@ var Annotation = (function AnnotationClosure() {
               return opList;
             });
         });
-    }
-  };
-
-  Annotation.getConstructor =
-      function Annotation_getConstructor(subtype, fieldType) {
-
-    if (!subtype) {
-      return;
-    }
-
-    // TODO(mack): Implement FreeText annotations
-    if (subtype === 'Link') {
-      return LinkAnnotation;
-    } else if (subtype === 'Text') {
-      return TextAnnotation;
-    } else if (subtype === 'Widget') {
-      if (!fieldType) {
-        return;
-      }
-
-      if (fieldType === 'Tx') {
-        return TextWidgetAnnotation;
-      } else {
-        return WidgetAnnotation;
-      }
-    } else {
-      return Annotation;
-    }
-  };
-
-  Annotation.fromRef = function Annotation_fromRef(xref, ref) {
-
-    var dict = xref.fetchIfRef(ref);
-    if (!isDict(dict)) {
-      return;
-    }
-
-    var subtype = dict.get('Subtype');
-    subtype = isName(subtype) ? subtype.name : '';
-    if (!subtype) {
-      return;
-    }
-
-    var fieldType = Util.getInheritableProperty(dict, 'FT');
-    fieldType = isName(fieldType) ? fieldType.name : '';
-
-    var Constructor = Annotation.getConstructor(subtype, fieldType);
-    if (!Constructor) {
-      return;
-    }
-
-    var params = {
-      dict: dict,
-      ref: ref,
-    };
-
-    var annotation = new Constructor(params);
-
-    if (annotation.isViewable() || annotation.isPrintable()) {
-      return annotation;
-    } else {
-      if (SUPPORTED_TYPES.indexOf(subtype) === -1) {
-        warn('unimplemented annotation type: ' + subtype);
-      }
     }
   };
 
@@ -9983,7 +9967,7 @@ var CipherTransformFactory = (function CipherTransformFactoryClosure() {
 })();
 
 
-var PatternType = {
+var ShadingType = {
   FUNCTION_BASED: 1,
   AXIAL: 2,
   RADIAL: 3,
@@ -10015,17 +9999,17 @@ var Pattern = (function PatternClosure() {
 
     try {
       switch (type) {
-        case PatternType.AXIAL:
-        case PatternType.RADIAL:
+        case ShadingType.AXIAL:
+        case ShadingType.RADIAL:
           // Both radial and axial shadings are handled by RadialAxial shading.
           return new Shadings.RadialAxial(dict, matrix, xref, res);
-        case PatternType.FREE_FORM_MESH:
-        case PatternType.LATTICE_FORM_MESH:
-        case PatternType.COONS_PATCH_MESH:
-        case PatternType.TENSOR_PATCH_MESH:
+        case ShadingType.FREE_FORM_MESH:
+        case ShadingType.LATTICE_FORM_MESH:
+        case ShadingType.COONS_PATCH_MESH:
+        case ShadingType.TENSOR_PATCH_MESH:
           return new Shadings.Mesh(shading, matrix, xref, res);
         default:
-          throw new Error('Unknown PatternType: ' + type);
+          throw new Error('Unsupported ShadingType: ' + type);
       }
     } catch (ex) {
       if (ex instanceof MissingDataException) {
@@ -10073,7 +10057,7 @@ Shadings.RadialAxial = (function RadialAxialClosure() {
       extendEnd = extendArr[1];
     }
 
-    if (this.shadingType === PatternType.RADIAL &&
+    if (this.shadingType === ShadingType.RADIAL &&
        (!extendStart || !extendEnd)) {
       // Radial gradient only currently works if either circle is fully within
       // the other circle.
@@ -10148,13 +10132,13 @@ Shadings.RadialAxial = (function RadialAxialClosure() {
       var coordsArr = this.coordsArr;
       var shadingType = this.shadingType;
       var type, p0, p1, r0, r1;
-      if (shadingType === PatternType.AXIAL) {
+      if (shadingType === ShadingType.AXIAL) {
         p0 = [coordsArr[0], coordsArr[1]];
         p1 = [coordsArr[2], coordsArr[3]];
         r0 = null;
         r1 = null;
         type = 'axial';
-      } else if (shadingType === PatternType.RADIAL) {
+      } else if (shadingType === ShadingType.RADIAL) {
         p0 = [coordsArr[0], coordsArr[1]];
         p1 = [coordsArr[3], coordsArr[4]];
         r0 = coordsArr[2];
@@ -10188,7 +10172,7 @@ Shadings.Mesh = (function MeshClosure() {
 
     var numComps = context.numComps;
     this.tmpCompsBuf = new Float32Array(numComps);
-    var csNumComps = context.colorSpace;
+    var csNumComps = context.colorSpace.numComps;
     this.tmpCsCompsBuf = context.colorFn ? new Float32Array(csNumComps) :
                                            this.tmpCompsBuf;
   }
@@ -10308,13 +10292,10 @@ Shadings.Mesh = (function MeshClosure() {
 
       reader.align();
     }
-
-    var psPacked = new Int32Array(ps);
-
     mesh.figures.push({
       type: 'triangles',
-      coords: psPacked,
-      colors: psPacked
+      coords: new Int32Array(ps),
+      colors: new Int32Array(ps),
     });
   }
 
@@ -10329,13 +10310,10 @@ Shadings.Mesh = (function MeshClosure() {
       coords.push(coord);
       colors.push(color);
     }
-
-    var psPacked = new Int32Array(ps);
-
     mesh.figures.push({
       type: 'lattice',
-      coords: psPacked,
-      colors: psPacked,
+      coords: new Int32Array(ps),
+      colors: new Int32Array(ps),
       verticesPerRow: verticesPerRow
     });
   }
@@ -10477,29 +10455,32 @@ Shadings.Mesh = (function MeshClosure() {
           break;
         case 1:
           tmp1 = ps[12]; tmp2 = ps[13]; tmp3 = ps[14]; tmp4 = ps[15];
-          ps[12] = pi + 5; ps[13] = pi + 4;  ps[14] = pi + 3;  ps[15] = pi + 2;
-          ps[ 8] = pi + 6; /* values for 5, 6, 9, 10 are    */ ps[11] = pi + 1;
-          ps[ 4] = pi + 7; /* calculated below              */ ps[ 7] = pi;
-          ps[ 0] = tmp1;   ps[ 1] = tmp2;    ps[ 2] = tmp3;    ps[ 3] = tmp4;
+          ps[12] = tmp4; ps[13] = pi + 0;  ps[14] = pi + 1;  ps[15] = pi + 2;
+          ps[ 8] = tmp3; /* values for 5, 6, 9, 10 are    */ ps[11] = pi + 3;
+          ps[ 4] = tmp2; /* calculated below              */ ps[ 7] = pi + 4;
+          ps[ 0] = tmp1; ps[ 1] = pi + 7;   ps[ 2] = pi + 6; ps[ 3] = pi + 5;
           tmp1 = cs[2]; tmp2 = cs[3];
-          cs[2] = ci + 1; cs[3] = ci;
-          cs[0] = tmp1;   cs[1] = tmp2;
+          cs[2] = tmp2;   cs[3] = ci;
+          cs[0] = tmp1;   cs[1] = ci + 1;
           break;
         case 2:
-          ps[12] = ps[15]; ps[13] = pi + 7; ps[14] = pi + 6;   ps[15] = pi + 5;
-          ps[ 8] = ps[11]; /* values for 5, 6, 9, 10 are    */ ps[11] = pi + 4;
-          ps[ 4] = ps[7];  /* calculated below              */ ps[ 7] = pi + 3;
-          ps[ 0] = ps[3];  ps[ 1] = pi;     ps[ 2] = pi + 1;   ps[ 3] = pi + 2;
-          cs[2] = cs[3]; cs[3] = ci + 1;
-          cs[0] = cs[1]; cs[1] = ci;
+          tmp1 = ps[15];
+          tmp2 = ps[11];
+          ps[12] = ps[3];  ps[13] = pi + 0; ps[14] = pi + 1;   ps[15] = pi + 2;
+          ps[ 8] = ps[7];  /* values for 5, 6, 9, 10 are    */ ps[11] = pi + 3;
+          ps[ 4] = tmp2;   /* calculated below              */ ps[ 7] = pi + 4;
+          ps[ 0] = tmp1;  ps[ 1] = pi + 7;   ps[ 2] = pi + 6;  ps[ 3] = pi + 5;
+          tmp1 = cs[3];
+          cs[2] = cs[1]; cs[3] = ci;
+          cs[0] = tmp1;  cs[1] = ci + 1;
           break;
         case 3:
-          ps[12] = ps[0];  ps[13] = ps[1];   ps[14] = ps[2];   ps[15] = ps[3];
-          ps[ 8] = pi;     /* values for 5, 6, 9, 10 are    */ ps[11] = pi + 7;
-          ps[ 4] = pi + 1; /* calculated below              */ ps[ 7] = pi + 6;
-          ps[ 0] = pi + 2; ps[ 1] = pi + 3;  ps[ 2] = pi + 4;  ps[ 3] = pi + 5;
-          cs[2] = cs[0]; cs[3] = cs[1];
-          cs[0] = ci;    cs[1] = ci + 1;
+          ps[12] = ps[0];  ps[13] = pi + 0;   ps[14] = pi + 1; ps[15] = pi + 2;
+          ps[ 8] = ps[1];  /* values for 5, 6, 9, 10 are    */ ps[11] = pi + 3;
+          ps[ 4] = ps[2];  /* calculated below              */ ps[ 7] = pi + 4;
+          ps[ 0] = ps[3];  ps[ 1] = pi + 7;   ps[ 2] = pi + 6; ps[ 3] = pi + 5;
+          cs[2] = cs[0]; cs[3] = ci;
+          cs[0] = cs[1]; cs[1] = ci + 1;
           break;
       }
       // set p11, p12, p21, p22
@@ -10584,29 +10565,32 @@ Shadings.Mesh = (function MeshClosure() {
           break;
         case 1:
           tmp1 = ps[12]; tmp2 = ps[13]; tmp3 = ps[14]; tmp4 = ps[15];
-          ps[12] = pi + 5; ps[13] = pi + 4;  ps[14] = pi + 3;  ps[15] = pi + 2;
-          ps[ 8] = pi + 6; ps[ 9] = pi + 11; ps[10] = pi + 10; ps[11] = pi + 1;
-          ps[ 4] = pi + 7; ps[ 5] = pi + 8;  ps[ 6] = pi + 9;  ps[ 7] = pi;
-          ps[ 0] = tmp1;   ps[ 1] = tmp2;    ps[ 2] = tmp3;    ps[ 3] = tmp4;
+          ps[12] = tmp4;   ps[13] = pi + 0;  ps[14] = pi + 1;  ps[15] = pi + 2;
+          ps[ 8] = tmp3;   ps[ 9] = pi + 9;  ps[10] = pi + 10; ps[11] = pi + 3;
+          ps[ 4] = tmp2;   ps[ 5] = pi + 8;  ps[ 6] = pi + 11; ps[ 7] = pi + 4;
+          ps[ 0] = tmp1;   ps[ 1] = pi + 7;  ps[ 2] = pi + 6;  ps[ 3] = pi + 5;
           tmp1 = cs[2]; tmp2 = cs[3];
-          cs[2] = ci + 1; cs[3] = ci;
-          cs[0] = tmp1;   cs[1] = tmp2;
+          cs[2] = tmp2;   cs[3] = ci;
+          cs[0] = tmp1;   cs[1] = ci + 1;
           break;
         case 2:
-          ps[12] = ps[15]; ps[13] = pi + 7; ps[14] = pi + 6;  ps[15] = pi + 5;
-          ps[ 8] = ps[11]; ps[ 9] = pi + 8; ps[10] = pi + 11; ps[11] = pi + 4;
-          ps[ 4] = ps[7];  ps[ 5] = pi + 9; ps[ 6] = pi + 10; ps[ 7] = pi + 3;
-          ps[ 0] = ps[3];  ps[ 1] = pi;     ps[ 2] = pi + 1;  ps[ 3] = pi + 2;
-          cs[2] = cs[3]; cs[3] = ci + 1;
-          cs[0] = cs[1]; cs[1] = ci;
+          tmp1 = ps[15];
+          tmp2 = ps[11];
+          ps[12] = ps[3]; ps[13] = pi + 0; ps[14] = pi + 1;  ps[15] = pi + 2;
+          ps[ 8] = ps[7]; ps[ 9] = pi + 9; ps[10] = pi + 10; ps[11] = pi + 3;
+          ps[ 4] = tmp2;  ps[ 5] = pi + 8; ps[ 6] = pi + 11; ps[ 7] = pi + 4;
+          ps[ 0] = tmp1;  ps[ 1] = pi + 7; ps[ 2] = pi + 6;  ps[ 3] = pi + 5;
+          tmp1 = cs[3];
+          cs[2] = cs[1]; cs[3] = ci;
+          cs[0] = tmp1;  cs[1] = ci + 1;
           break;
         case 3:
-          ps[12] = ps[0];  ps[13] = ps[1];   ps[14] = ps[2];   ps[15] = ps[3];
-          ps[ 8] = pi;     ps[ 9] = pi + 9;  ps[10] = pi + 8;  ps[11] = pi + 7;
-          ps[ 4] = pi + 1; ps[ 5] = pi + 10; ps[ 6] = pi + 11; ps[ 7] = pi + 6;
-          ps[ 0] = pi + 2; ps[ 1] = pi + 3;  ps[ 2] = pi + 4;  ps[ 3] = pi + 5;
-          cs[2] = cs[0]; cs[3] = cs[1];
-          cs[0] = ci;    cs[1] = ci + 1;
+          ps[12] = ps[0];  ps[13] = pi + 0;  ps[14] = pi + 1;  ps[15] = pi + 2;
+          ps[ 8] = ps[1];  ps[ 9] = pi + 9;  ps[10] = pi + 10; ps[11] = pi + 3;
+          ps[ 4] = ps[2];  ps[ 5] = pi + 8;  ps[ 6] = pi + 11; ps[ 7] = pi + 4;
+          ps[ 0] = ps[3];  ps[ 1] = pi + 7;  ps[ 2] = pi + 6;  ps[ 3] = pi + 5;
+          cs[2] = cs[0]; cs[3] = ci;
+          cs[0] = cs[1]; cs[1] = ci + 1;
           break;
       }
       mesh.figures.push({
@@ -10695,19 +10679,19 @@ Shadings.Mesh = (function MeshClosure() {
 
     var patchMesh = false;
     switch (this.shadingType) {
-      case PatternType.FREE_FORM_MESH:
+      case ShadingType.FREE_FORM_MESH:
         decodeType4Shading(this, reader);
         break;
-      case PatternType.LATTICE_FORM_MESH:
+      case ShadingType.LATTICE_FORM_MESH:
         var verticesPerRow = dict.get('VerticesPerRow') | 0;
         assert(verticesPerRow >= 2, 'Invalid VerticesPerRow');
         decodeType5Shading(this, reader, verticesPerRow);
         break;
-      case PatternType.COONS_PATCH_MESH:
+      case ShadingType.COONS_PATCH_MESH:
         decodeType6Shading(this, reader);
         patchMesh = true;
         break;
-      case PatternType.TENSOR_PATCH_MESH:
+      case ShadingType.TENSOR_PATCH_MESH:
         decodeType7Shading(this, reader);
         patchMesh = true;
         break;
@@ -12110,11 +12094,11 @@ var PartialEvaluator = (function PartialEvaluatorClosure() {
         if (cmap instanceof IdentityCMap) {
           return new IdentityToUnicodeMap(0, 0xFFFF);
         }
-        cmap = cmap.getMap();
+        var map = [];
         // Convert UTF-16BE
         // NOTE: cmap can be a sparse array, so use forEach instead of for(;;)
         // to iterate over all keys.
-        cmap.forEach(function(token, i) {
+        cmap.forEach(function(charCode, token) {
           var str = [];
           for (var k = 0; k < token.length; k += 2) {
             var w1 = (token.charCodeAt(k) << 8) | token.charCodeAt(k + 1);
@@ -12126,9 +12110,9 @@ var PartialEvaluator = (function PartialEvaluatorClosure() {
             var w2 = (token.charCodeAt(k) << 8) | token.charCodeAt(k + 1);
             str.push(((w1 & 0x3ff) << 10) + (w2 & 0x3ff) + 0x10000);
           }
-          cmap[i] = String.fromCharCode.apply(String, str);
+          map[charCode] = String.fromCharCode.apply(String, str);
         });
-        return new ToUnicodeMap(cmap);
+        return new ToUnicodeMap(map);
       }
       return null;
     },
@@ -18436,7 +18420,7 @@ var Font = (function FontClosure() {
       var isTrueType = !tables['CFF '];
       if (!isTrueType) {
         // OpenType font
-        if (header.version === 'OTTO' ||
+        if ((header.version === 'OTTO' && properties.type !== 'CIDFontType2') ||
             !tables.head || !tables.hhea || !tables.maxp || !tables.post) {
           // no major tables: throwing everything at CFFFont
           cffFile = new Stream(tables['CFF '].data);
@@ -21838,16 +21822,15 @@ var FontRendererFactory = (function FontRendererFactoryClosure() {
     return 0;
   }
 
-  function compileGlyf(code, js, font) {
+  function compileGlyf(code, cmds, font) {
     function moveTo(x, y) {
-      js.push('c.moveTo(' + x + ',' + y + ');');
+      cmds.push({cmd: 'moveTo', args: [x, y]});
     }
     function lineTo(x, y) {
-      js.push('c.lineTo(' + x + ',' + y + ');');
+      cmds.push({cmd: 'lineTo', args: [x, y]});
     }
     function quadraticCurveTo(xa, ya, x, y) {
-      js.push('c.quadraticCurveTo(' + xa + ',' + ya + ',' +
-                                   x + ',' + y + ');');
+      cmds.push({cmd: 'quadraticCurveTo', args: [xa, ya, x, y]});
     }
 
     var i = 0;
@@ -21893,11 +21876,11 @@ var FontRendererFactory = (function FontRendererFactoryClosure() {
         }
         var subglyph = font.glyphs[glyphIndex];
         if (subglyph) {
-          js.push('c.save();');
-          js.push('c.transform(' + scaleX + ',' + scale01 + ',' +
-                  scale10 + ',' + scaleY + ',' + x + ',' + y + ');');
-          compileGlyf(subglyph, js, font);
-          js.push('c.restore();');
+          cmds.push({cmd: 'save'});
+          cmds.push({cmd: 'transform',
+                     args: [scaleX, scale01, scale10, scaleY, x, y]});
+          compileGlyf(subglyph, cmds, font);
+          cmds.push({cmd: 'restore'});
         }
       } while ((flags & 0x20));
     } else {
@@ -21993,20 +21976,19 @@ var FontRendererFactory = (function FontRendererFactoryClosure() {
     }
   }
 
-  function compileCharString(code, js, font) {
+  function compileCharString(code, cmds, font) {
     var stack = [];
     var x = 0, y = 0;
     var stems = 0;
 
     function moveTo(x, y) {
-      js.push('c.moveTo(' + x + ',' + y + ');');
+      cmds.push({cmd: 'moveTo', args: [x, y]});
     }
     function lineTo(x, y) {
-      js.push('c.lineTo(' + x + ',' + y + ');');
+      cmds.push({cmd: 'lineTo', args: [x, y]});
     }
     function bezierCurveTo(x1, y1, x2, y2, x, y) {
-      js.push('c.bezierCurveTo(' + x1 + ',' + y1 + ',' + x2 + ',' + y2 + ',' +
-                                   x + ',' + y + ');');
+      cmds.push({cmd: 'bezierCurveTo', args: [x1, y1, x2, y2, x, y]});
     }
 
     function parse(code) {
@@ -22135,16 +22117,16 @@ var FontRendererFactory = (function FontRendererFactoryClosure() {
               var bchar = stack.pop();
               y = stack.pop();
               x = stack.pop();
-              js.push('c.save();');
-              js.push('c.translate('+ x + ',' + y + ');');
+              cmds.push({cmd: 'save'});
+              cmds.push({cmd: 'translate', args: [x, y]});
               var gid = lookupCmap(font.cmap, String.fromCharCode(
                 font.glyphNameMap[Encodings.StandardEncoding[achar]]));
-              compileCharString(font.glyphs[gid], js, font);
-              js.push('c.restore();');
+              compileCharString(font.glyphs[gid], cmds, font);
+              cmds.push({cmd: 'restore'});
 
               gid = lookupCmap(font.cmap, String.fromCharCode(
                 font.glyphNameMap[Encodings.StandardEncoding[bchar]]));
-              compileCharString(font.glyphs[gid], js, font);
+              compileCharString(font.glyphs[gid], cmds, font);
             }
             return;
           case 18: // hstemhm
@@ -22313,16 +22295,16 @@ var FontRendererFactory = (function FontRendererFactoryClosure() {
         return noop;
       }
 
-      var js = [];
-      js.push('c.save();');
-      js.push('c.transform(' + this.fontMatrix.join(',') + ');');
-      js.push('c.scale(size, -size);');
+      var cmds = [];
+      cmds.push({cmd: 'save'});
+      cmds.push({cmd: 'transform', args: this.fontMatrix.slice()});
+      cmds.push({cmd: 'scale', args: ['size', '-size']});
 
-      this.compileGlyphImpl(code, js);
+      this.compileGlyphImpl(code, cmds);
 
-      js.push('c.restore();');
+      cmds.push({cmd: 'restore'});
 
-      return js.join('\n');
+      return cmds;
     },
 
     compileGlyphImpl: function () {
@@ -22346,8 +22328,8 @@ var FontRendererFactory = (function FontRendererFactoryClosure() {
   }
 
   Util.inherit(TrueTypeCompiled, CompiledFont, {
-    compileGlyphImpl: function (code, js) {
-      compileGlyf(code, js, this);
+    compileGlyphImpl: function (code, cmds) {
+      compileGlyf(code, cmds, this);
     }
   });
 
@@ -22368,8 +22350,8 @@ var FontRendererFactory = (function FontRendererFactoryClosure() {
   }
 
   Util.inherit(Type2Compiled, CompiledFont, {
-    compileGlyphImpl: function (code, js) {
-      compileCharString(code, js, this);
+    compileGlyphImpl: function (code, cmds) {
+      compileCharString(code, cmds, this);
     }
   });
 
@@ -27373,7 +27355,10 @@ var PDFImage = (function PDFImageClosure() {
           }
           return imgData;
         }
-        if (this.image instanceof JpegStream && !this.smask && !this.mask) {
+        if (this.image instanceof JpegStream && !this.smask && !this.mask &&
+            (this.colorSpace.name === 'DeviceGray' ||
+             this.colorSpace.name === 'DeviceRGB' ||
+             this.colorSpace.name === 'DeviceCMYK')) {
           imgData.kind = ImageKind.RGB_24BPP;
           imgData.data = this.getImageBytes(originalHeight * rowBytes,
                                             drawWidth, drawHeight, true);
@@ -30924,7 +30909,7 @@ var Parser = (function ParserClosure() {
       return stream;
     },
     makeFilter: function Parser_makeFilter(stream, name, maybeLength, params) {
-      if (stream.dict.get('Length') === 0) {
+      if (stream.dict.get('Length') === 0 && !maybeLength) {
         return new NullStream(stream);
       }
       try {
