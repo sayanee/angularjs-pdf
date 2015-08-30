@@ -1,8 +1,69 @@
 {
-  "preset": "jquery",
   "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
-  "validateQuoteMarks": "'",
+  "disallowMultipleVarDecl": true,
+  "requireCurlyBraces": [
+    "if",
+    "else",
+    "for",
+    "while",
+    "do",
+    "try",
+    "catch"
+  ],
+  "requireOperatorBeforeLineBreak": true,
+  "requireParenthesesAroundIIFE": true,
+  "requireCommaBeforeLineBreak": true,
+  "requireDotNotation": true,
+  "requireSpacesInsideArrayBrackets": "all",
   "maximumLineLength": {
-    "value": 1000
-  }
+    "value": 1000,
+    "tabSize": 4,
+    "allowUrlComments": true,
+    "allowRegex": true
+  },
+  "validateQuoteMarks": "'",
+  "disallowMixedSpacesAndTabs": "smart",
+  "disallowTrailingWhitespace": true,
+  "disallowMultipleLineStrings": true,
+  "disallowTrailingComma": true,
+  "requireSpacesInFunctionExpression": {
+      "beforeOpeningCurlyBrace": true
+  },
+  "requireSpaceAfterKeywords": [
+    "if",
+    "else",
+    "for",
+    "while",
+    "do",
+    "switch",
+    "return",
+    "try",
+    "catch"
+  ],
+  "requireSpacesInsideObjectBrackets": "all",
+  "requireSpacesInsideArrayBrackets": "all",
+  "requireSpacesInConditionalExpression": true,
+  "requireSpaceAfterBinaryOperators": true,
+  "requireLineFeedAtFileEnd": true,
+  "requireSpaceBeforeBinaryOperators": [
+    "=", "+=", "-=", "*=", "/=", "%=", "<<=", ">>=", ">>>=",
+    "&=", "|=", "^=", "+=",
+    "+", "-", "*", "/", "%", "<<", ">>", ">>>", "&",
+    "|", "^", "&&", "||", "===", "==", ">=",
+    "<=", "<", ">", "!=", "!=="
+  ],
+  "requireSpacesInAnonymousFunctionExpression": {
+    "beforeOpeningCurlyBrace": true
+  },
+  "requireSpacesInNamedFunctionExpression": {
+    "beforeOpeningCurlyBrace": true
+  },
+  "validateLineBreaks": "LF",
+  "disallowKeywords": [ "with" ],
+  "disallowKeywordsOnNewLine": [ "else" ],
+  "disallowSpaceAfterObjectKeys": true,
+  "disallowSpaceAfterPrefixUnaryOperators": true,
+  "disallowSpaceBeforePostfixUnaryOperators": true,
+  "disallowSpaceBeforeBinaryOperators": [ ",", ":" ],
+  "disallowMultipleLineBreaks": true
 }

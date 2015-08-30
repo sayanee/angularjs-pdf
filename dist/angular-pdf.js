@@ -4,26 +4,25 @@
   'use strict';
 
   angular.module('pdf', []).directive('ngPdf', [ '$window', function($window) {
-    var backingScale = function (canvas) {
-      var ctx = canvas.getContext("2d"),
-          dpr = window.devicePixelRatio || 1,
-          bsr = ctx.webkitBackingStorePixelRatio ||
-              ctx.mozBackingStorePixelRatio ||
-              ctx.msBackingStorePixelRatio ||
-              ctx.oBackingStorePixelRatio ||
-              ctx.backingStorePixelRatio || 1;
+    var backingScale = function(canvas) {
+      var ctx = canvas.getContext('2d');
+      var dpr = window.devicePixelRatio || 1;
+      var bsr = ctx.webkitBackingStorePixelRatio ||
+        ctx.mozBackingStorePixelRatio ||
+        ctx.msBackingStorePixelRatio ||
+        ctx.oBackingStorePixelRatio ||
+        ctx.backingStorePixelRatio || 1;
 
       return dpr / bsr;
     };
-
 
     var setCanvasDimensions = function(canvas, w, h) {
       var ratio = backingScale(canvas);
       canvas.width = w * ratio;
       canvas.height = h * ratio;
-      canvas.style.width = w + "px";
-      canvas.style.height = h + "px";
-      canvas.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      canvas.getContext('2d').setTransform(ratio, 0, 0, ratio, 0, 0);
       return canvas;
     };
     return {
@@ -32,13 +31,13 @@
         return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html'
       },
       link: function(scope, element, attrs) {
-        var url = scope.pdfUrl,
-          pdfDoc = null,
-          pageNum = (attrs.page ? attrs.page : 1),
-          scale = attrs.scale > 0 ? attrs.scale : 1,
-          canvas = (attrs.canvasid ? document.getElementById(attrs.canvasid) : document.getElementById('pdf-canvas')),
-          ctx = canvas.getContext('2d'),
-          windowEl = angular.element($window);
+        var url = scope.pdfUrl;
+        var pdfDoc = null
+        var pageNum = (attrs.page ? attrs.page : 1);
+        var scale = attrs.scale > 0 ? attrs.scale : 1;
+        var canvas = (attrs.canvasid ? document.getElementById(attrs.canvasid) : document.getElementById('pdf-canvas'));
+        var ctx = canvas.getContext('2d');
+        var windowEl = angular.element($window);
 
         windowEl.on('scroll', function() {
           scope.$apply(function() {
@@ -51,11 +50,11 @@
 
         scope.renderPage = function(num) {
           pdfDoc.getPage(num).then(function(page) {
-            var viewport,
-              pageWidthScale,
-              pageHeightScale,
-              renderContext = {},
-              pageRendering;
+            var viewport;
+            var pageWidthScale;
+            var pageHeightScale;
+            var renderContext = {};
+            var pageRendering;
 
             if (attrs.scale === 'page-fit' && !scale) {
               viewport = page.getViewport(1);
