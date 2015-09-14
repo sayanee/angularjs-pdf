@@ -18,10 +18,10 @@
 
     var setCanvasDimensions = function(canvas, w, h) {
       var ratio = backingScale(canvas);
-      canvas.width = w * ratio;
-      canvas.height = h * ratio;
-      canvas.style.width = w + 'px';
-      canvas.style.height = h + 'px';
+      canvas.width = Math.floor(w * ratio);
+      canvas.height = Math.floor(h * ratio);
+      canvas.style.width = Math.floor(w) + 'px';
+      canvas.style.height = Math.floor(h) + 'px';
       canvas.getContext('2d').setTransform(ratio, 0, 0, ratio, 0, 0);
       return canvas;
     };
