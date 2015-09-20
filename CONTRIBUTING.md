@@ -18,6 +18,12 @@
 ##Make a Release (for maintainers only)
 
 1. commit your code (steps 1 - 7)
+- check for outdated dependencies with `npm outdated` and `bower list`
+  1. amend version number of packages in `package.json` and `bower.json`
+  - install various packages `npm i` and `bower i`
+  - run `grunt` to build all files
+  - commit your code
+- update `readme.md` if required, especially the section on [Features](https://github.com/sayanee/angularjs-pdf#features)
 - run `grunt bump`, `grunt bump:minor` or `grunt bump:major` according semantic version
 - copy the `example` folder
 - change to branch `gh-pages`
