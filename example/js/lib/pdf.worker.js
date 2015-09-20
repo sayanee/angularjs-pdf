@@ -22,8 +22,8 @@ if (typeof PDFJS === 'undefined') {
   (typeof window !== 'undefined' ? window : this).PDFJS = {};
 }
 
-PDFJS.version = '1.1.399';
-PDFJS.build = '23cb01c';
+PDFJS.version = '1.1.469';
+PDFJS.build = 'f06aa6a';
 
 (function pdfjsWrapper() {
   // Use strict in our context only - users might not want it
@@ -3066,12 +3066,11 @@ var PDFDocument = (function PDFDocumentClosure() {
       return shadow(this, 'documentInfo', docInfo);
     },
     get fingerprint() {
-      var xref = this.xref, idArray, hash, fileID = '';
+      var xref = this.xref, hash, fileID = '';
+      var idArray = xref.trailer.get('ID');
 
-      if (xref.trailer.has('ID')) {
-        idArray = xref.trailer.get('ID');
-      }
-      if (idArray && isArray(idArray) && idArray[0] !== EMPTY_FINGERPRINT) {
+      if (idArray && isArray(idArray) && idArray[0] && isString(idArray[0]) &&
+          idArray[0] !== EMPTY_FINGERPRINT) {
         hash = stringToBytes(idArray[0]);
       } else {
         if (this.stream.ensureRange) {
@@ -4093,9 +4092,12 @@ var XRef = (function XRefClosure() {
     indexObjects: function XRef_indexObjects() {
       // Simple scan through the PDF content to find objects,
       // trailers and XRef streams.
+      var TAB = 0x9, LF = 0xA, CR = 0xD, SPACE = 0x20;
+      var PERCENT = 0x25, LT = 0x3C;
+
       function readToken(data, offset) {
         var token = '', ch = data[offset];
-        while (ch !== 13 && ch !== 10) {
+        while (ch !== LF && ch !== CR && ch !== LT) {
           if (++offset >= data.length) {
             break;
           }
@@ -4127,6 +4129,9 @@ var XRef = (function XRefClosure() {
       var endobjBytes = new Uint8Array([101, 110, 100, 111, 98, 106]);
       var xrefBytes = new Uint8Array([47, 88, 82, 101, 102]);
 
+      // Clear out any existing entries, since they may be bogus.
+      this.entries.length = 0;
+
       var stream = this.stream;
       stream.pos = 0;
       var buffer = stream.getBytes();
@@ -4134,23 +4139,24 @@ var XRef = (function XRefClosure() {
       var trailers = [], xrefStms = [];
       while (position < length) {
         var ch = buffer[position];
-        if (ch === 32 || ch === 9 || ch === 13 || ch === 10) {
+        if (ch === TAB || ch === LF || ch === CR || ch === SPACE) {
           ++position;
           continue;
         }
-        if (ch === 37) { // %-comment
+        if (ch === PERCENT) { // %-comment
           do {
             ++position;
             if (position >= length) {
               break;
             }
             ch = buffer[position];
-          } while (ch !== 13 && ch !== 10);
+          } while (ch !== LF && ch !== CR);
           continue;
         }
         var token = readToken(buffer, position);
         var m;
-        if (token === 'xref') {
+        if (token.indexOf('xref') === 0 &&
+            (token.length === 4 || /\s/.test(token[4]))) {
           position += skipUntil(buffer, position, trailerBytes);
           trailers.push(position);
           position += skipUntil(buffer, position, startxrefBytes);
@@ -11455,11 +11461,12 @@ var PartialEvaluator = (function PartialEvaluatorClosure() {
               var arr = args[0];
               var combinedGlyphs = [];
               var arrLength = arr.length;
+              var state = stateManager.state;
               for (i = 0; i < arrLength; ++i) {
                 var arrItem = arr[i];
                 if (isString(arrItem)) {
                   Array.prototype.push.apply(combinedGlyphs,
-                    self.handleText(arrItem, stateManager.state));
+                    self.handleText(arrItem, state));
                 } else if (isNum(arrItem)) {
                   combinedGlyphs.push(arrItem);
                 }
@@ -11855,17 +11862,26 @@ var PartialEvaluator = (function PartialEvaluatorClosure() {
                 if (typeof items[j] === 'string') {
                   buildTextGeometry(items[j], textChunk);
                 } else {
-                  var val = items[j] / 1000;
-                  if (!textState.font.vertical) {
-                    offset = -val * textState.fontSize * textState.textHScale *
-                      textState.textMatrix[0];
-                    textState.translateTextMatrix(offset, 0);
-                    textChunk.width += offset;
-                  } else {
-                    offset = -val * textState.fontSize *
-                      textState.textMatrix[3];
+                  // PDF Specification 5.3.2 states:
+                  // The number is expressed in thousandths of a unit of text
+                  // space.
+                  // This amount is subtracted from the current horizontal or
+                  // vertical coordinate, depending on the writing mode.
+                  // In the default coordinate system, a positive adjustment
+                  // has the effect of moving the next glyph painted either to
+                  // the left or down by the given amount.
+                  var val = items[j] * textState.fontSize / 1000;
+                  if (textState.font.vertical) {
+                    offset = val * textState.textMatrix[3];
                     textState.translateTextMatrix(0, offset);
+                    // Value needs to be added to height to paint down.
                     textChunk.height += offset;
+                  } else {
+                    offset = val * textState.textHScale *
+                                   textState.textMatrix[0];
+                    textState.translateTextMatrix(offset, 0);
+                    // Value needs to be subtracted from width to paint left.
+                    textChunk.width -= offset;
                   }
                   if (items[j] < 0 && textState.font.spaceWidth > 0) {
                     var fakeSpaces = -items[j] / textState.font.spaceWidth;
@@ -17589,7 +17605,7 @@ var Font = (function FontClosure() {
        * Read the appropriate subtable from the cmap according to 9.6.6.4 from
        * PDF spec
        */
-      function readCmapTable(cmap, font, isSymbolicFont) {
+      function readCmapTable(cmap, font, isSymbolicFont, hasEncoding) {
         var segment;
         var start = (font.start ? font.start : 0) + cmap.offset;
         font.pos = start;
@@ -17620,7 +17636,7 @@ var Font = (function FontClosure() {
             // Continue the loop since there still may be a higher priority
             // table.
           } else if (platformId === 3 && encodingId === 1 &&
-                     (!isSymbolicFont || !potentialTable)) {
+                     ((!isSymbolicFont && hasEncoding) || !potentialTable)) {
             useTable = true;
             if (!isSymbolicFont) {
               canBreak = true;
@@ -17757,7 +17773,13 @@ var Font = (function FontClosure() {
             });
           }
         } else {
-          error('cmap table has unsupported format: ' + format);
+          warn('cmap table has unsupported format: ' + format);
+          return {
+            platformId: -1,
+            encodingId: -1,
+            mappings: [],
+            hasShortCmap: false
+          };
         }
 
         // removing duplicate entries
@@ -18563,13 +18585,14 @@ var Font = (function FontClosure() {
       } else {
         // Most of the following logic in this code branch is based on the
         // 9.6.6.4 of the PDF spec.
-        var cmapTable = readCmapTable(tables.cmap, font, this.isSymbolicFont);
+        var hasEncoding =
+          properties.differences.length > 0 || !!properties.baseEncodingName;
+        var cmapTable =
+          readCmapTable(tables.cmap, font, this.isSymbolicFont, hasEncoding);
         var cmapPlatformId = cmapTable.platformId;
         var cmapEncodingId = cmapTable.encodingId;
         var cmapMappings = cmapTable.mappings;
         var cmapMappingsLength = cmapMappings.length;
-        var hasEncoding = properties.differences.length ||
-                          !!properties.baseEncodingName;
 
         // The spec seems to imply that if the font is symbolic the encoding
         // should be ignored, this doesn't appear to work for 'preistabelle.pdf'
@@ -18603,9 +18626,10 @@ var Font = (function FontClosure() {
             if (!glyphName) {
               continue;
             }
-            var unicodeOrCharCode;
+            var unicodeOrCharCode, isUnicode = false;
             if (cmapPlatformId === 3 && cmapEncodingId === 1) {
               unicodeOrCharCode = GlyphsUnicode[glyphName];
+              isUnicode = true;
             } else if (cmapPlatformId === 1 && cmapEncodingId === 0) {
               // TODO: the encoding needs to be updated with mac os table.
               unicodeOrCharCode = Encodings.MacRomanEncoding.indexOf(glyphName);
@@ -18613,8 +18637,11 @@ var Font = (function FontClosure() {
 
             var found = false;
             for (i = 0; i < cmapMappingsLength; ++i) {
-              if (cmapMappings[i].charCode === unicodeOrCharCode &&
-                  hasGlyph(cmapMappings[i].glyphId, unicodeOrCharCode, -1)) {
+              if (cmapMappings[i].charCode !== unicodeOrCharCode) {
+                continue;
+              }
+              var code = isUnicode ? charCode : unicodeOrCharCode;
+              if (hasGlyph(cmapMappings[i].glyphId, code, -1)) {
                 charCodeToGlyphId[charCode] = cmapMappings[i].glyphId;
                 found = true;
                 break;
@@ -30443,6 +30470,9 @@ var Parser = (function ParserClosure() {
         this.shift();
         return true;
       } catch (e) {
+        if (e instanceof MissingDataException) {
+          throw e;
+        }
         // Upon failure, the caller should reset this.lexer.pos to a known good
         // state and call this.shift() twice to reset the buffers.
         return false;
@@ -30910,6 +30940,7 @@ var Parser = (function ParserClosure() {
     },
     makeFilter: function Parser_makeFilter(stream, name, maybeLength, params) {
       if (stream.dict.get('Length') === 0 && !maybeLength) {
+        warn('Empty "' + name + '" stream.');
         return new NullStream(stream);
       }
       try {
@@ -39411,14 +39442,13 @@ var bidi = PDFJS.bidi = (function bidiClosure() {
     // don't mirror as characters are already mirrored in the pdf
 
     // Finally, return string
-    var result = '';
     for (i = 0, ii = chars.length; i < ii; ++i) {
       var ch = chars[i];
-      if (ch !== '<' && ch !== '>') {
-        result += ch;
+      if (ch === '<' || ch === '>') {
+        chars[i] = '';
       }
     }
-    return createBidiText(result, isLTR);
+    return createBidiText(chars.join(''), isLTR);
   }
 
   return bidi;
