@@ -4,3 +4,4 @@
 *.md    eol=lf
 *.json  eol=lf
 *.yml   eol=lf
+*.js linguist-language=JavaScript
