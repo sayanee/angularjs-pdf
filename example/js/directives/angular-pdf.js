@@ -1,4 +1,4 @@
-/*! Angular-PDF Version: 1.2.0 | (C) Sayanee Basu 2015, released under an MIT license */
+/*! Angular-PDF Version: 1.3.0 | (C) Sayanee Basu 2015, released under an MIT license */
 (function() {
 
   'use strict';
