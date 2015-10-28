@@ -1,4 +1,4 @@
-/*! Angular-PDF Version: 1.2.0 | (C) Sayanee Basu 2015, released under an MIT license */
+/*! Angular-PDF Version: 1.3.0 | (C) Sayanee Basu 2015, released under an MIT license */
 (function() {
 
   'use strict';
@@ -34,7 +34,7 @@
         var url = scope.pdfUrl;
         var pdfDoc = null
         var pageNum = (attrs.page ? attrs.page : 1);
-        var scale = attrs.scale > 0 ? attrs.scale : 1;
+        var scale = attrs.scale ? attrs.scale : 'page-fit';
         var canvas = (attrs.canvasid ? document.getElementById(attrs.canvasid) : document.getElementById('pdf-canvas'));
         var ctx = canvas.getContext('2d');
         var windowEl = angular.element($window);
@@ -56,14 +56,12 @@
             var renderContext = {};
             var pageRendering;
 
-            if (attrs.scale === 'page-fit' && !scale) {
+            if (scale === 'page-fit') {
               viewport = page.getViewport(1);
-              pageWidthScale = element[0].clientWidth / viewport.width;
-              pageHeightScale = element[0].clientHeight / viewport.height;
-              scale = Math.min(pageWidthScale, pageHeightScale);
-            } else {
-              viewport = page.getViewport(scale)
+              pageWidthScale = element.context.parentNode.clientWidth / viewport.width;
+              scale = pageWidthScale;
             }
+            viewport = page.getViewport(scale);
 
             setCanvasDimensions(canvas, viewport.width, viewport.height);
 
