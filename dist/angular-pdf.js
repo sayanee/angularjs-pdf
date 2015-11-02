@@ -36,6 +36,7 @@
         var pageNum = (attrs.page ? attrs.page : 1);
         var scale = attrs.scale > 0 ? attrs.scale : 1;
         var canvas = (attrs.canvasid ? document.getElementById(attrs.canvasid) : document.getElementById('pdf-canvas'));
+        var creds = attrs.usecredentials;
         var ctx = canvas.getContext('2d');
         var windowEl = angular.element($window);
 
@@ -124,7 +125,10 @@
 
         function renderPDF() {
           if (url && url.length) {
-            PDFJS.getDocument(url, null, null, scope.onProgress).then(
+            PDFJS.getDocument({
+              'url': url,
+              'withCredentials': creds
+            }, null, null, scope.onProgress).then(
                 function(_pdfDoc) {
                   if (typeof scope.onLoad === 'function') {
                     scope.onLoad();
