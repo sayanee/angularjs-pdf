@@ -5,6 +5,7 @@
 
   angular.module('pdf', []).directive('ngPdf', [ '$window', function($window) {
     var renderTask = null;
+    var pdfLoaderTask = null;
 
     var backingScale = function(canvas) {
       var ctx = canvas.getContext('2d');
@@ -148,10 +149,15 @@
           clearCanvas();
 
           if (url && url.length) {
+<<<<<<< HEAD
             PDFJS.getDocument({
               'url': url,
               'withCredentials': creds
             }, null, null, scope.onProgress).then(
+=======
+            pdfLoaderTask = PDFJS.getDocument(url, null, null, scope.onProgress);
+            pdfLoaderTask.then(
+>>>>>>> Abort (destroy) current document loading when a new document gets loaded
                 function(_pdfDoc) {
                   if (typeof scope.onLoad === 'function') {
                     scope.onLoad();
@@ -186,7 +192,14 @@
             console.log('pdfUrl value change detected: ', scope.pdfUrl);
             url = newVal;
             scope.pageToDisplay = 1;
-            renderPDF();
+            
+            if (pdfLoaderTask) {
+                pdfLoaderTask.destroy().then(function () {
+                    renderPDF();
+                });
+            } else {
+                renderPDF();
+            }
           }
         });
 
