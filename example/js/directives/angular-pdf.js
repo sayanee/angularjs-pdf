@@ -101,14 +101,16 @@
           if (scope.pageToDisplay <= 1) {
             return;
           }
-          scope.pageNum = parseInt(scope.pageNum) - 1;
+          scope.pageToDisplay = parseInt(scope.pageToDisplay) - 1;
+          scope.pageNum = scope.pageToDisplay;
         };
 
         scope.goNext = function() {
           if (scope.pageToDisplay >= pdfDoc.numPages) {
             return;
           }
-          scope.pageNum = parseInt(scope.pageNum) + 1;
+          scope.pageToDisplay = parseInt(scope.pageToDisplay) + 1;
+          scope.pageNum = scope.pageToDisplay;
         };
 
         scope.zoomIn = function() {
