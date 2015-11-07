@@ -1,9 +1,7 @@
 module.exports = function(grunt) {
-
   'use strict';
 
   grunt.initConfig({
-
     bump: {
       options: {
         files: [
@@ -36,8 +34,9 @@ module.exports = function(grunt) {
 
     clean: {
       all: [
-        'dist/*.js',
-        'example/js/lib/*.js'
+        'example/js/directives/angular-pdf.js',
+        'example/js/lib/*.js',
+        'dist/angular-pdf.min.js'
       ]
     },
 
@@ -46,9 +45,9 @@ module.exports = function(grunt) {
         files: [
           {
             expand: true,
-            cwd: 'example/js/directives',
+            cwd: 'dist',
             src: [ 'angular-pdf.js' ],
-            dest: 'dist/'
+            dest: 'example/js/directives/'
           },
           {
             cwd: 'bower_components/pdfjs-dist/build',
@@ -71,7 +70,7 @@ module.exports = function(grunt) {
     jscs: {
       src: [
         'Gruntfile.js',
-        'example/js/directives/angular-pdf.js'
+        'dist/angular-pdf.js'
       ],
       options: {
         config: '.jscsrc'
@@ -85,7 +84,7 @@ module.exports = function(grunt) {
         },
         src: [
           'Gruntfile.js',
-          'example/js/*.js'
+          'dist/angular-pdf.js'
         ]
       }
     },
@@ -113,9 +112,7 @@ module.exports = function(grunt) {
           'dist/angular-pdf.min.js': [ 'dist/angular-pdf.js' ]
         }
       }
-
     }
-
   });
 
   grunt.loadNpmTasks('grunt-bump');
@@ -140,5 +137,4 @@ module.exports = function(grunt) {
     'jscs',
     'jshint'
   ]);
-
 };

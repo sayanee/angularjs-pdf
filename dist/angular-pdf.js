@@ -1,4 +1,4 @@
-/*! Angular-PDF Version: 1.2.1 | (C) Sayanee Basu 2015, released under an MIT license */
+/*! Angular-PDF Version: 1.2.1 | Released under an MIT license */
 (function() {
 
   'use strict';
@@ -35,7 +35,14 @@
         var pdfDoc = null
         var pageNum = (attrs.page ? attrs.page : 1);
         var scale = attrs.scale > 0 ? attrs.scale : 1;
-        var canvas = (attrs.canvasid ? document.getElementById(attrs.canvasid) : document.getElementById('pdf-canvas'));
+        var canvas;
+
+        if (attrs) {
+          canvas = document.getElementById(attrs.canvasid);
+        } else {
+          canvas = document.getElementById('pdf-canvas');
+        }
+
         var creds = attrs.usecredentials;
         var ctx = canvas.getContext('2d');
         var windowEl = angular.element($window);
@@ -55,7 +62,6 @@
             var pageWidthScale;
             var pageHeightScale;
             var renderContext = {};
-            var pageRendering;
 
             if (attrs.scale === 'page-fit' && !scale) {
               viewport = page.getViewport(1);

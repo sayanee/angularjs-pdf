@@ -1,14 +1,13 @@
 #Contribute and share
 
-1. Fork this project and install the packages
+1. Fork this project and install the packages with npm and bower
 
 	```
-	bower install
-	npm install
+	bower i && npm i
 	```
 - Create a new feature/patch branch
-- Code code code and amend the `example` folder especially the file `example/js/directives/angular-pdf.js`
-- Run `grunt` to create the build files in folder `dist`
+- Code code code and amend the file `dist/angular-pdf.js`
+- Run `npm run build` to create the build minified and example files
 - Code code code
 - Run `npm test` to ensure the [build](https://travis-ci.org/sayanee/angularjs-pdf) will pass
 - Write a [good commit message](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit-message-format)
@@ -21,7 +20,7 @@
 - check for outdated dependencies with `npm outdated` and `bower list`
   1. amend version number of packages in `package.json` and `bower.json`
   - install various packages `npm i` and `bower i`
-  - run `grunt` to build all files
+  - run `npm run build` to build all files
   - commit your code
 - update `readme.md` if required, especially the section on [Features](https://github.com/sayanee/angularjs-pdf#features)
 - run `grunt bump`, `grunt bump:minor` or `grunt bump:major` according semantic version

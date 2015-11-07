@@ -22,7 +22,7 @@
   "maxparams": true,
   "maxdepth": 3,
   "maxstatements": false,
-  "maxcomplexity": true,
+  "maxcomplexity": false,
   "maxlen": 80,
 
   "globals": {

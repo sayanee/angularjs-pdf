@@ -19,6 +19,7 @@
     "grunt-jsonlint": "1.0.6"
   },
   "scripts": {
-    "test": "grunt --verbose"
+    "test": "grunt --verbose",
+    "build": "grunt"
   }
 }
