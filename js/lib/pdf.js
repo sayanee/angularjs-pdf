@@ -22,8 +22,8 @@ if (typeof PDFJS === 'undefined') {
   (typeof window !== 'undefined' ? window : this).PDFJS = {};
 }
 
-PDFJS.version = '1.2.43';
-PDFJS.build = '1672c77';
+PDFJS.version = '1.2.83';
+PDFJS.build = '1280b7b';
 
 (function pdfjsWrapper() {
   // Use strict in our context only - users might not want it
@@ -1699,7 +1699,9 @@ PDFJS.disableWorker = (PDFJS.disableWorker === undefined ?
 /**
  * Path and filename of the worker file. Required when the worker is enabled in
  * development mode. If unspecified in the production build, the worker will be
- * loaded based on the location of the pdf.js file.
+ * loaded based on the location of the pdf.js file. It is recommended that
+ * the workerSrc is set in a custom application to prevent issues caused by
+ * third-party frameworks and libraries.
  * @var {string}
  */
 PDFJS.workerSrc = (PDFJS.workerSrc === undefined ? null : PDFJS.workerSrc);
@@ -4875,16 +4877,13 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
       var x = 0, i;
       for (i = 0; i < glyphsLength; ++i) {
         var glyph = glyphs[i];
-        if (glyph === null) {
-          // word break
-          x += fontDirection * wordSpacing;
-          continue;
-        } else if (isNum(glyph)) {
+        if (isNum(glyph)) {
           x += spacingDir * glyph * fontSize / 1000;
           continue;
         }
 
         var restoreNeeded = false;
+        var spacing = (glyph.isSpace ? wordSpacing : 0) + charSpacing;
         var character = glyph.fontChar;
         var accent = glyph.accent;
         var scaledX, scaledY, scaledAccentX, scaledAccentY;
@@ -4928,7 +4927,7 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
           }
         }
 
-        var charWidth = width * widthAdvanceScale + charSpacing * fontDirection;
+        var charWidth = width * widthAdvanceScale + spacing * fontDirection;
         x += charWidth;
 
         if (restoreNeeded) {
@@ -4973,18 +4972,14 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
 
       for (i = 0; i < glyphsLength; ++i) {
         glyph = glyphs[i];
-        if (glyph === null) {
-          // word break
-          this.ctx.translate(wordSpacing, 0);
-          current.x += wordSpacing * textHScale;
-          continue;
-        } else if (isNum(glyph)) {
+        if (isNum(glyph)) {
           spacingLength = spacingDir * glyph * fontSize / 1000;
           this.ctx.translate(spacingLength, 0);
           current.x += spacingLength * textHScale;
           continue;
         }
 
+        var spacing = (glyph.isSpace ? wordSpacing : 0) + charSpacing;
         var operatorList = font.charProcOperatorList[glyph.operatorListId];
         if (!operatorList) {
           warn('Type3 character \"' + glyph.operatorListId +
@@ -4999,7 +4994,7 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
         this.restore();
 
         var transformed = Util.applyTransform([glyph.width, 0], fontMatrix);
-        width = transformed[0] * fontSize + charSpacing;
+        width = transformed[0] * fontSize + spacing;
 
         ctx.translate(width, 0);
         current.x += width * textHScale;
@@ -8291,10 +8286,8 @@ if (!PDFJS.workerSrc && typeof document !== 'undefined') {
   // workerSrc is not set -- using last script url to define default location
   PDFJS.workerSrc = (function () {
     'use strict';
-    var scriptTagContainer = document.body ||
-                             document.getElementsByTagName('head')[0];
-    var pdfjsSrc = scriptTagContainer.lastChild.src;
-    return pdfjsSrc && pdfjsSrc.replace(/\.js$/i, '.worker.js');
+    var pdfJsSrc = document.currentScript.src;
+    return pdfJsSrc && pdfJsSrc.replace(/\.js$/i, '.worker.js');
   })();
 }
 
