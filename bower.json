@@ -7,7 +7,7 @@
   "homepage": "http://github.com/sayanee/angularjs-pdf",
   "dependencies": {
      "angular": "1.4.7",
-     "pdfjs-dist": "1.2.43"
+     "pdfjs-dist": "1.2.83"
   },
   "ignore": [
     "**/.*",
