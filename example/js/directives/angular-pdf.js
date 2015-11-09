@@ -151,11 +151,10 @@
           clearCanvas();
 
           if (url && url.length) {
-            PDFJS.getDocument({
+            pdfLoaderTask = PDFJS.getDocument({
               'url': url,
               'withCredentials': creds
-            }, null, null, scope.onProgress).then(
-            pdfLoaderTask = PDFJS.getDocument(url, null, null, scope.onProgress);
+            }, null, null, scope.onProgress);
             pdfLoaderTask.then(
                 function(_pdfDoc) {
                   if (typeof scope.onLoad === 'function') {
@@ -191,7 +190,6 @@
             console.log('pdfUrl value change detected: ', scope.pdfUrl);
             url = newVal;
             scope.pageToDisplay = 1;
-            
             if (pdfLoaderTask) {
                 pdfLoaderTask.destroy().then(function () {
                     renderPDF();
@@ -205,5 +203,4 @@
       }
     };
   } ]);
-
 })();
