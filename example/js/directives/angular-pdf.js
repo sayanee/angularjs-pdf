@@ -151,15 +151,12 @@
           clearCanvas();
 
           if (url && url.length) {
-<<<<<<< HEAD
             PDFJS.getDocument({
               'url': url,
               'withCredentials': creds
             }, null, null, scope.onProgress).then(
-=======
             pdfLoaderTask = PDFJS.getDocument(url, null, null, scope.onProgress);
             pdfLoaderTask.then(
->>>>>>> Abort (destroy) current document loading when a new document gets loaded
                 function(_pdfDoc) {
                   if (typeof scope.onLoad === 'function') {
                     scope.onLoad();
