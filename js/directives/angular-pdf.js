@@ -1,9 +1,12 @@
-/*! Angular-PDF Version: 1.2.3 | Released under an MIT license */
+/*! Angular-PDF Version: 1.2.4 | Released under an MIT license */
 (function() {
 
   'use strict';
 
   angular.module('pdf', []).directive('ngPdf', [ '$window', function($window) {
+    var renderTask = null;
+    var pdfLoaderTask = null;
+
     var backingScale = function(canvas) {
       var ctx = canvas.getContext('2d');
       var dpr = window.devicePixelRatio || 1;
@@ -28,11 +31,11 @@
     return {
       restrict: 'E',
       templateUrl: function(element, attr) {
-        return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html'
+        return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html';
       },
       link: function(scope, element, attrs) {
         var url = scope.pdfUrl;
-        var pdfDoc = null
+        var pdfDoc = null;
         var pageNum = (attrs.page ? attrs.page : 1);
         var scale = attrs.scale > 0 ? attrs.scale : 1;
         var canvas;
@@ -57,11 +60,15 @@
         scope.pageNum = pageNum;
 
         scope.renderPage = function(num) {
+          if (renderTask) {
+              renderTask._internalRenderTask.cancel();
+          }
+
           pdfDoc.getPage(num).then(function(page) {
             var viewport;
             var pageWidthScale;
             var pageHeightScale;
-            var renderContext = {};
+            var renderContext;
 
             if (attrs.scale === 'page-fit' && !scale) {
               viewport = page.getViewport(1);
@@ -69,7 +76,7 @@
               pageHeightScale = element[0].clientHeight / viewport.height;
               scale = Math.min(pageWidthScale, pageHeightScale);
             } else {
-              viewport = page.getViewport(scale)
+              viewport = page.getViewport(scale);
             }
 
             setCanvasDimensions(canvas, viewport.width, viewport.height);
@@ -79,10 +86,13 @@
               viewport: viewport
             };
 
-            page.render(renderContext).promise.then(function() {
-              if (typeof scope.onPageRender === 'function' ) {
-                scope.onPageRender();
-              }
+            renderTask = page.render(renderContext);
+            renderTask.promise.then(function() {
+                if (typeof scope.onPageRender === 'function') {
+                    scope.onPageRender();
+                }
+            }).catch(function (reason) {
+                console.log(reason);
             });
           });
         };
@@ -91,14 +101,16 @@
           if (scope.pageToDisplay <= 1) {
             return;
           }
-          scope.pageNum = parseInt(scope.pageNum) - 1;
+          scope.pageToDisplay = parseInt(scope.pageToDisplay) - 1;
+          scope.pageNum = scope.pageToDisplay;
         };
 
         scope.goNext = function() {
           if (scope.pageToDisplay >= pdfDoc.numPages) {
             return;
           }
-          scope.pageNum = parseInt(scope.pageNum) + 1;
+          scope.pageToDisplay = parseInt(scope.pageToDisplay) + 1;
+          scope.pageNum = scope.pageToDisplay;
         };
 
         scope.zoomIn = function() {
@@ -129,12 +141,21 @@
           }
         };
 
+        function clearCanvas() {
+          if (ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+        }
+
         function renderPDF() {
+          clearCanvas();
+
           if (url && url.length) {
-            PDFJS.getDocument({
+            pdfLoaderTask = PDFJS.getDocument({
               'url': url,
               'withCredentials': creds
-            }, null, null, scope.onProgress).then(
+            }, null, null, scope.onProgress);
+            pdfLoaderTask.then(
                 function(_pdfDoc) {
                   if (typeof scope.onLoad === 'function') {
                     scope.onLoad();
@@ -169,12 +190,17 @@
             console.log('pdfUrl value change detected: ', scope.pdfUrl);
             url = newVal;
             scope.pageToDisplay = 1;
-            renderPDF();
+            if (pdfLoaderTask) {
+                pdfLoaderTask.destroy().then(function () {
+                    renderPDF();
+                });
+            } else {
+                renderPDF();
+            }
           }
         });
 
       }
     };
   } ]);
-
 })();
