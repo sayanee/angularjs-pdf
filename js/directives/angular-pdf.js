@@ -1,4 +1,4 @@
-/*! Angular-PDF Version: 1.2.4 | Released under an MIT license */
+/*! Angular-PDF Version: 1.2.5 | Released under an MIT license */
 (function() {
 
   'use strict';
@@ -38,13 +38,8 @@
         var pdfDoc = null;
         var pageNum = (attrs.page ? attrs.page : 1);
         var scale = attrs.scale > 0 ? attrs.scale : 1;
-        var canvas;
-
-        if (attrs) {
-          canvas = document.getElementById(attrs.canvasid);
-        } else {
-          canvas = document.getElementById('pdf-canvas');
-        }
+        var canvasid = attrs.canvasid || 'pdf-canvas';
+        var canvas = document.getElementById(canvasid);
 
         var creds = attrs.usecredentials;
         var ctx = canvas.getContext('2d');
