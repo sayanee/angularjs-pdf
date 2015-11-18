@@ -1,5 +1,3 @@
-/* -*- Mode: Java; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
-/* vim: set shiftwidth=2 tabstop=2 autoindent cindent expandtab: */
 /* Copyright 2012 Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,8 +20,8 @@ if (typeof PDFJS === 'undefined') {
   (typeof window !== 'undefined' ? window : this).PDFJS = {};
 }
 
-PDFJS.version = '1.2.83';
-PDFJS.build = '1280b7b';
+PDFJS.version = '1.2.131';
+PDFJS.build = '194994a';
 
 (function pdfjsWrapper() {
   // Use strict in our context only - users might not want it
@@ -1847,11 +1845,13 @@ var NetworkManager = (function NetworkManagerClosure() {
         });
       } else if (pendingRequest.onProgressiveData) {
         pendingRequest.onDone(null);
-      } else {
+      } else if (chunk) {
         pendingRequest.onDone({
           begin: 0,
           chunk: chunk
         });
+      } else if (pendingRequest.onError) {
+        pendingRequest.onError(xhr.status);
       }
     },
 
@@ -4983,10 +4983,11 @@ var ExpertSubsetCharset = [
 var DEFAULT_ICON_SIZE = 22; // px
 
 /**
- * @constructor
+ * @class
+ * @alias AnnotationFactory
  */
 function AnnotationFactory() {}
-AnnotationFactory.prototype = {
+AnnotationFactory.prototype = /** @lends AnnotationFactory.prototype */ {
   /**
    * @param {XRef} xref
    * @param {Object} ref
@@ -10232,6 +10233,11 @@ Shadings.RadialAxial = (function RadialAxialClosure() {
       if (matrix) {
         p0 = Util.applyTransform(p0, matrix);
         p1 = Util.applyTransform(p1, matrix);
+        if (shadingType === ShadingType.RADIAL) {
+          var scale = Util.singularValueDecompose2dScale(matrix);
+          r0 *= scale[0];
+          r1 *= scale[1];
+        }
       }
 
       return ['RadialAxial', type, this.colorStops, p0, p1, r0, r1];
@@ -17837,6 +17843,15 @@ var Font = (function FontClosure() {
        * PDF spec
        */
       function readCmapTable(cmap, font, isSymbolicFont, hasEncoding) {
+        if (!cmap) {
+          warn('No cmap table available.');
+          return {
+            platformId: -1,
+            encodingId: -1,
+            mappings: [],
+            hasShortCmap: false
+          };
+        }
         var segment;
         var start = (font.start ? font.start : 0) + cmap.offset;
         font.pos = start;
@@ -27189,7 +27204,12 @@ var PDFImage = (function PDFImageClosure() {
       this.smask = new PDFImage(xref, res, smask, false);
     } else if (mask) {
       if (isStream(mask)) {
-        this.mask = new PDFImage(xref, res, mask, false, null, null, true);
+        var maskDict = mask.dict, imageMask = maskDict.get('ImageMask', 'IM');
+        if (!imageMask) {
+          warn('Ignoring /Mask in image without /ImageMask.');
+        } else {
+          this.mask = new PDFImage(xref, res, mask, false, null, null, true);
+        }
       } else {
         // Color key mask (just an array).
         this.mask = mask;
@@ -34571,7 +34591,7 @@ var WorkerMessageHandler = PDFJS.WorkerMessageHandler = {
 
         onError: function onError(status) {
           var exception;
-          if (status === 404) {
+          if (status === 404 || status === 0 && /^file:/.test(source.url)) {
             exception = new MissingPDFException('Missing PDF "' +
                                                 source.url + '".');
             handler.send('MissingPDF', exception);
@@ -35107,6 +35127,7 @@ var ArithmeticDecoder = (function ArithmeticDecoderClosure() {
 
   return ArithmeticDecoder;
 })();
+
 
 
 var JpegImage = (function jpegImage() {
@@ -39785,6 +39806,7 @@ var bidi = PDFJS.bidi = (function bidiClosure() {
 
   return bidi;
 })();
+
 
 
 var MurmurHash3_64 = (function MurmurHash3_64Closure (seed) {
