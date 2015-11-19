@@ -96,10 +96,11 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     <button ng-click="goPrevious()"><</span></button>
     <button ng-click="goNext()">></span></button>
     ```
-1. **Zoom in / out**: Include the controls in the view file as defined in the attribute `template-url`
+1. **Zoom in / out / fit**: Include the controls in the view file as defined in the attribute `template-url`
 
     ```
     <button ng-click="zoomIn()">+</span></button>
+    <button ng-click="fit()">100%</span></button>
     <button ng-click="zoomOut()">-</span></button>
     ```
 1. **Rotate clockwise**: Include the controls in the view file as defined in the attribute `template-url` and the initial class `rotate0`

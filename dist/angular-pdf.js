@@ -37,6 +37,7 @@
         var url = scope.pdfUrl;
         var pdfDoc = null;
         var pageNum = (attrs.page ? attrs.page : 1);
+        var pageFit = attrs.scale === 'page-fit';
         var scale = attrs.scale > 0 ? attrs.scale : 1;
         var canvasid = attrs.canvasid || 'pdf-canvas';
         var canvas = document.getElementById(canvasid);
@@ -62,17 +63,15 @@
           pdfDoc.getPage(num).then(function(page) {
             var viewport;
             var pageWidthScale;
-            var pageHeightScale;
             var renderContext;
 
-            if (attrs.scale === 'page-fit' && !scale) {
+            if (pageFit) {
               viewport = page.getViewport(1);
-              pageWidthScale = element[0].clientWidth / viewport.width;
-              pageHeightScale = element[0].clientHeight / viewport.height;
-              scale = Math.min(pageWidthScale, pageHeightScale);
-            } else {
-              viewport = page.getViewport(scale);
+              var clientRect = element[0].getBoundingClientRect();
+              pageWidthScale = clientRect.width / viewport.width;
+              scale = pageWidthScale;
             }
+            viewport = page.getViewport(scale);
 
             setCanvasDimensions(canvas, viewport.width, viewport.height);
 
@@ -109,16 +108,23 @@
         };
 
         scope.zoomIn = function() {
+          pageFit = false;
           scale = parseFloat(scale) + 0.2;
           scope.renderPage(scope.pageToDisplay);
           return scale;
         };
 
         scope.zoomOut = function() {
+          pageFit = false;
           scale = parseFloat(scale) - 0.2;
           scope.renderPage(scope.pageToDisplay);
           return scale;
         };
+
+        scope.fit = function() {
+          pageFit = true;
+          scope.renderPage(scope.pageToDisplay);
+        }
 
         scope.changePage = function() {
           scope.renderPage(scope.pageToDisplay);
