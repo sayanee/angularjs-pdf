@@ -21,7 +21,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 ###Features
 
 1. next / previous page
-- zoom in / out
+- zoom in / out / fit 100%
 - rotate clockwise
 - jump to a page number
 - when scrolling, the pdf controls will get fixed position at the top
@@ -96,7 +96,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     <button ng-click="goPrevious()"><</span></button>
     <button ng-click="goNext()">></span></button>
     ```
-1. **Zoom in / out / fit**: Include the controls in the view file as defined in the attribute `template-url`
+1. **Zoom in / out / fit 100%**: Include the controls in the view file as defined in the attribute `template-url`
 
     ```
     <button ng-click="zoomIn()">+</span></button>
