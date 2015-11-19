@@ -36,7 +36,7 @@
       link: function(scope, element, attrs) {
         var url = scope.pdfUrl;
         var pdfDoc = null;
-        var pageNum = (attrs.page ? attrs.page : 1);
+        var pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
         var pageFit = attrs.scale === 'page-fit';
         var scale = attrs.scale > 0 ? attrs.scale : 1;
         var canvasid = attrs.canvasid || 'pdf-canvas';
@@ -53,7 +53,7 @@
         });
 
         PDFJS.disableWorker = true;
-        scope.pageNum = pageNum;
+        scope.pageNum = pageToDisplay;
 
         scope.renderPage = function(num) {
           if (renderTask) {
@@ -190,7 +190,7 @@
           if (newVal !== '') {
             console.log('pdfUrl value change detected: ', scope.pdfUrl);
             url = newVal;
-            scope.pageToDisplay = 1;
+            scope.pageToDisplay = pageToDisplay;
             if (pdfLoaderTask) {
                 pdfLoaderTask.destroy().then(function () {
                     renderPDF();
