@@ -18,7 +18,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 - [PDFJS](http://mozilla.github.io/pdf.js/) - build the files [`pdf.js` and `pdf.worker.js`](https://github.com/mozilla/pdf.js#building-pdfjs)
 - [Evergreen browsers](https://github.com/mozilla/pdf.js/wiki/Frequently-Asked-Questions#what-browsers-are-supported)
 
-###Features
+##Features
 
 1. next / previous page
 - zoom in / out / fit 100%
@@ -193,15 +193,15 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 
 PDF example used is [Relativity: The Special and General Theory by Albert Einstein](http://www.gutenberg.org/ebooks/30155) as kindly organized and made available free by [Project Gutenberg](http://www.gutenberg.org/wiki/Main_Page).
 
-#Contribute
+##Contribute
 
-This project is an **OPEN Open Source Project**. This means that:
+This project is an [OPEN Open Source Project](http://openopensource.org/). This means that:
 
 > Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit. This project is more like an open wiki than a standard guarded open source project.
 
 Please see [`CONTRIBUTING.md`](CONTRIBUTING.md) for details.
 
-#Versioning
+##Versioning
 
 This repository follows the [Semantic Versioning](http://semver.org/) guidelines:
 
