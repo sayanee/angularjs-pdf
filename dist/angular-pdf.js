@@ -190,7 +190,7 @@
           if (newVal !== '') {
             console.log('pdfUrl value change detected: ', scope.pdfUrl);
             url = newVal;
-            scope.pageToDisplay = pageToDisplay;
+            scope.pageNum = scope.pageToDisplay = pageToDisplay;
             if (pdfLoaderTask) {
                 pdfLoaderTask.destroy().then(function () {
                     renderPDF();
