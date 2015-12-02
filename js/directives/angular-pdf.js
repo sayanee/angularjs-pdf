@@ -1,4 +1,4 @@
-/*! Angular-PDF Version: 1.2.6 | Released under an MIT license */
+/*! Angular-PDF Version: 1.2.7 | Released under an MIT license */
 (function() {
 
   'use strict';
@@ -190,7 +190,7 @@
           if (newVal !== '') {
             console.log('pdfUrl value change detected: ', scope.pdfUrl);
             url = newVal;
-            scope.pageToDisplay = pageToDisplay;
+            scope.pageNum = scope.pageToDisplay = pageToDisplay;
             if (pdfLoaderTask) {
                 pdfLoaderTask.destroy().then(function () {
                     renderPDF();
