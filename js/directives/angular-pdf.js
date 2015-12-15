@@ -1,4 +1,4 @@
-/*! Angular-PDF Version: 1.2.7 | Released under an MIT license */
+/*! Angular-PDF Version: 1.2.8 | Released under an MIT license */
 (function() {
 
   'use strict';
@@ -34,6 +34,7 @@
         return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html';
       },
       link: function(scope, element, attrs) {
+        element.css('display', 'block');
         var url = scope.pdfUrl;
         var pdfDoc = null;
         var pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
