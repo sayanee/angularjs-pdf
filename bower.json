@@ -11,6 +11,9 @@
   },
   "ignore": [
     "**/.*",
-    "package.json"
+    "package.json",
+    "CONTRIBUTING.md",
+    "Gruntfile.js",
+    "example"
   ]
 }
