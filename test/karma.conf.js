@@ -15,6 +15,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      {pattern: 'example/pdf/relativity.pdf', included: false, served: true},
       'bower_components/pdfjs-dist/web/compatibility.js',
       'example/js/lib/pdf.js',
       'example/js/lib/pdf.worker.js',
@@ -22,6 +23,7 @@ module.exports = function(config) {
       'example/js/app.js',
       'example/js/controllers/docCtrl.js',
       'dist/angular-pdf.min.js',
+      'example/partials/*.html',
       'bower_components/angular-mocks/angular-mocks.js',
       'test/spec/*.js'
     ],
@@ -31,12 +33,15 @@ module.exports = function(config) {
     exclude: [
     ],
 
-
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        'example/partials/*.html': ['ng-html2js']
     },
 
+    proxies: {
+      '/pdf': '/base/example/pdf'
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -46,7 +51,6 @@ module.exports = function(config) {
 
     // web server port
     port: 9876,
-
 
     // enable / disable colors in the output (reporters and logs)
     colors: true,
@@ -72,6 +76,12 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultanous
-    concurrency: Infinity
+    concurrency: Infinity,
+
+    ngHtml2JsPreprocessor: {
+      // strip this from the file path
+      stripPrefix: 'example/',
+      moduleName: 'my.templates'
+    }
   })
 }
