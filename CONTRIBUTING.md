@@ -9,10 +9,10 @@
 - Code code code and amend the file `dist/angular-pdf.js`
 - Run `npm run build` to create the build minified and example files
 - Code code code
-- Run `npm test` to ensure the [build](https://travis-ci.org/sayanee/angularjs-pdf) will pass
+- Run `npm test` to ensure the [build](https://travis-ci.org/sayanee/angularjs-pdf) and the tests will pass
 - Write a [good commit message](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit-message-format)
 - [Pull request](https://help.github.com/articles/using-pull-requests) using the new feature/patch branch
-- Ensure the [Travis build](https://travis-ci.org/sayanee/angularjs-pdf) passes
+- Ensure the [Travis build and tests](https://travis-ci.org/sayanee/angularjs-pdf) passes
 
 ##Make a Release (for maintainers only)
 

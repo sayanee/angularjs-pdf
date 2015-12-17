@@ -112,6 +112,11 @@ module.exports = function(grunt) {
           'dist/angular-pdf.min.js': [ 'dist/angular-pdf.js' ]
         }
       }
+    },
+    karma: {
+      unit: {
+        configFile: 'test/karma.conf.js'
+      }
     }
   });
 
@@ -122,6 +127,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-jscs');
   grunt.loadNpmTasks('grunt-jsonlint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-karma');
 
   grunt.registerTask('default', [
     'clean',
@@ -129,12 +135,14 @@ module.exports = function(grunt) {
     'jscs',
     'jshint',
     'copy',
-    'uglify'
+    'uglify',
+    'karma'
   ]);
 
   grunt.registerTask('check', [
     'jsonlint',
     'jscs',
-    'jshint'
+    'jshint',
+    'karma'
   ]);
 };
