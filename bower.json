@@ -17,6 +17,7 @@
     "package.json",
     "CONTRIBUTING.md",
     "Gruntfile.js",
-    "example"
+    "example",
+    "test"
   ]
 }
