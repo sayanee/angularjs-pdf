@@ -1,18 +1,29 @@
-#Contribute and share
+# Contributing to angular-pdf
 
-1. Fork this project and install the packages with npm and bower
+:+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
-	```
-	bower i && npm i
-	```
-- Create a new feature/patch branch
+## for fixes
+
+1. This is for a fix or a patch for a found bug
+- Fork this project and install the packages with npm and bower
+
+  ```
+  bower i && npm i
+  ```
+- Create a new patch branch
 - Code code code and amend the file `dist/angular-pdf.js`
 - Run `npm run build` to create the build minified and example files
 - Code code code
 - Run `npm test` to ensure the [build](https://travis-ci.org/sayanee/angularjs-pdf) and the tests will pass
 - Write a [good commit message](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit-message-format)
-- [Pull request](https://help.github.com/articles/using-pull-requests) using the new feature/patch branch
+- [Pull request](https://help.github.com/articles/using-pull-requests) using the new patch branch
 - Ensure the [Travis build and tests](https://travis-ci.org/sayanee/angularjs-pdf) passes
+
+## for new features
+
+1. Search :mag_right: if the [feature already exists](https://github.com/sayanee/angularjs-pdf/blob/master/readme.md) or was discussed previously in [closed issues](https://github.com/sayanee/angularjs-pdf/issues?q=is%3Aissue+is%3Aclosed)
+- Raise an issue to discuss :speech_balloon: , ask for feedback or help :thought_balloon:
+- Ensure the pull request is accompanied by new feature code and specs / tests ( similar to [submitting fixes](https://github.com/sayanee/angularjs-pdf/blob/master/CONTRIBUTING.md#for-fixes) )
 
 ##Make a Release (for maintainers only)
 
