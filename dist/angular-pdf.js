@@ -6,6 +6,7 @@
   angular.module('pdf', []).directive('ngPdf', [ '$window', function($window) {
     var renderTask = null;
     var pdfLoaderTask = null;
+    var debug = false;
 
     var backingScale = function(canvas) {
       var ctx = canvas.getContext('2d');
@@ -43,6 +44,7 @@
         var canvasid = attrs.canvasid || 'pdf-canvas';
         var canvas = document.getElementById(canvasid);
 
+        debug = attrs.hasOwnProperty('debug') ? attrs.debug : false;
         var creds = attrs.usecredentials;
         var ctx = canvas.getContext('2d');
         var windowEl = angular.element($window);
@@ -189,7 +191,9 @@
 
         scope.$watch('pdfUrl', function(newVal) {
           if (newVal !== '') {
-            console.log('pdfUrl value change detected: ', scope.pdfUrl);
+            if (debug) {
+              console.log('pdfUrl value change detected: ', scope.pdfUrl);
+            }
             url = newVal;
             scope.pageNum = scope.pageToDisplay = pageToDisplay;
             if (pdfLoaderTask) {
