@@ -45,7 +45,6 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     ```html
     <script src="js/vendor/angular-pdf/dist/angular-pdf.js"></script>
     ```
-
 - include the directive as a dependency when defining the angular app:
 
     ```js
