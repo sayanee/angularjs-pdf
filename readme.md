@@ -74,7 +74,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
         ```html
         <ng-pdf template-url="/partials/viewer.html" page=12></ng-pdf>
         ```
-    - `canvasid` as an option for `id` of the canvas
+    - `canvasid` as an option for `id` of the canvas (default for `canvasid` is `pdf-canvas`)
 
         ```html
         <ng-pdf template-url="/partials/viewer.html" canvasid="mycanvas"></ng-pdf>
