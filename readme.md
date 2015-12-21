@@ -10,7 +10,7 @@ Integrate PDF files right into web pages.
 
 ![Angular PDF](ng-pdf.gif)
 
-##Requirements
+## Requirements
 
 Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/bower.json) for dependencies and their versions:
 
@@ -18,7 +18,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 - [PDFJS](http://mozilla.github.io/pdf.js/) - build the files [`pdf.js` and `pdf.worker.js`](https://github.com/mozilla/pdf.js#building-pdfjs)
 - [Evergreen browsers](https://github.com/mozilla/pdf.js/wiki/Frequently-Asked-Questions#what-browsers-are-supported)
 
-##Features
+## Features
 
 1. next / previous page
 - zoom in / out / fit 100%
@@ -40,18 +40,18 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     ```shell
     bower install angular-pdf
     ```
-1. include the path to the direcitve file in `index.html`
+- include the path to the direcitve file in `index.html`
 
     ```html
     <script src="js/vendor/angular-pdf/dist/angular-pdf.js"></script>
     ```
 
-1. include the directive as a dependency when defining the angular app:
+- include the directive as a dependency when defining the angular app:
 
     ```js
     var app = angular.module('App', ['pdf']);
     ```
-1. include the directive with the attribute path to the partial under a controller
+- include the directive with the attribute path to the partial under a controller
 
     ```html
     <div class="wrapper" ng-controller="DocCtrl">
@@ -89,14 +89,12 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
         ```html
         <ng-pdf template-url="/partials/viewer.html" debug="true"></ng-pdf>
         ```
-
-
-1. include the `canvas` element to display the pdf in the template-url file
+- include the `canvas` element to display the pdf in the template-url file
 
     ```html
     <canvas id="pdf-canvas"></canvas>
     ```
-1. include the path to the pdf file in the controller
+- include the path to the pdf file in the controller
 
     ```js
     app.controller('DocCtrl', function($scope) {
@@ -104,7 +102,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     });
     ```
 
-###Options
+### Options
 
 1. **Next / Previous page**: Include the controls in the view file as defined in the attribute `template-url`
 
@@ -112,14 +110,14 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     <button ng-click="goPrevious()"><</span></button>
     <button ng-click="goNext()">></span></button>
     ```
-1. **Zoom in / out / fit 100%**: Include the controls in the view file as defined in the attribute `template-url`
+- **Zoom in / out / fit 100%**: Include the controls in the view file as defined in the attribute `template-url`
 
     ```
     <button ng-click="zoomIn()">+</span></button>
     <button ng-click="fit()">100%</span></button>
     <button ng-click="zoomOut()">-</span></button>
     ```
-1. **Rotate clockwise**: Include the controls in the view file as defined in the attribute `template-url` and the initial class `rotate0`
+- **Rotate clockwise**: Include the controls in the view file as defined in the attribute `template-url` and the initial class `rotate0`
 
     ```html
     <button ng-click="rotate()">90</span></button>
@@ -135,12 +133,12 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     .rotate180 {-webkit-transform: rotate(180deg); transform: rotate(180deg); }
     .rotate270 {-webkit-transform: rotate(270deg); transform: rotate(270deg); }
     ```
-1. **Jump to page number**: Include the controls in the view file as defined in the attribute `template-url`
+- **Jump to page number**: Include the controls in the view file as defined in the attribute `template-url`
 
     ```html
     <span>Page: </span><input type="text" min=1 ng-model="pageNum"><span> / {{pageCount}}</span>
     ```
-1. **Fixed pdf controls upon scrolling**: Wrap the controls in the view file as defined in the attribute `template-url` with a tag `nav` with an `ng-class`. Amend the scroll amount as required.
+- **Fixed pdf controls upon scrolling**: Wrap the controls in the view file as defined in the attribute `template-url` with a tag `nav` with an `ng-class`. Amend the scroll amount as required.
 
     ```html
     <nav ng-class="{'pdf-controls fixed': scroll > 100, 'pdf-controls': scroll <= 100}">
@@ -154,9 +152,9 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     .pdf-controls { width: 100%; display: block; background: #eee; padding: 1em;}
     .fixed { position: fixed; top: 0; left: calc(50% - 480px); z-index: 100; width: 100%; padding: 1em; background: rgba(238, 238, 238,.9); width: 960px; }
     ```
-1. open the file `index.html` with a web server
+- open the file `index.html` with a web server
 
-###When url is base64 or Uint8Array
+### When url is base64 or Uint8Array
 
 Create a Blob:
 
@@ -165,7 +163,7 @@ currentBlob = new Blob([result], {type: 'application/pdf'});
 $scope.pdfUrl = URL.createObjectURL(currentBlob);
 ```
 
-###Handle error
+### Handle error
 
 In the controller, you can call the function `$scope.onError`:
 
@@ -176,7 +174,7 @@ $scope.onError = function(error) {
 }
 ```
 
-###Show loading
+### Show loading
 
 In the controller, you can call the function `$scope.onLoad` when the pdf succesfully loaded:
 
@@ -189,7 +187,7 @@ $scope.onLoad = function() {
 }
 ```
 
-###Show progress percentage
+### Show progress percentage
 
 In the controller, you can call the function `$scope.onProgress`
 
@@ -201,22 +199,22 @@ $scope.onProgress = function(progress) {
 }
 ```
 
-##Variations
+## Variations
 
 1. If using with [Angular UI modal](http://angular-ui.github.io/bootstrap/#/modal), `pageNum` attribute is no longer required. [Checkout the implementation](https://github.com/sayanee/angularjs-pdf/issues/12)
 
 
-##Similar projects
+## Similar projects
 
 1. [angular-pdf-viewer](https://github.com/winkerVSbecks/angular-pdf-viewer) - a more self-contained directive
 - [ng-pdfviewer](https://github.com/akrennmair/ng-pdfviewer)
 
 
-##Credit
+## Credit
 
 PDF example used is [Relativity: The Special and General Theory by Albert Einstein](http://www.gutenberg.org/ebooks/30155) as kindly organized and made available free by [Project Gutenberg](http://www.gutenberg.org/wiki/Main_Page).
 
-##Contribute
+## Contribute
 
 This project is an [OPEN Open Source Project](http://openopensource.org/). This means that:
 
@@ -224,7 +222,7 @@ This project is an [OPEN Open Source Project](http://openopensource.org/). This 
 
 Please see [`CONTRIBUTING.md`](CONTRIBUTING.md) for details.
 
-##Versioning
+## Versioning
 
 This repository follows the [Semantic Versioning](http://semver.org/) guidelines:
 
