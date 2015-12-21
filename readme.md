@@ -74,6 +74,16 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
         ```html
         <ng-pdf template-url="/partials/viewer.html" page=12></ng-pdf>
         ```
+    - `canvasid` as an option for `id` of the canvas
+
+        ```html
+        <ng-pdf template-url="/partials/viewer.html" canvasid="mycanvas"></ng-pdf>
+        ```
+    - `usecredentials` as an option to add credentials / authorisation
+
+        ```html
+        <ng-pdf template-url="/partials/viewer.html" usecredentials="true"></ng-pdf>
+        ```
     - `debug` to enable debugging console output (optional, disabled by default)
 
         ```html
@@ -146,43 +156,50 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     ```
 1. open the file `index.html` with a web server
 
+###When url is base64 or Uint8Array
+
+Create a Blob:
+
+```js
+currentBlob = new Blob([result], {type: 'application/pdf'});
+$scope.pdfUrl = URL.createObjectURL(currentBlob);
+```
+
 ###Handle error
 
-1. in the controller, you can call the function `$scope.onError`:
+In the controller, you can call the function `$scope.onError`:
 
-	```js
-	$scope.onError = function(error) {
-    	// handle the error
-    	// console.log(error);
-  	}
-	```
+```js
+$scope.onError = function(error) {
+	// handle the error
+	// console.log(error);
+}
+```
 
 ###Show loading
 
-1. in the controller, you can call the function `$scope.onLoad` when the pdf succesfully loaded:
+In the controller, you can call the function `$scope.onLoad` when the pdf succesfully loaded:
 
-	```js
-	$scope.loading = 'loading';
+```js
+$scope.loading = 'loading';
 
-	$scope.onLoad = function() {
-    // do something when pdf is fully loaded
-    // $scope.loading = '';
-  }
-  ```
+$scope.onLoad = function() {
+  // do something when pdf is fully loaded
+  // $scope.loading = '';
+}
+```
 
 ###Show progress percentage
 
-1. in the controller, you can call the function `$scope.onProgress`
+In the controller, you can call the function `$scope.onProgress`
 
-	```js
-	$scope.onProgress = function(progress) {
-		// handle a progress bar
-    	// progress% = progress.loaded / progress.total
-    	// console.log(progress);
-  }
-  ```
-
-
+```js
+$scope.onProgress = function(progress) {
+	// handle a progress bar
+  	// progress% = progress.loaded / progress.total
+  	// console.log(progress);
+}
+```
 
 ##Variations
 
