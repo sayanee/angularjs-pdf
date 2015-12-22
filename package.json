@@ -2,7 +2,10 @@
   "name": "angular-pdf",
   "version": "1.2.9",
   "main": "dist/angular-pdf.js",
-  "author": "Sayanee <sayanee@gmail.com>",
+  "author": "Sayanee <sayanee@gmail.com> (http://sayan.ee)",
+  "contributors": [
+    "Simone Basso"
+  ],
   "description": "An Angularjs directive <ng-pdf> to display PDF in the browser with PDFJS.",
   "repository": {
     "type": "git",
