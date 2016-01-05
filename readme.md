@@ -32,25 +32,26 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 - show progress percentage of loading pdf
 - dynamically change the pdf url
 - support retina canvas
+- set authorization or http headers
 
 ## Getting Started
 
-1. install or copy over the file `dist/angular-pdf.min.js` or `dist/angular-pdf.js`
+1. Install or copy over the file `dist/angular-pdf.min.js` or `dist/angular-pdf.js`
 
     ```shell
     bower install angular-pdf
     ```
-- include the path to the directive file in `index.html`
+- Include the path to the directive file in `index.html`
 
     ```html
     <script src="js/vendor/angular-pdf/dist/angular-pdf.js"></script>
     ```
-- include the directive as a dependency when defining the angular app:
+- Include the directive as a dependency when defining the angular app:
 
     ```js
     var app = angular.module('App', ['pdf']);
     ```
-- include the directive with the attribute path to the partial under a controller
+- Include the directive with the attribute path to the partial under a controller
 
     ```html
     <div class="wrapper" ng-controller="DocCtrl">
@@ -59,106 +60,106 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     ```
     - `scale` as an option
 
-        ```html
-        <ng-pdf template-url="/partials/viewer.html" scale=1></ng-pdf>
-        ```
+      ```html
+      <ng-pdf template-url="/partials/viewer.html" scale=1></ng-pdf>
+      ```
 
-        `scale` attribute can also be `page-fit`
+      `scale` attribute can also be `page-fit`
 
-        ```html
-        <ng-pdf template-url="/partials/viewer.html" scale="page-fit"></ng-pdf>
-        ```
+      ```html
+      <ng-pdf template-url="/partials/viewer.html" scale="page-fit"></ng-pdf>
+      ```
     - `page` as an option for initial page number
 
-        ```html
-        <ng-pdf template-url="/partials/viewer.html" page=12></ng-pdf>
-        ```
+      ```html
+      <ng-pdf template-url="/partials/viewer.html" page=12></ng-pdf>
+      ```
     - `canvasid` as an option for `id` of the canvas (default for `canvasid` is `pdf-canvas`)
 
-        ```html
-        <ng-pdf template-url="/partials/viewer.html" canvasid="mycanvas"></ng-pdf>
-        ```
+      ```html
+      <ng-pdf template-url="/partials/viewer.html" canvasid="mycanvas"></ng-pdf>
+      ```
     - `usecredentials` as an option to add credentials / authorization
 
-        ```html
-        <ng-pdf template-url="/partials/viewer.html" usecredentials="true"></ng-pdf>
-        ```
+      ```html
+      <ng-pdf template-url="/partials/viewer.html" usecredentials="true"></ng-pdf>
+      ```
     - `debug` to enable debugging console output (optional, disabled by default)
 
-        ```html
-        <ng-pdf template-url="/partials/viewer.html" debug="true"></ng-pdf>
-        ```
-- include the `canvas` element to display the pdf in the template-url file
+      ```html
+      <ng-pdf template-url="/partials/viewer.html" debug="true"></ng-pdf>
+      ```
+- Include the `canvas` element to display the pdf in the template-url file
 
-    ```html
-    <canvas id="pdf-canvas"></canvas>
-    ```
-- include the path to the pdf file in the controller
+  ```html
+  <canvas id="pdf-canvas"></canvas>
+  ```
+- Include the path to the pdf file in the controller
 
-    ```js
-    app.controller('DocCtrl', function($scope) {
-        $scope.pdfUrl = '/pdf/relativity.pdf';
-    });
-    ```
-- If you need to set custom headers, e.g. authorization headers, you should use `$scope.httpHeaders` option
+  ```js
+  app.controller('DocCtrl', function($scope) {
+    $scope.pdfUrl = '/pdf/relativity.pdf';
+  });
+  ```
+- Set custom headers, e.g. authorization headers with `$scope.httpHeaders` option
 
-     ```js
-    app.controller('DocCtrl', function($scope) {
-        $scope.pdfUrl = '/pdf/relativity.pdf';
-        $scope.httpHeaders = {Authorization: "Bearer some-aleatory-token"};
-    });
-    ```
+  ```js
+  app.controller('DocCtrl', function($scope) {
+    $scope.pdfUrl = '/pdf/relativity.pdf';
+    $scope.httpHeaders = { Authorization: 'Bearer some-aleatory-token' };
+  });
+  ```
 
 ### Options
 
 1. **Next / Previous page**: Include the controls in the view file as defined in the attribute `template-url`
 
-    ```
-    <button ng-click="goPrevious()"><</span></button>
-    <button ng-click="goNext()">></span></button>
-    ```
+  ```
+  <button ng-click="goPrevious()"><</span></button>
+  <button ng-click="goNext()">></span></button>
+  ```
 - **Zoom in / out / fit 100%**: Include the controls in the view file as defined in the attribute `template-url`
 
-    ```
-    <button ng-click="zoomIn()">+</span></button>
-    <button ng-click="fit()">100%</span></button>
-    <button ng-click="zoomOut()">-</span></button>
-    ```
+  ```
+  <button ng-click="zoomIn()">+</span></button>
+  <button ng-click="fit()">100%</span></button>
+  <button ng-click="zoomOut()">-</span></button>
+  ```
 - **Rotate clockwise**: Include the controls in the view file as defined in the attribute `template-url` and the initial class `rotate0`
 
-    ```html
-    <button ng-click="rotate()">90</span></button>
-    ...
-    <canvas id="pdf-canvas" class="rotate0"></canvas>
-    ```
+  ```html
+  <button ng-click="rotate()">90</span></button>
+  ...
+  <canvas id="pdf-canvas" class="rotate0"></canvas>
+  ```
 
-    include the css styles:
+  include the css styles:
 
-    ```css
-    .rotate0 {-webkit-transform: rotate(0deg); transform: rotate(0deg); }
-    .rotate90 {-webkit-transform: rotate(90deg); transform: rotate(90deg); }
-    .rotate180 {-webkit-transform: rotate(180deg); transform: rotate(180deg); }
-    .rotate270 {-webkit-transform: rotate(270deg); transform: rotate(270deg); }
-    ```
+  ```css
+  .rotate0 {-webkit-transform: rotate(0deg); transform: rotate(0deg); }
+  .rotate90 {-webkit-transform: rotate(90deg); transform: rotate(90deg); }
+  .rotate180 {-webkit-transform: rotate(180deg); transform: rotate(180deg); }
+  .rotate270 {-webkit-transform: rotate(270deg); transform: rotate(270deg); }
+  ```
 - **Jump to page number**: Include the controls in the view file as defined in the attribute `template-url`
 
-    ```html
-    <span>Page: </span><input type="text" min=1 ng-model="pageNum"><span> / {{pageCount}}</span>
-    ```
+  ```html
+  <span>Page: </span><input type="text" min=1 ng-model="pageNum"><span> / {{pageCount}}</span>
+  ```
 - **Fixed pdf controls upon scrolling**: Wrap the controls in the view file as defined in the attribute `template-url` with a tag `nav` with an `ng-class`. Amend the scroll amount as required.
 
-    ```html
-    <nav ng-class="{'pdf-controls fixed': scroll > 100, 'pdf-controls': scroll <= 100}">
-    ...
-    </nav>
-    ```
+  ```html
+  <nav ng-class="{'pdf-controls fixed': scroll > 100, 'pdf-controls': scroll <= 100}">
+  ...
+  </nav>
+  ```
 
-    And include the relevant css styles as required:
+  And include the relevant css styles as required:
 
-    ```css
-    .pdf-controls { width: 100%; display: block; background: #eee; padding: 1em;}
-    .fixed { position: fixed; top: 0; left: calc(50% - 480px); z-index: 100; width: 100%; padding: 1em; background: rgba(238, 238, 238,.9); width: 960px; }
-    ```
+  ```css
+  .pdf-controls { width: 100%; display: block; background: #eee; padding: 1em;}
+  .fixed { position: fixed; top: 0; left: calc(50% - 480px); z-index: 100; width: 100%; padding: 1em; background: rgba(238, 238, 238,.9); width: 960px; }
+  ```
 - open the file `index.html` with a web server
 
 ### When url is base64 or Uint8Array
@@ -201,15 +202,14 @@ In the controller, you can call the function `$scope.onProgress`
 ```js
 $scope.onProgress = function(progress) {
 	// handle a progress bar
-  	// progress% = progress.loaded / progress.total
-  	// console.log(progress);
+	// progress% = progress.loaded / progress.total
+	// console.log(progress);
 }
 ```
 
 ## Variations
 
 1. If using with [Angular UI modal](http://angular-ui.github.io/bootstrap/#/modal), `pageNum` attribute is no longer required. [Checkout the implementation](https://github.com/sayanee/angularjs-pdf/issues/12)
-
 
 ## Similar projects
 
