@@ -40,7 +40,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
     ```shell
     bower install angular-pdf
     ```
-- include the path to the direcitve file in `index.html`
+- include the path to the directive file in `index.html`
 
     ```html
     <script src="js/vendor/angular-pdf/dist/angular-pdf.js"></script>
