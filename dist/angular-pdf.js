@@ -37,6 +37,7 @@
       link: function(scope, element, attrs) {
         element.css('display', 'block');
         var url = scope.pdfUrl;
+        var httpHeaders = scope.httpHeaders;
         var pdfDoc = null;
         var pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
         var pageFit = attrs.scale === 'page-fit';
@@ -154,11 +155,17 @@
         function renderPDF() {
           clearCanvas();
 
+          var params = {
+            'url': url,
+            'withCredentials': creds
+          };
+
+          if (httpHeaders) {
+            params.httpHeaders = httpHeaders;
+          }
+
           if (url && url.length) {
-            pdfLoaderTask = PDFJS.getDocument({
-              'url': url,
-              'withCredentials': creds
-            }, null, null, scope.onProgress);
+            pdfLoaderTask = PDFJS.getDocument(params, null, null, scope.onProgress);
             pdfLoaderTask.then(
                 function(_pdfDoc) {
                   if (typeof scope.onLoad === 'function') {
