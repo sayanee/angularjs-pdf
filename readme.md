@@ -100,6 +100,14 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
         $scope.pdfUrl = '/pdf/relativity.pdf';
     });
     ```
+- If you need to set custom headers, e.g. authorization headers, you should use `$scope.httpHeaders` option
+
+     ```js
+    app.controller('DocCtrl', function($scope) {
+        $scope.pdfUrl = '/pdf/relativity.pdf';
+        $scope.httpHeaders = {Authorization: "Bearer some-aleatory-token"};
+    });
+    ```
 
 ### Options
 
