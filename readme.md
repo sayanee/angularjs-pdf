@@ -78,7 +78,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
         ```html
         <ng-pdf template-url="/partials/viewer.html" canvasid="mycanvas"></ng-pdf>
         ```
-    - `usecredentials` as an option to add credentials / authorisation
+    - `usecredentials` as an option to add credentials / authorization
 
         ```html
         <ng-pdf template-url="/partials/viewer.html" usecredentials="true"></ng-pdf>
