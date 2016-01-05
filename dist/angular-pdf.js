@@ -1,4 +1,4 @@
-/*! Angular-PDF Version: 1.2.9 | Released under an MIT license */
+/*! Angular-PDF Version: 1.3.0 | Released under an MIT license */
 (function() {
 
   'use strict';
