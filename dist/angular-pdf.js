@@ -165,7 +165,7 @@
           }
 
           if (url && url.length) {
-            pdfLoaderTask = PDFJS.getDocument(params, null, null, scope.onProgress);
+            pdfLoaderTask = PDFJS.getDocument(params, null, scope.onPassword, scope.onProgress);
             pdfLoaderTask.then(
                 function(_pdfDoc) {
                   if (typeof scope.onLoad === 'function') {
