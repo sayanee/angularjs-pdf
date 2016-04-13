@@ -18,8 +18,8 @@ app.controller('DocCtrl', function($scope) {
     $scope.loading = '';
   }
 
-  $scope.onProgress = function(progress) {
-    console.log(progress);
-  }
+  $scope.onProgress = function (progressData) {
+    console.log(progressData);
+  };
 
 });
