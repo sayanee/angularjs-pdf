@@ -69,6 +69,11 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
       ```html
       <ng-pdf template-url="/partials/viewer.html" scale="page-fit"></ng-pdf>
       ```
+    - `limitcanvasheight` as an option combined with `scale='page-fit'`
+
+      ```html
+      <ng-pdf template-url="/partials/viewer.html" scale="page-fit" limitcanvasheight="1"></ng-pdf>
+      ```
     - `page` as an option for initial page number
 
       ```html
