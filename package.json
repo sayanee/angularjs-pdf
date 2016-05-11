@@ -37,5 +37,8 @@
     "build": "grunt",
     "start": "http-server ./example -p 8081",
     "test": "grunt --verbose"
+  },
+  "dependencies": {
+    "phantomjs-prebuilt": "^2.1.7"
   }
 }
