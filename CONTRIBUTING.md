@@ -5,13 +5,13 @@
 ## for fixes
 
 1. This is for a fix or a patch for a found bug
-- Fork this project and install the packages with npm and bower
+- Fork this project and install the packages with npm
 
   ```
-  bower i && npm i
+  npm install
   ```
 - Create a new patch branch
-- Code code code and amend the file `dist/angular-pdf.js`
+- Code code code and amend the file `src/angular-pdf.js`
 - Run `npm run build` to create the build minified and example files
 - Code code code
 - Run `npm test` to ensure the [build](https://travis-ci.org/sayanee/angularjs-pdf) and the tests will pass
