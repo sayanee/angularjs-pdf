@@ -51,12 +51,6 @@ module.exports = function(grunt) {
             dest: 'dist/'
           },
           {
-            expand: true,
-            cwd: 'src',
-            src: [ 'angular-pdf.js' ],
-            dest: 'example/js/directives/'
-          },
-          {
             cwd: 'bower_components/pdfjs-dist/build',
             src: [ 'pdf.js', 'pdf.worker.js' ],
             dest: 'example/js/lib',
@@ -69,6 +63,16 @@ module.exports = function(grunt) {
             dest: 'example/js/lib',
             flatten: true,
             expand: true
+          }
+        ]
+      },
+      uglified: {
+        files: [
+          {
+            expand: true,
+            cwd: 'dist',
+            src: [ 'angular-pdf.min.js' ],
+            dest: 'example/js/directives/'
           }
         ]
       }
@@ -143,6 +147,7 @@ module.exports = function(grunt) {
     'jshint',
     'copy',
     'uglify',
+    'copy:uglified',
     'karma'
   ]);
 
