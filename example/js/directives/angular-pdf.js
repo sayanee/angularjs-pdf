@@ -1,5 +1,4 @@
-/*! Angular-PDF Version: 1.3.0 | Released under an MIT license */
-/* global angular, PDFJS */
+/*! Angular-PDF Version: 1.3.1 | Released under an MIT license */
 (function() {
 
   'use strict';
@@ -166,8 +165,7 @@
           }
 
           if (url && url.length) {
-            pdfLoaderTask = PDFJS.getDocument(params);
-            pdfLoaderTask.onProgress = scope.onProgress;
+            pdfLoaderTask = PDFJS.getDocument(params, null, null, scope.onProgress);
             pdfLoaderTask.then(
                 function(_pdfDoc) {
                   if (typeof scope.onLoad === 'function') {
