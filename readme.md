@@ -30,6 +30,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 - handles error
 - show loading of pdf
 - show progress percentage of loading pdf
+- insert password for protected PDFs
 - dynamically change the pdf url
 - support retina canvas
 - set authorization or http headers
@@ -205,6 +206,19 @@ $scope.onProgress = function(progress) {
 	// progress% = progress.loaded / progress.total
 	// console.log(progress);
 }
+```
+
+### Managing password requests
+
+In the controller, you can use the function `scope.onPassword`. This function is called when the PDF require an opening password.
+
+```js
+$scope.onPassword = function (updatePasswordFn, passwordResponse) {
+  // if passwordResponse === PDFJS.PasswordResponses.NEED_PASSWORD
+  // you can provide the password calling updatePasswordFn('THE_PASSWORD')
+  // else if passwordResponse === PDFJS.PasswordResponses.INCORRECT_PASSWORD
+  // provided password is not correct
+};
 ```
 
 ## Variations
