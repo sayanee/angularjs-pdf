@@ -36,6 +36,7 @@ module.exports = function(grunt) {
       all: [
         'example/js/directives/angular-pdf.js',
         'example/js/lib/*.js',
+        'dist/angular-pdf.js',
         'dist/angular-pdf.min.js'
       ]
     },
@@ -45,7 +46,13 @@ module.exports = function(grunt) {
         files: [
           {
             expand: true,
-            cwd: 'dist',
+            cwd: 'src',
+            src: [ 'angular-pdf.js' ],
+            dest: 'dist/'
+          },
+          {
+            expand: true,
+            cwd: 'src',
             src: [ 'angular-pdf.js' ],
             dest: 'example/js/directives/'
           },
@@ -70,7 +77,7 @@ module.exports = function(grunt) {
     jscs: {
       src: [
         'Gruntfile.js',
-        'dist/angular-pdf.js'
+        'src/angular-pdf.js'
       ],
       options: {
         config: '.jscsrc'
@@ -84,7 +91,7 @@ module.exports = function(grunt) {
         },
         src: [
           'Gruntfile.js',
-          'dist/angular-pdf.js'
+          'src/angular-pdf.js'
         ]
       }
     },
