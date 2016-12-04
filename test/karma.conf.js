@@ -16,6 +16,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       {pattern: 'example/pdf/relativity.pdf', included: false, served: true},
+      {pattern: 'example/pdf/relativity.protected.pdf', included: false, served: true},
       'bower_components/pdfjs-dist/web/compatibility.js',
       'example/js/lib/pdf.js',
       'example/js/lib/pdf.worker.js',
