@@ -28,7 +28,7 @@ describe('ngPdf', function() {
       }, 9000);
   }, 10000);
 
-  it('ng-pdf maust have 1 canvas', function() {
+  it('ng-pdf must have 1 canvas', function() {
     var canvas = element.find('canvas');
     expect(canvas.length).toBe(1);
   });
