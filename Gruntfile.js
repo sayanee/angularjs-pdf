@@ -8,7 +8,7 @@ module.exports = function(grunt) {
           'package.json',
           'bower.json',
           'readme.md',
-          'example/js/directives/angular-pdf.js',
+          'example/js/directives/angular-pdf.min.js',
           'dist/angular-pdf.js',
           'dist/angular-pdf.min.js'
         ],
@@ -19,7 +19,7 @@ module.exports = function(grunt) {
           'package.json',
           'bower.json',
           'readme.md',
-          'example/js/directives/angular-pdf.js',
+          'example/js/directives/angular-pdf.min.js',
           'dist/angular-pdf.js',
           'dist/angular-pdf.min.js'
         ],
@@ -34,7 +34,7 @@ module.exports = function(grunt) {
 
     clean: {
       all: [
-        'example/js/directives/angular-pdf.js',
+        'example/js/directives/angular-pdf.min.js',
         'example/js/lib/*.js',
         'dist/angular-pdf.js',
         'dist/angular-pdf.min.js'
