@@ -2,6 +2,7 @@ app.controller('DocCtrl', function($scope) {
 
   $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
   $scope.pdfUrl = 'pdf/relativity.pdf';
+  $scope.pdfPassword = 'test';
   $scope.scroll = 0;
   $scope.loading = 'loading';
 
@@ -18,8 +19,16 @@ app.controller('DocCtrl', function($scope) {
     $scope.loading = '';
   }
 
-  $scope.onProgress = function(progress) {
-    console.log(progress);
-  }
+  $scope.onProgress = function (progressData) {
+    console.log(progressData);
+  };
+
+  $scope.onPassword = function (updatePasswordFn, passwordResponse) {
+    if (passwordResponse === PDFJS.PasswordResponses.NEED_PASSWORD) {
+        updatePasswordFn($scope.pdfPassword);
+    } else if (passwordResponse === PDFJS.PasswordResponses.INCORRECT_PASSWORD) {
+        console.log('Incorrect password')
+    }
+  };
 
 });
