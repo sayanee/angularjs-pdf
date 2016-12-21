@@ -15,6 +15,7 @@
 - Run `npm run build` to create the build minified and example files
 - Code code code
 - Run `npm test` to ensure the [build](https://travis-ci.org/sayanee/angularjs-pdf) and the tests will pass
+- Ensure that you are not committing files contained in `dist` folder
 - Write a [good commit message](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit-message-format)
 - [Pull request](https://help.github.com/articles/using-pull-requests) using the new patch branch
 - Ensure the [Travis build and tests](https://travis-ci.org/sayanee/angularjs-pdf) passes
@@ -34,7 +35,7 @@
   - run `npm run build` to build all files
   - commit your code
 - update `readme.md` if required, especially the section on [Features](https://github.com/sayanee/angularjs-pdf#features)
-- run `grunt bump`, `grunt bump:minor` or `grunt bump:major` according semantic version
+- run `grunt bumps`, `grunt bumps --type=minor` or `grunt bumps --type=major` according semantic version
 - copy the `example` folder
 - change to branch `gh-pages`
 - copy the `example` folder from `master` branch
