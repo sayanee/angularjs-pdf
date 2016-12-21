@@ -8,9 +8,7 @@ module.exports = function(grunt) {
           'package.json',
           'bower.json',
           'readme.md',
-          'example/js/directives/angular-pdf.min.js',
-          'dist/angular-pdf.js',
-          'dist/angular-pdf.min.js'
+          'src/angular-pdf.js'
         ],
         updateConfigs: [],
         commit: true,
@@ -19,6 +17,7 @@ module.exports = function(grunt) {
           'package.json',
           'bower.json',
           'readme.md',
+          'src/angular-pdf.js',
           'example/js/directives/angular-pdf.min.js',
           'dist/angular-pdf.js',
           'dist/angular-pdf.min.js'
@@ -150,6 +149,11 @@ module.exports = function(grunt) {
     'copy:uglified',
     'karma'
   ]);
+
+  grunt.registerTask('bumps', function() {
+    var type = grunt.option('type') || 'patch';
+    grunt.task.run([ 'bump-only:' + type, 'default', 'bump-commit' ]);
+  });
 
   grunt.registerTask('check', [
     'jsonlint',

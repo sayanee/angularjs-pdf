@@ -250,17 +250,17 @@ This repository follows the [Semantic Versioning](http://semver.org/) guidelines
 1. For **patches**, run the command:
 
 	```
-	grunt bump
+	grunt bumps
 	```
 - For **minor release**, run the command:
 
 	```
-	grunt bump:minor
+	grunt bumps --type=minor
 	```
 - For **major release**, run the command:
 
 	```
-	grunt bump:major
+	grunt bumps --type=major
 	```
 
 ## License
