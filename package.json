@@ -25,7 +25,7 @@
     "grunt-contrib-uglify": "^2.0.0",
     "grunt-jscs": "^3.0.1",
     "grunt-jsonlint": "^1.1.0",
-    "grunt-karma": "^0.12.1",
+    "grunt-karma": "^2.0.0",
     "http-server": "^0.8.5",
     "jasmine-core": "^2.4.1",
     "karma": "^1.3.0",
