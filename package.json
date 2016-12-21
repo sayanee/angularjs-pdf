@@ -23,7 +23,7 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-uglify": "^2.0.0",
-    "grunt-jscs": "2.5.0",
+    "grunt-jscs": "^3.0.1",
     "grunt-jsonlint": "1.0.6",
     "grunt-karma": "^0.12.1",
     "http-server": "^0.8.5",
