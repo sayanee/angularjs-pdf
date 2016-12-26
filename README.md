@@ -12,7 +12,7 @@ Integrate PDF files right into web pages.
 
 ## Requirements
 
-Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/bower.json) for dependencies and their versions:
+Check [`package.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/package.json) for dependencies and their versions:
 
 1. [AngularJS](http://angularjs.org/) - get the latest [angular.min.js](https://developers.google.com/speed/libraries/devguide#angularjs)
 - [PDFJS](http://mozilla.github.io/pdf.js/) - build the files [`pdf.js` and `pdf.worker.js`](https://github.com/mozilla/pdf.js#building-pdfjs)
@@ -40,7 +40,11 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 1. Install or copy over the file `dist/angular-pdf.min.js` or `dist/angular-pdf.js`
 
     ```shell
-    bower install angular-pdf
+    npm install angular-pdf --save
+    ```
+    or
+    ```shell
+    bower install angular-pdf --save
     ```
 - Include the path to the directive file in `index.html`
 
@@ -250,17 +254,17 @@ This repository follows the [Semantic Versioning](http://semver.org/) guidelines
 1. For **patches**, run the command:
 
 	```
-	grunt bumps
+	npm run release patch
 	```
 - For **minor release**, run the command:
 
 	```
-	grunt bumps --type=minor
+	npm run release minor
 	```
 - For **major release**, run the command:
 
 	```
-	grunt bumps --type=major
+	npm run release major
 	```
 
 ## License

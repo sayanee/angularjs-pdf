@@ -12,10 +12,11 @@
   ```
 - Create a new patch branch
 - Code code code and amend the file `src/angular-pdf.js`
-- Run `npm run build` to create the build minified and example files
+- Run `npm run start` to start the `webpack-dev-server` and open `http://localhost:8080`
 - Code code code
 - Run `npm test` to ensure the [build](https://travis-ci.org/sayanee/angularjs-pdf) and the tests will pass
-- Ensure that you are not committing files contained in `dist` folder
+- update `readme.md` if required, especially the section on [Features](https://github.com/sayanee/angularjs-pdf#features)
+- Ensure that you are not committing files contained in `dist` folder (builds are for mantainers' exclusive)
 - Write a [good commit message](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit-message-format)
 - [Pull request](https://help.github.com/articles/using-pull-requests) using the new patch branch
 - Ensure the [Travis build and tests](https://travis-ci.org/sayanee/angularjs-pdf) passes
@@ -28,18 +29,10 @@
 
 ##Make a Release (for maintainers only)
 
-1. commit your code (steps 1 - 7)
-- check for outdated dependencies with `npm outdated` and `bower list`
-  1. amend version number of packages in `package.json` and `bower.json`
-  - install various packages `npm i` and `bower i`
-  - run `npm run build` to build all files
-  - commit your code
-- update `readme.md` if required, especially the section on [Features](https://github.com/sayanee/angularjs-pdf#features)
-- run `grunt bumps`, `grunt bumps --type=minor` or `grunt bumps --type=major` according semantic version
-- copy the `example` folder
-- change to branch `gh-pages`
-- copy the `example` folder from `master` branch
-- commit code in `gh-pages` and `git push origin gh-pages` to publish the [examples page](http://sayan.ee/angularjs-pdf/)
+1. run `npm run release patch`, `npm run release minor` or `npm run release major` according semantic version
+- done :tada:
+
+> `npm run release` also update `gh-pages` then you don't need to update manually
 
 ##Angular-PDF is an OPEN Open Source Project
 

@@ -1,0 +1,34 @@
+files:
+  - package.json
+  - bower.json
+plugins:
+  prerelease:
+    Linting config files:
+      plugin: bumped-finepack
+    Detecting problems before release:
+      plugin: bumped-terminal
+      command: 'npm run test'
+  postrelease:
+    Build new Release:
+      plugin: bumped-terminal
+      command: 'npm run clean && npm run build && npm run build-min'
+    Generating CHANGELOG file:
+      plugin: bumped-changelog
+    Commiting new version:
+      plugin: bumped-terminal
+      command: 'git add CHANGELOG.md package.json bower.json dist/ && git commit -m "Release $newVersion"'
+    Publishing tag to GitHub:
+      plugin: bumped-terminal
+      command: 'git tag $newVersion && git push && git push --tags'
+    Publishing to NPM:
+      plugin: bumped-terminal
+      command: npm publish
+    Prepare gh-pages:
+      plugin: bumped-terminal
+      command: 'cp -r example ghpages && cp dist/angular-pdf.min.js ghpages'
+    Update gh-pages:
+      plugin: 'bumped-gh-pages'
+      folder: 'ghpages'
+    Clean gh-pages temporary folder:
+      plugin: bumped-terminal
+      command: 'rm -rf ghpages'

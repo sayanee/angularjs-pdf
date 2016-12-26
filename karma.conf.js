@@ -1,11 +1,13 @@
 // Karma configuration
 // Generated on Tue Dec 15 2015 22:21:55 GMT+0100 (CET)
+var webpackConfig = require('./webpack.config.js');
+webpackConfig.devtool = 'inline-source-map';
 
 module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '../',
+    basePath: '',
 
 
     // frameworks to use
@@ -17,15 +19,14 @@ module.exports = function(config) {
     files: [
       {pattern: 'example/pdf/relativity.pdf', included: false, served: true},
       {pattern: 'example/pdf/relativity.protected.pdf', included: false, served: true},
-      'bower_components/pdfjs-dist/web/compatibility.js',
-      'example/js/lib/pdf.js',
-      'example/js/lib/pdf.worker.js',
-      'example/js/lib/angular.min.js',
+      { watched: false, included: true, nocache: true, pattern: 'node_modules/angular/angular.js'},
+      { watched: false, included: true, nocache: true, pattern: 'node_modules/pdfjs-dist/build/pdf.worker.js'},
+      { watched: false, included: true, nocache: true, pattern: 'node_modules/pdfjs-dist/build/pdf.js'},
+      'src/angular-pdf.js',
       'example/js/app.js',
       'example/js/controllers/docCtrl.js',
-      'dist/angular-pdf.min.js',
       'example/partials/*.html',
-      'bower_components/angular-mocks/angular-mocks.js',
+      'node_modules/angular-mocks/angular-mocks.js',
       'test/spec/*.js'
     ],
 
@@ -37,7 +38,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'example/partials/*.html': ['ng-html2js']
+        'src/angular-pdf.js': ['webpack', 'sourcemap'],
+        'example/partials/*.html': ['ng-html2js'],
     },
 
     proxies: {
@@ -63,7 +65,7 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
+    autoWatch: true,
 
 
     // start these browsers
@@ -75,14 +77,15 @@ module.exports = function(config) {
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: true,
 
-    // Concurrency level
-    // how many browser should be started simultanous
-    concurrency: Infinity,
-
     ngHtml2JsPreprocessor: {
       // strip this from the file path
       stripPrefix: 'example/',
       moduleName: 'my.templates'
+    },
+    webpack: webpackConfig,
+
+    webpackMiddleware: {
+      noInfo: true
     }
   })
 }
