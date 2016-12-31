@@ -47,6 +47,9 @@ var config = {
           presets: [
             "latest",
           ],
+          plugins: [
+            "istanbul"
+          ]
         }
       }
     ],
