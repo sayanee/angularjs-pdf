@@ -11,7 +11,7 @@ var isTest = ENV === 'test' || ENV === 'test-watch';
 var isProd = ENV === 'build';
 
 var config = {
-  entry: "./src/angular-pdf.js",
+  entry: "./src/angular-pdf.module.js",
   devtool: (isProd) ? 'source-map' : 'inline-source-map',
   plugins: [
     new webpack.DefinePlugin({

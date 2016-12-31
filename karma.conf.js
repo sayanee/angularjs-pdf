@@ -22,8 +22,8 @@ module.exports = function(config) {
       { watched: false, included: true, nocache: true, pattern: 'node_modules/angular/angular.js'},
       { watched: false, included: true, nocache: true, pattern: 'node_modules/pdfjs-dist/build/pdf.worker.js'},
       { watched: false, included: true, nocache: true, pattern: 'node_modules/pdfjs-dist/build/pdf.js'},
-      'src/angular-pdf.js',
       'example/js/app.js',
+      'src/angular-pdf.module.js',
       'example/js/controllers/docCtrl.js',
       'example/partials/*.html',
       'node_modules/angular-mocks/angular-mocks.js',
@@ -38,7 +38,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'src/angular-pdf.js': ['webpack', 'sourcemap'],
+        'src/angular-pdf.module.js': ['webpack', 'sourcemap'],
         'example/partials/*.html': ['ng-html2js'],
     },
 
