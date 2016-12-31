@@ -1,12 +1,10 @@
-angular.module('pdf', []).directive('ngPdf', function($window, $document, $log) {
-  var renderTask = null;
-  var pdfLoaderTask = null;
-  var debug = false;
+export const NgPdf = ($window, $document, $log) => {
+  'ngInject';
 
-  var backingScale = function(canvas) {
-    var ctx = canvas.getContext('2d');
-    var dpr = $window.devicePixelRatio || 1;
-    var bsr = ctx.webkitBackingStorePixelRatio ||
+  const backingScale = canvas => {
+    const ctx = canvas.getContext('2d');
+    const dpr = $window.devicePixelRatio || 1;
+    const bsr = ctx.webkitBackingStorePixelRatio ||
       ctx.mozBackingStorePixelRatio ||
       ctx.msBackingStorePixelRatio ||
       ctx.oBackingStorePixelRatio ||
@@ -15,38 +13,43 @@ angular.module('pdf', []).directive('ngPdf', function($window, $document, $log) 
     return dpr / bsr;
   };
 
-  var setCanvasDimensions = function(canvas, w, h) {
-    var ratio = backingScale(canvas);
+  const setCanvasDimensions = (canvas, w, h) => {
+    const ratio = backingScale(canvas);
     canvas.width = Math.floor(w * ratio);
     canvas.height = Math.floor(h * ratio);
-    canvas.style.width = Math.floor(w) + 'px';
-    canvas.style.height = Math.floor(h) + 'px';
+    canvas.style.width = `${Math.floor(w)}px`;
+    canvas.style.height = `${Math.floor(h)}px`;
     canvas.getContext('2d').setTransform(ratio, 0, 0, ratio, 0, 0);
     return canvas;
   };
+
   return {
     restrict: 'E',
-    templateUrl: function(element, attr) {
+    templateUrl(element, attr) {
       return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html';
     },
-    link: function(scope, element, attrs) {
-      element.css('display', 'block');
-      var url = scope.pdfUrl;
-      var httpHeaders = scope.httpHeaders;
-      var pdfDoc = null;
-      var pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
-      var pageFit = attrs.scale === 'page-fit';
-      var scale = attrs.scale > 0 ? attrs.scale : 1;
-      var canvasid = attrs.canvasid || 'pdf-canvas';
-      var canvas = $document[0].getElementById(canvasid);
-
+    link(scope, element, attrs) {
+      let renderTask = null;
+      let pdfLoaderTask = null;
+      let debug = false;
+      let url = scope.pdfUrl;
+      let httpHeaders = scope.httpHeaders;
+      let pdfDoc = null;
+      let pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
+      let pageFit = attrs.scale === 'page-fit';
+      let scale = attrs.scale > 0 ? attrs.scale : 1;
+      let canvasid = attrs.canvasid || 'pdf-canvas';
+      let canvas = $document[0].getElementById(canvasid);
+      let creds = attrs.usecredentials;
       debug = attrs.hasOwnProperty('debug') ? attrs.debug : false;
-      var creds = attrs.usecredentials;
-      var ctx = canvas.getContext('2d');
-      var windowEl = angular.element($window);
 
-      windowEl.on('scroll', function() {
-        scope.$apply(function() {
+      let ctx = canvas.getContext('2d');
+      let windowEl = angular.element($window);
+
+      element.css('display', 'block');
+
+      windowEl.on('scroll', () => {
+        scope.$apply(() => {
           scope.scroll = windowEl[0].scrollY;
         });
       });
@@ -54,19 +57,19 @@ angular.module('pdf', []).directive('ngPdf', function($window, $document, $log) 
       PDFJS.disableWorker = true;
       scope.pageNum = pageToDisplay;
 
-      scope.renderPage = function(num) {
+      scope.renderPage = num => {
         if (renderTask) {
           renderTask._internalRenderTask.cancel();
         }
 
-        pdfDoc.getPage(num).then(function(page) {
-          var viewport;
-          var pageWidthScale;
-          var renderContext;
+        pdfDoc.getPage(num).then(page => {
+          let viewport;
+          let pageWidthScale;
+          let renderContext;
 
           if (pageFit) {
             viewport = page.getViewport(1);
-            var clientRect = element[0].getBoundingClientRect();
+            const clientRect = element[0].getBoundingClientRect();
             pageWidthScale = clientRect.width / viewport.width;
             scale = pageWidthScale;
           }
@@ -76,21 +79,21 @@ angular.module('pdf', []).directive('ngPdf', function($window, $document, $log) 
 
           renderContext = {
             canvasContext: ctx,
-            viewport: viewport
+            viewport
           };
 
           renderTask = page.render(renderContext);
-          renderTask.promise.then(function() {
+          renderTask.promise.then(() => {
             if (angular.isFunction(scope.onPageRender)) {
               scope.onPageRender();
             }
-          }).catch(function (reason) {
+          }).catch(reason => {
             $log.log(reason);
           });
         });
       };
 
-      scope.goPrevious = function() {
+      scope.goPrevious = () => {
         if (scope.pageToDisplay <= 1) {
           return;
         }
@@ -98,7 +101,7 @@ angular.module('pdf', []).directive('ngPdf', function($window, $document, $log) 
         scope.pageNum = scope.pageToDisplay;
       };
 
-      scope.goNext = function() {
+      scope.goNext = () => {
         if (scope.pageToDisplay >= pdfDoc.numPages) {
           return;
         }
@@ -106,30 +109,30 @@ angular.module('pdf', []).directive('ngPdf', function($window, $document, $log) 
         scope.pageNum = scope.pageToDisplay;
       };
 
-      scope.zoomIn = function() {
+      scope.zoomIn = () => {
         pageFit = false;
         scale = parseFloat(scale) + 0.2;
         scope.renderPage(scope.pageToDisplay);
         return scale;
       };
 
-      scope.zoomOut = function() {
+      scope.zoomOut = () => {
         pageFit = false;
         scale = parseFloat(scale) - 0.2;
         scope.renderPage(scope.pageToDisplay);
         return scale;
       };
 
-      scope.fit = function() {
+      scope.fit = () => {
         pageFit = true;
         scope.renderPage(scope.pageToDisplay);
       }
 
-      scope.changePage = function() {
+      scope.changePage = () => {
         scope.renderPage(scope.pageToDisplay);
       };
 
-      scope.rotate = function() {
+      scope.rotate = () => {
         if (canvas.getAttribute('class') === 'rotate0') {
           canvas.setAttribute('class', 'rotate90');
         } else if (canvas.getAttribute('class') === 'rotate90') {
@@ -150,7 +153,7 @@ angular.module('pdf', []).directive('ngPdf', function($window, $document, $log) 
       function renderPDF() {
         clearCanvas();
 
-        var params = {
+        let params = {
           'url': url,
           'withCredentials': creds
         };
@@ -164,36 +167,36 @@ angular.module('pdf', []).directive('ngPdf', function($window, $document, $log) 
           pdfLoaderTask.onProgress = scope.onProgress;
           pdfLoaderTask.onPassword = scope.onPassword;
           pdfLoaderTask.then(
-              function(_pdfDoc) {
-                if (angular.isFunction(scope.onLoad)) {
-                  scope.onLoad();
-                }
+            _pdfDoc => {
+              if (angular.isFunction(scope.onLoad)) {
+                scope.onLoad();
+              }
 
-                pdfDoc = _pdfDoc;
-                scope.renderPage(scope.pageToDisplay);
+              pdfDoc = _pdfDoc;
+              scope.renderPage(scope.pageToDisplay);
 
-                scope.$apply(function() {
-                  scope.pageCount = _pdfDoc.numPages;
-                });
-              }, function(error) {
-                if (error) {
-                  if (angular.isFunction(scope.onError)) {
-                    scope.onError(error);
-                  }
+              scope.$apply(() => {
+                scope.pageCount = _pdfDoc.numPages;
+              });
+            }, error => {
+              if (error) {
+                if (angular.isFunction(scope.onError)) {
+                  scope.onError(error);
                 }
               }
+            }
           );
         }
       }
 
-      scope.$watch('pageNum', function(newVal) {
+      scope.$watch('pageNum', newVal => {
         scope.pageToDisplay = parseInt(newVal);
         if (pdfDoc !== null) {
           scope.renderPage(scope.pageToDisplay);
         }
       });
 
-      scope.$watch('pdfUrl', function(newVal) {
+      scope.$watch('pdfUrl', newVal => {
         if (newVal !== '') {
           if (debug) {
             $log.log('pdfUrl value change detected: ', scope.pdfUrl);
@@ -201,7 +204,7 @@ angular.module('pdf', []).directive('ngPdf', function($window, $document, $log) 
           url = newVal;
           scope.pageNum = scope.pageToDisplay = pageToDisplay;
           if (pdfLoaderTask) {
-            pdfLoaderTask.destroy().then(function () {
+            pdfLoaderTask.destroy().then(() => {
               renderPDF();
             });
           } else {
@@ -209,7 +212,6 @@ angular.module('pdf', []).directive('ngPdf', function($window, $document, $log) 
           }
         }
       });
-
     }
-  };
-});
+  }
+}

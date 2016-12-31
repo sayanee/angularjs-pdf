@@ -12,7 +12,7 @@ var isProdMin = ENV === 'build-min';
 var isProd = ENV === 'build' || isProdMin;
 
 var config = {
-  entry: "./src/angular-pdf.js",
+  entry: "./src/angular-pdf.module.js",
   devtool: (isProd) ? 'source-map' : 'inline-source-map',
   plugins: [
     new webpack.DefinePlugin({
