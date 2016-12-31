@@ -1,4 +1,4 @@
-# angular-pdf [![Build Status](https://travis-ci.org/sayanee/angularjs-pdf.svg)](https://travis-ci.org/sayanee/angularjs-pdf) [![Dependency Status](https://gemnasium.com/sayanee/angularjs-pdf.svg)](https://gemnasium.com/sayanee/angularjs-pdf)
+# angular-pdf [![Build Status](https://travis-ci.org/sayanee/angularjs-pdf.svg)](https://travis-ci.org/sayanee/angularjs-pdf) [![Dependency Status](https://gemnasium.com/sayanee/angularjs-pdf.svg)](https://gemnasium.com/sayanee/angularjs-pdf) [![codecov](https://codecov.io/gh/sayanee/angularjs-pdf/branch/master/graph/badge.svg)](https://codecov.io/gh/sayanee/angularjs-pdf)
 
 Version: 1.5.1
 

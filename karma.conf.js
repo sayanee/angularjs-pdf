@@ -49,7 +49,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
 
 
     // web server port
@@ -81,6 +81,15 @@ module.exports = function(config) {
       // strip this from the file path
       stripPrefix: 'example/',
       moduleName: 'my.templates'
+    },
+    coverageReporter: {
+      reporters: [
+        { type: 'html', subdir: '.' },
+        { type: 'text' },
+        { type:'lcovonly', subdir: '.'},
+        { type:'json', subdir: '.' },
+      ],
+      dir : 'coverage/'
     },
     webpack: webpackConfig,
 
