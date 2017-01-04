@@ -35,8 +35,8 @@
     "phantomjs-prebuilt": "^2.1.4"
   },
   "scripts": {
+    "bower": "bower",
     "build": "grunt",
-    "postinstall": "bower install",
     "start": "http-server ./example -p 8081",
     "test": "grunt --verbose"
   }
