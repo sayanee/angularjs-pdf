@@ -1,6 +1,6 @@
 {
   "name": "angular-pdf",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "An Angularjs directive <ng-pdf> to display PDF in the browser with PDFJS.",
   "main": "./dist/angular-pdf.js",
   "license": "MIT",
