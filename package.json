@@ -1,43 +1,68 @@
 {
   "name": "angular-pdf",
+  "description": "An Angularjs directive <ng-pdf> to display PDF in the browser with PDFJS.",
+  "homepage": "https://github.com/sayanee/angular-pdf#readme",
   "version": "1.5.0",
   "main": "dist/angular-pdf.js",
-  "author": "Sayanee <sayanee@gmail.com>",
-  "description": "An Angularjs directive <ng-pdf> to display PDF in the browser with PDFJS.",
+  "author": {
+    "email": "sayanee@gmail.com",
+    "name": "Sayanee"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sayanee/angular-pdf.git"
+    "url": "git+https://github.com/sayanee/angular-pdf.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sayanee/angular-pdf/issues"
   },
   "keywords": [
     "pdf",
     "angular",
     "directive"
   ],
-  "license": "MIT",
+  "peerDependencies": {
+    "angular": "^1.5.0",
+    "pdfjs-dist": "^1.6.0"
+  },
   "devDependencies": {
-    "bower": "1.8.0",
-    "grunt": "^1.0.0",
-    "grunt-bump": "0.8.0",
-    "grunt-cli": "^1.2.0",
-    "grunt-contrib-clean": "^1.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-jshint": "^1.1.0",
-    "grunt-contrib-uglify": "^2.0.0",
-    "grunt-jscs": "^3.0.1",
-    "grunt-jsonlint": "^1.1.0",
-    "grunt-karma": "^2.0.0",
-    "http-server": "^0.8.5",
+    "angular": "^1.5.0",
+    "pdfjs-dist": "^1.6.0",
+    "angular-mocks": "^1.6.1",
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.21.0",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-istanbul": "^3.0.0",
+    "babel-preset-latest": "^6.16.0",
+    "bumped": "^0.10.3",
+    "eslint": "^3.12.2",
+    "eslint-config-angular": "^0.5.0",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-angular": "^1.6.1",
+    "html-webpack-plugin": "^2.24.1",
     "jasmine-core": "^2.4.1",
+    "jscs": "~3.0.5",
+    "jscs-loader": "^0.3.0",
     "karma": "^1.3.0",
+    "karma-coverage": "^1.1.1",
     "karma-jasmine": "^1.1.0",
     "karma-ng-html2js-preprocessor": "^1.0.0",
     "karma-phantomjs-launcher": "^1.0.2",
-    "phantomjs-prebuilt": "^2.1.4"
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^1.8.1",
+    "ng-annotate-loader": "^0.2.0",
+    "phantomjs-prebuilt": "^2.1.4",
+    "webpack": "^1.14.0",
+    "webpack-dev-server": "^1.16.2"
   },
   "scripts": {
-    "bower": "bower",
-    "build": "grunt",
-    "start": "http-server ./example -p 8081",
-    "test": "grunt --verbose"
-  }
+    "build": "rimraf dist && webpack --progress --profile",
+    "release": "bumped release",
+    "start": "webpack-dev-server --history-api-fallback --inline --progress",
+    "test": "karma start"
+  },
+  "engines": {
+    "node": ">=4.3.2"
+  },
+  "license": "MIT"
 }
