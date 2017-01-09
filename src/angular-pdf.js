@@ -1,7 +1,22 @@
 /*! Angular-PDF Version: 1.5.0 | Released under an MIT license */
-(function() {
-
+(function (root, factory) {
   'use strict';
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define([ 'angular', 'pdfjs-dist/build/pdf' ], factory);
+  } else if (typeof module !== 'undefined' && typeof module.exports === 'object') {
+    // CommonJS support (for us webpack/browserify/ComponentJS folks)
+    var angular = window.angular || require('angular');
+    var pdf = window.PDFJS ? { PDFJS: window.PDFJS } : require('pdfjs-dist/build/pdf');
+    module.exports = factory(angular, pdf);
+  } else {
+    // in the case of no module loading system
+    return factory(root.angular, { PDFJS: root.PDFJS });
+  }
+}(this, function (angular, pdf) {
+  // Use strict in our context only - users might not want it
+  'use strict';
+  var PDFJS = pdf.PDFJS;
 
   angular.module('pdf', []).directive('ngPdf', [ '$window', function($window) {
     var renderTask = null;
@@ -218,4 +233,4 @@
       }
     };
   } ]);
-})();
+}));
