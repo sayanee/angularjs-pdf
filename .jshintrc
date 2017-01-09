@@ -32,7 +32,9 @@
     "console": true,
     "window": true,
     "document": true,
-    "PDFJS": true
+    "PDFJS": true,
+    "define": true,
+    "require": true
   },
 
   "asi": true,
