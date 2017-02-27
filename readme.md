@@ -50,7 +50,7 @@ Check [`bower.json` file](https://github.com/sayanee/angularjs-pdf/blob/master/b
 - Include the directive as a dependency when defining the angular app:
 
     ```js
-    var app = angular.module('App', ['pdf']);
+    var app = angular.module('App', ['angular-pdf-js']);
     ```
 - Include the directive with the attribute path to the partial under a controller
 
