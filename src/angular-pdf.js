@@ -4,9 +4,6 @@
   'use strict';
 
   angular.module('pdf', []).directive('ngPdf', [ '$window', function($window) {
-    var renderTask = null;
-    var pdfLoaderTask = null;
-    var debug = false;
 
     var backingScale = function(canvas) {
       var ctx = canvas.getContext('2d');
@@ -29,6 +26,7 @@
       canvas.getContext('2d').setTransform(ratio, 0, 0, ratio, 0, 0);
       return canvas;
     };
+
     return {
       restrict: 'E',
       templateUrl: function(element, attr) {
@@ -42,10 +40,11 @@
         var pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
         var pageFit = attrs.scale === 'page-fit';
         var scale = attrs.scale > 0 ? attrs.scale : 1;
-        var canvasid = attrs.canvasid || 'pdf-canvas';
-        var canvas = document.getElementById(canvasid);
-
-        debug = attrs.hasOwnProperty('debug') ? attrs.debug : false;
+        var canvasClassName = attrs.canvasClassName || 'pdfCanvas';
+        var canvas = element[0].getElementsByClassName(canvasClassName)[0];
+        var renderTask = null;
+        var pdfLoaderTask = null;
+        var debug = attrs.hasOwnProperty('debug') ? attrs.debug : false;
         var creds = attrs.usecredentials;
         var ctx = canvas.getContext('2d');
         var windowEl = angular.element($window);
