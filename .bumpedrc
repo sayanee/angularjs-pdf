@@ -25,7 +25,7 @@ plugins:
       command: npm publish
     Prepare gh-pages:
       plugin: bumped-terminal
-      command: 'cp -r example ghpages && cp dist/angular-pdf.min.js ghpages'
+      command: 'cp -r example ghpages && cp dist/angular-pdf.min.js* ghpages'
     Update gh-pages:
       plugin: 'bumped-gh-pages'
       folder: 'ghpages'

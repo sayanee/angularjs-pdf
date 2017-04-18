@@ -10,6 +10,7 @@ var ENV = process.env.npm_lifecycle_event;
 var isTest = ENV === 'test' || ENV === 'test-watch';
 var isProdMin = ENV === 'build-min';
 var isProd = ENV === 'build' || isProdMin;
+var isExecuting = ENV === 'start';
 
 var config = {
   entry: "./src/angular-pdf.module.js",
@@ -91,7 +92,7 @@ if (isProd) {
 config.output = isTest ? {} : {
   path: __dirname + '/dist',
   publicPath: isProd ? '/' : 'http://localhost:8080/',
-  filename: "angular-pdf" + (isProdMin ? ".min" : "") + ".js",
+  filename: "angular-pdf" + (isProdMin || isExecuting ? ".min" : "") + ".js",
   library: "pdf",
   libraryTarget: "umd",
   umdNamedDefine: true
