@@ -5,10 +5,15 @@
 ## for fixes
 
 1. This is for a fix or a patch for a found bug
-- Fork this project and install the packages with npm and bower
+- Fork this project and install the packages with npm
 
   ```
-  npm install && npm run bower install
+  npm install
+  ```
+- Install peer dependencies with npm
+
+  ```
+  npm install angular pdfjs-dist
   ```
 - Create a new patch branch
 - Code code code and amend the file `src/angular-pdf.js`
