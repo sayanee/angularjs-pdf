@@ -1,8 +1,8 @@
 {
   "name": "angular-pdf",
-  "version": "1.5.1",
   "description": "An Angularjs directive <ng-pdf> to display PDF in the browser with PDFJS.",
   "homepage": "https://github.com/sayanee/angular-pdf#readme",
+  "version": "1.6.0",
   "main": "dist/angular-pdf.js",
   "author": {
     "email": "sayanee@gmail.com",
@@ -16,14 +16,10 @@
     "url": "https://github.com/sayanee/angular-pdf/issues"
   },
   "keywords": [
-    "pdf",
     "angular",
-    "directive"
+    "directive",
+    "pdf"
   ],
-  "peerDependencies": {
-    "angular": "^1.5.0",
-    "pdfjs-dist": "^1.6.0"
-  },
   "devDependencies": {
     "angular-mocks": "^1.6.1",
     "babel-cli": "^6.18.0",
@@ -54,6 +50,9 @@
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.2"
   },
+  "engines": {
+    "node": ">=4.3.2"
+  },
   "scripts": {
     "build": "webpack --progress --profile",
     "build-min": "webpack --progress --profile",
@@ -62,8 +61,9 @@
     "start": "webpack-dev-server --history-api-fallback --inline --progress",
     "test": "karma start"
   },
-  "engines": {
-    "node": ">=4.3.2"
-  },
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependencies": {
+    "angular": "^1.5.0",
+    "pdfjs-dist": "^1.6.0"
+  }
 }

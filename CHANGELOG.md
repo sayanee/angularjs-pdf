@@ -1,3 +1,14 @@
+<a name="1.6.0"></a>
+# 1.6.0 (2017-04-18)
+
+* karma: add coverage ([fc1d3da](https://github.com/sayanee/angular-pdf/commit/fc1d3da))
+* angular-pdf: rewrite entire module in es6 ([689caf8](https://github.com/sayanee/angular-pdf/commit/689caf8))
+* updating angularjs in example folder from 1.6.0 to 1.6.2 ([68066e8](https://github.com/sayanee/angular-pdf/commit/68066e8))
+* npm: use webpack2 instead of grunt ([98cf069](https://github.com/sayanee/angular-pdf/commit/98cf069))
+* travis: remove 0.10 test suite ([85fbf1e](https://github.com/sayanee/angular-pdf/commit/85fbf1e))
+
+
+
 <a name="1.5.1"></a>
 ## 1.5.0 (2017-01-05)
 
