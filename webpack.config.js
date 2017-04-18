@@ -30,29 +30,6 @@ var config = {
   },
   module: {
     rules: [{
-      enforce: 'pre',
-      test: /\.js$/,
-      exclude: /node_modules/,
-      loader: 'jscs-loader',
-      query: {
-        validateIndentation: 2,
-        emitErrors: true,
-        failOnHint: true,
-      }
-    }, {
-      enforce: 'pre',
-      test: /\.js$/,
-      loader: "eslint-loader",
-      exclude: /node_modules/,
-      query: {
-        parserOptions: {
-          ecmaVersion: 6,
-          sourceType: "module"
-        },
-        emitError: true,
-        failOnError: true,
-      }
-    }, {
       test: /src.*\.js$/,
       loader: 'ng-annotate-loader'
     }, {
