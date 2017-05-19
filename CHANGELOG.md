@@ -1,3 +1,10 @@
+<a name="1.6.1"></a>
+## 1.6.1 (2017-05-19)
+
+* webpack: fixing use of istanbul plugin only for test builds ([8e6daab](https://github.com/sayanee/angular-pdf/commit/8e6daab))
+
+
+
 <a name="1.6.0"></a>
 # 1.6.0 (2017-04-18)
 
