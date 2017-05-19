@@ -62,9 +62,9 @@ var config = {
         presets: [
           "latest",
         ],
-        plugins: [
+        plugins: isTest ? [
           "istanbul"
-        ]
+        ] : undefined
       }
     }
     ],
