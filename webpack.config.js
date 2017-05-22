@@ -10,6 +10,7 @@ var ENV = process.env.npm_lifecycle_event;
 var isTest = ENV === 'test' || ENV === 'test-watch';
 var isProdMin = ENV === 'build-min';
 var isProd = ENV === 'build' || isProdMin;
+var isExecuting = ENV === 'start';
 
 var config = {
   entry: "./src/angular-pdf.module.js",
@@ -29,29 +30,6 @@ var config = {
   },
   module: {
     rules: [{
-      enforce: 'pre',
-      test: /\.js$/,
-      exclude: /node_modules/,
-      loader: 'jscs-loader',
-      query: {
-        validateIndentation: 2,
-        emitErrors: true,
-        failOnHint: true,
-      }
-    }, {
-      enforce: 'pre',
-      test: /\.js$/,
-      loader: "eslint-loader",
-      exclude: /node_modules/,
-      query: {
-        parserOptions: {
-          ecmaVersion: 6,
-          sourceType: "module"
-        },
-        emitError: true,
-        failOnError: true,
-      }
-    }, {
       test: /src.*\.js$/,
       loader: 'ng-annotate-loader'
     }, {
@@ -91,7 +69,7 @@ if (isProd) {
 config.output = isTest ? {} : {
   path: __dirname + '/dist',
   publicPath: isProd ? '/' : 'http://localhost:8080/',
-  filename: "angular-pdf" + (isProdMin ? ".min" : "") + ".js",
+  filename: "angular-pdf" + (isProdMin || isExecuting ? ".min" : "") + ".js",
   library: "pdf",
   libraryTarget: "umd",
   umdNamedDefine: true
