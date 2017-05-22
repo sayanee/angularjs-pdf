@@ -1,3 +1,15 @@
+<a name="1.6.2"></a>
+## 1.6.2 (2017-05-22)
+
+* removing old angular-pdf.min.js in example folder ([5553bda](https://github.com/sayanee/angular-pdf/commit/5553bda))
+* removing version from README ([75ab9ef](https://github.com/sayanee/angular-pdf/commit/75ab9ef))
+* updating CONTRIBUTING file with peerDeps installation ([c71fb3b](https://github.com/sayanee/angular-pdf/commit/c71fb3b))
+* updating pdfjs-dist into bower.json ([a0bc438](https://github.com/sayanee/angular-pdf/commit/a0bc438))
+* webpack: removing eslint and jscs loader ([e1aa4ca](https://github.com/sayanee/angular-pdf/commit/e1aa4ca))
+* bumped: fixing preparation of gh-pages ([8a6dcb2](https://github.com/sayanee/angular-pdf/commit/8a6dcb2))
+
+
+
 <a name="1.6.1"></a>
 ## 1.6.1 (2017-05-19)
 
