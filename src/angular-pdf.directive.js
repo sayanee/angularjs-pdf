@@ -37,6 +37,7 @@ export const NgPdf = ($window, $document, $log) => {
       let pdfDoc = null;
       let pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
       let pageFit = attrs.scale === 'page-fit';
+      let limitHeight = attrs.limitcanvasheight === '1';
       let scale = attrs.scale > 0 ? attrs.scale : 1;
       let canvasid = attrs.canvasid || 'pdf-canvas';
       let canvas = $document[0].getElementById(canvasid);
@@ -71,6 +72,9 @@ export const NgPdf = ($window, $document, $log) => {
             viewport = page.getViewport(1);
             const clientRect = element[0].getBoundingClientRect();
             pageWidthScale = clientRect.width / viewport.width;
+            if (limitHeight) {
+              pageWidthScale = Math.min(pageWidthScale, clientRect.height / viewport.height);
+            }
             scale = pageWidthScale;
           }
           viewport = page.getViewport(scale);
