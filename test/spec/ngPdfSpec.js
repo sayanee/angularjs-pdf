@@ -40,6 +40,18 @@ describe('ngPdf', function() {
       $scope.goNext();
       expect($scope.pageNum).toBe(13);
   });
+
+  it('zoomIn increase the scale by 0.2', function() {
+    var scale = $scope.zoomIn();
+    var zoomed_scale = $scope.zoomIn();
+    expect(zoomed_scale - scale).toBeCloseTo(0.2);
+  });
+
+  it('zoomOut decrease the scale by 0.2', function() {
+    var scale = $scope.zoomOut();
+    var zoomed_scale = $scope.zoomOut();
+    expect(zoomed_scale - scale).toBeCloseTo(-0.2);
+  });
 });
 
 describe('ngPdf protected', function() {
