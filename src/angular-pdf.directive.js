@@ -22,6 +22,11 @@ export const NgPdf = ($window, $document, $log) => {
     canvas.getContext('2d').setTransform(ratio, 0, 0, ratio, 0, 0);
     return canvas;
   };
+  
+  const initCanvas = (element, canvas) => {
+    angular.element(canvas).addClass('rotate0');
+    element.append(canvas);
+  };
 
   return {
     restrict: 'E',
@@ -39,7 +44,8 @@ export const NgPdf = ($window, $document, $log) => {
       let pageFit = attrs.scale === 'page-fit';
       let scale = attrs.scale > 0 ? attrs.scale : 1;
       let canvasid = attrs.canvasid || 'pdf-canvas';
-      let canvas = $document[0].getElementById(canvasid);
+      let canvas = $document[0].createElement('canvas');
+      initCanvas(element, canvas);
       let creds = attrs.usecredentials;
       debug = attrs.hasOwnProperty('debug') ? attrs.debug : false;
 
