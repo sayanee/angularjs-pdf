@@ -23,9 +23,9 @@ describe('ngPdf', function() {
   }));
 
   beforeEach(function(done){
-      setTimeout(function() {
-        done();
-      }, 9000);
+    setTimeout(function() {
+      done();
+    }, 9000);
   }, 10000);
 
   it('ng-pdf must have 1 canvas', function() {
@@ -34,11 +34,11 @@ describe('ngPdf', function() {
   });
 
   it('goNext and goPrevious change page', function(){
-      expect($scope.pageNum).toBe(13);
-      $scope.goPrevious();
-      expect($scope.pageNum).toBe(12);
-      $scope.goNext();
-      expect($scope.pageNum).toBe(13);
+    expect($scope.pageNum).toBe(13);
+    $scope.goPrevious();
+    expect($scope.pageNum).toBe(12);
+    $scope.goNext();
+    expect($scope.pageNum).toBe(13);
   });
 
   it('zoomIn increase the scale by 0.2', function() {
@@ -80,9 +80,9 @@ describe('ngPdf protected', function() {
   }));
 
   beforeEach(function(done){
-      setTimeout(function() {
-        done();
-      }, 9000);
+    setTimeout(function() {
+      done();
+    }, 9000);
   }, 10000);
 
   it('should call onPassword function', function() {
