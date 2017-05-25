@@ -43,7 +43,6 @@ export const NgPdf = ($window, $document, $log) => {
       let pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
       let pageFit = attrs.scale === 'page-fit';
       let scale = attrs.scale > 0 ? attrs.scale : 1;
-      let canvasid = attrs.canvasid || 'pdf-canvas';
       let canvas = $document[0].createElement('canvas');
       initCanvas(element, canvas);
       let creds = attrs.usecredentials;
