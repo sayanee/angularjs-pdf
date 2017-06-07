@@ -1,6 +1,6 @@
 /*!
  * Angular-PDF: An Angularjs directive <ng-pdf> to display PDF in the browser with PDFJS.
- * @version 1.6.3
+ * @version 2.0.0
  * @link https://github.com/sayanee/angular-pdf#readme
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
@@ -114,6 +114,11 @@ var NgPdf = exports.NgPdf = ["$window", "$document", "$log", function NgPdf($win
     return canvas;
   };
 
+  var initCanvas = function initCanvas(element, canvas) {
+    angular.element(canvas).addClass('rotate0');
+    element.append(canvas);
+  };
+
   return {
     restrict: 'E',
     templateUrl: function templateUrl(element, attr) {
@@ -128,9 +133,10 @@ var NgPdf = exports.NgPdf = ["$window", "$document", "$log", function NgPdf($win
       var pdfDoc = null;
       var pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
       var pageFit = attrs.scale === 'page-fit';
+      var limitHeight = attrs.limitcanvasheight === '1';
       var scale = attrs.scale > 0 ? attrs.scale : 1;
-      var canvasid = attrs.canvasid || 'pdf-canvas';
-      var canvas = $document[0].getElementById(canvasid);
+      var canvas = $document[0].createElement('canvas');
+      initCanvas(element, canvas);
       var creds = attrs.usecredentials;
       debug = attrs.hasOwnProperty('debug') ? attrs.debug : false;
 
@@ -162,6 +168,9 @@ var NgPdf = exports.NgPdf = ["$window", "$document", "$log", function NgPdf($win
             viewport = page.getViewport(1);
             var clientRect = element[0].getBoundingClientRect();
             pageWidthScale = clientRect.width / viewport.width;
+            if (limitHeight) {
+              pageWidthScale = Math.min(pageWidthScale, clientRect.height / viewport.height);
+            }
             scale = pageWidthScale;
           }
           viewport = page.getViewport(scale);
@@ -327,6 +336,8 @@ var _angularPdf = __webpack_require__("./src/angular-pdf.directive.js");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Pdf = exports.Pdf = _angular2.default.module('pdf', []).directive('ngPdf', _angularPdf.NgPdf).name;
+
+exports.default = Pdf;
 
 /***/ }),
 

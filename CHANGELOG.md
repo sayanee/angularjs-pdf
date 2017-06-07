@@ -1,3 +1,16 @@
+<a name="2.0.0"></a>
+# 2.0.0 (2017-06-07)
+
+* create canvas from directive ([b83f912](https://github.com/sayanee/angular-pdf/commit/b83f912))
+* module export default name ([2f22d71](https://github.com/sayanee/angular-pdf/commit/2f22d71))
+* remove canvasid ([643e50b](https://github.com/sayanee/angular-pdf/commit/643e50b))
+* reordering .bumpedrc, leaving npm publish as last instruction ([9925bac](https://github.com/sayanee/angular-pdf/commit/9925bac))
+* This patch adds an attribute that, combined with `scale='page-fit'`, ([babece6](https://github.com/sayanee/angular-pdf/commit/babece6)), closes [#128](https://github.com/sayanee/angular-pdf/issues/128) [#127](https://github.com/sayanee/angular-pdf/issues/127)
+* test: fixup indentation ([2f74c4b](https://github.com/sayanee/angular-pdf/commit/2f74c4b))
+* test: test the zoom functions ([21ff889](https://github.com/sayanee/angular-pdf/commit/21ff889))
+
+
+
 <a name="1.6.3"></a>
 ## 1.6.3 (2017-05-22)
 
