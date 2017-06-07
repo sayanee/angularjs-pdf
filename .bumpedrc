@@ -20,9 +20,6 @@ plugins:
     Publishing tag to GitHub:
       plugin: bumped-terminal
       command: 'git tag $newVersion && git push && git push --tags'
-    Publishing to NPM:
-      plugin: bumped-terminal
-      command: npm publish
     Prepare gh-pages:
       plugin: bumped-terminal
       command: 'cp -r example ghpages && cp dist/angular-pdf.min.js* ghpages'
@@ -32,3 +29,6 @@ plugins:
     Clean gh-pages temporary folder:
       plugin: bumped-terminal
       command: 'rm -rf ghpages'
+    Publishing to NPM:
+      plugin: bumped-terminal
+      command: npm publish
