@@ -7,9 +7,7 @@ app.controller('DocCtrl', function($scope, NgPdfFactory) {
   $scope.loading = 'loading';
   $scope.changePdfPage = 1;
 
-  $scope.pdfConfig = new NgPdfFactory({
-    url: 'pdf/relativity.pdf',
-  });
+  $scope.pdfConfig = new NgPdfFactory($scope.pdfUrl, { fitToPage: true });
 
   $scope.$watch('changePdfPage', (newVal, oldVal) => {
     if (newVal !== '' && newVal !== oldVal) {

@@ -5,17 +5,22 @@ export const NgPdfFactory = function () {
     currentPage: 1,
     fitToPage: false,
     httpHeaders: null,
-    url: null,
     scale: 1,
     useCredentials: false,
     rotation: 0,
     pageCount: null,
   };
 
-  return function (opts) {
+  return function (url, opts) {
     let self = this
 
     let options = Object.assign({}, defaultOptions, opts)
+
+    Object.defineProperty(this, 'url', {
+      enumerable: true,
+      writable: false,
+      value: url
+    });
 
     // defined all properties in defaultOptions and opts as property of this object
     Object.keys(options).forEach((e) => {
