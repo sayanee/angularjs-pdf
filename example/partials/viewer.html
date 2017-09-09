@@ -10,8 +10,8 @@
   <button ng-click="pdfConfig.rotateRight()"><span>rotate right</span></button>
 
   <span>Page: </span>
-  <input type="text" min=1 ng-model="pageNum">
-  <span> / {{pageCount}}</span>
+  <input type="text" min=1 ng-model="$parent.changePdfPage">
+  <span> / {{pdfConfig.pageCount}}</span>
 
   &nbsp;&nbsp;
   <span>Document URL: </span>

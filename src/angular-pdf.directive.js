@@ -104,10 +104,6 @@ export const NgPdf = ($window, $document, $log) => {
         });
       };
 
-      scope.changePage = () => {
-        renderPage(scope.pdf.currentPage);
-      };
-
       function clearCanvas() {
         if (ctx) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -140,7 +136,6 @@ export const NgPdf = ($window, $document, $log) => {
               renderPage(scope.pdf.currentPage);
 
               scope.$apply(() => {
-                scope.pageCount = _pdfDoc.numPages;
                 scope.pdf.pageCount = _pdfDoc.numPages;
               });
             }, error => {

@@ -28,14 +28,14 @@ export const NgPdfFactory = function () {
 
     this.goPrevious = () => {
       if (options.currentPage <= 1) {
-        return;
+        return false;
       }
       options.currentPage -= 1;
     };
 
     this.goNext = () => {
       if (options.currentPage >= options.pageCount) {
-        return;
+        return false;
       }
       options.currentPage += 1;
     };
@@ -61,7 +61,15 @@ export const NgPdfFactory = function () {
 
     this.rotateRight = () => {
       options.rotation = (options.rotation + 90) % 360;
-      console.log('rotateRight', options.rotation)
+    };
+
+    this.goToPage = (pageNum) => {
+      pageNum = parseInt(pageNum);
+      if (pageNum !== NaN && pageNum > 0 && pageNum < options.pageCount) {
+        options.currentPage = pageNum;
+      } else {
+        return false;
+      }
     };
   };
 }

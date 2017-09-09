@@ -5,10 +5,25 @@ app.controller('DocCtrl', function($scope, NgPdfFactory) {
   $scope.pdfPassword = 'test';
   $scope.scroll = 0;
   $scope.loading = 'loading';
-  
+  $scope.changePdfPage = 1;
+
   $scope.pdfConfig = new NgPdfFactory({
     url: 'pdf/relativity.pdf',
   });
+
+  $scope.$watch('changePdfPage', (newVal, oldVal) => {
+    if (newVal !== '' && newVal !== oldVal) {
+      $scope.pdfConfig.goToPage(newVal)
+    }
+  });
+
+  $scope.$watch(() => { return $scope.pdfConfig.currentPage }, (newVal, oldVal) => {
+    if (newVal !== '' && newVal !== oldVal) {
+      $scope.changePdfPage = newVal;
+    }
+  });
+
+
 
   $scope.getNavStyle = function(scroll) {
     if(scroll > 100) return 'pdf-controls fixed';
