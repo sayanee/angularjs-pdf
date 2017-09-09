@@ -30,9 +30,6 @@ export const NgPdf = ($window, $document, $log) => {
 
   return {
     restrict: 'E',
-    templateUrl(element, attr) {
-      return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html';
-    },
     scope: {
       pdf: '='
     },
