@@ -28,5 +28,15 @@ export const NgPdfFactory = function () {
       }
       this.options.currentPage += 1;
     };
+
+    this.zoomIn = () => {
+      this.options.fitToPage = false;
+      this.options.scale = parseFloat(this.options.scale) + 0.2
+    };
+
+    this.zoomOut = () => {
+      this.options.fitToPage = false;
+      this.options.scale = parseFloat(this.options.scale) - 0.2
+    };
   };
 }

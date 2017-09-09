@@ -105,20 +105,6 @@ export const NgPdf = ($window, $document, $log) => {
         });
       };
 
-      scope.zoomIn = () => {
-        pageFit = false;
-        scale = parseFloat(scale) + 0.2;
-        scope.renderPage(scope.pageToDisplay);
-        return scale;
-      };
-
-      scope.zoomOut = () => {
-        pageFit = false;
-        scale = parseFloat(scale) - 0.2;
-        scope.renderPage(scope.pageToDisplay);
-        return scale;
-      };
-
       scope.fit = () => {
         pageFit = true;
         scope.renderPage(scope.pageToDisplay);
@@ -207,6 +193,12 @@ export const NgPdf = ($window, $document, $log) => {
           } else {
             renderPDF();
           }
+
+      scope.$watch(() => { return scope.pdf.options.scale }, (newVal) => {
+        scope.pageToDisplay = parseInt(scope.pdf.options.currentPage);
+        if (pdfDoc !== null) {
+          scale = newVal;
+          scope.renderPage(scope.pageToDisplay);
         }
       });
     }
