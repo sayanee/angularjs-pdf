@@ -179,21 +179,6 @@ export const NgPdf = ($window, $document, $log) => {
         }
       });
 
-      scope.$watch('pdfUrl', newVal => {
-        if (newVal !== '') {
-          if (debug) {
-            $log.log('pdfUrl value change detected: ', scope.pdfUrl);
-          }
-          url = newVal;
-          scope.pageNum = scope.pageToDisplay = pageToDisplay;
-          if (pdfLoaderTask) {
-            pdfLoaderTask.destroy().then(() => {
-              renderPDF();
-            });
-          } else {
-            renderPDF();
-          }
-
       scope.$watch(() => { return scope.pdf.options.scale }, (newVal) => {
         scope.pageToDisplay = parseInt(scope.pdf.options.currentPage);
         if (pdfDoc !== null) {
