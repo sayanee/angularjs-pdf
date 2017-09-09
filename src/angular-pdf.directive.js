@@ -22,7 +22,7 @@ export const NgPdf = ($window, $document, $log) => {
     canvas.getContext('2d').setTransform(ratio, 0, 0, ratio, 0, 0);
     return canvas;
   };
-  
+
   const initCanvas = (element, canvas) => {
     angular.element(canvas).addClass('rotate0');
     element.append(canvas);
@@ -37,7 +37,6 @@ export const NgPdf = ($window, $document, $log) => {
       let renderTask = null;
       let pdfLoaderTask = null;
       let debug = false;
-      let url = scope.pdf.options.url;
       let httpHeaders = scope.pdf.options.httpHeaders;
       let limitHeight = attrs.limitcanvasheight === '1';
       let pdfDoc = null;
@@ -128,7 +127,7 @@ export const NgPdf = ($window, $document, $log) => {
         clearCanvas();
 
         let params = {
-          'url': url,
+          'url': scope.pdf.url(),
           'withCredentials': creds
         };
 
@@ -136,7 +135,7 @@ export const NgPdf = ($window, $document, $log) => {
           params.httpHeaders = httpHeaders;
         }
 
-        if (url && url.length) {
+        if (scope.pdf.url() && scope.pdf.url().length) {
           pdfLoaderTask = PDFJS.getDocument(params);
           pdfLoaderTask.onProgress = scope.onProgress;
           pdfLoaderTask.onPassword = scope.onPassword;

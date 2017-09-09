@@ -15,6 +15,10 @@ export const NgPdfFactory = function () {
   return function (opts) {
     this.options = Object.assign({}, defaultOptions, opts);
 
+    this.url = () => {
+      return this.options.url
+    }
+
     this.goPrevious = () => {
       if (this.options.currentPage <= 1) {
         return;
