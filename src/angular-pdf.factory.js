@@ -53,5 +53,15 @@ export const NgPdfFactory = function () {
     this.fit = () => {
       options.fitToPage = true;
     }
+
+    this.rotateLeft = () => {
+      options.rotation = 360 - (options.rotation - 90);
+      console.log('rotateLeft', options.rotation)
+    };
+
+    this.rotateRight = () => {
+      options.rotation = (options.rotation + 90) % 360;
+      console.log('rotateRight', options.rotation)
+    };
   };
 }

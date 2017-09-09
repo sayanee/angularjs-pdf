@@ -6,7 +6,8 @@
   <button ng-click="pdfConfig.fit()"><span>100%</span></button>
   <button ng-click="pdfConfig.zoomOut()"><span>-</span></button>
 
-  <button ng-click="rotate()"><span>90</span></button>
+  <button ng-click="pdfConfig.rotateLeft()"><span>rotate left</span></button>
+  <button ng-click="pdfConfig.rotateRight()"><span>rotate right</span></button>
 
   <span>Page: </span>
   <input type="text" min=1 ng-model="pageNum">

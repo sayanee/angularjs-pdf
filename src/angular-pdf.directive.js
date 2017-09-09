@@ -108,18 +108,6 @@ export const NgPdf = ($window, $document, $log) => {
         renderPage(scope.pdf.currentPage);
       };
 
-      scope.rotate = () => {
-        if (canvas.getAttribute('class') === 'rotate0') {
-          canvas.setAttribute('class', 'rotate90');
-        } else if (canvas.getAttribute('class') === 'rotate90') {
-          canvas.setAttribute('class', 'rotate180');
-        } else if (canvas.getAttribute('class') === 'rotate180') {
-          canvas.setAttribute('class', 'rotate270');
-        } else {
-          canvas.setAttribute('class', 'rotate0');
-        }
-      };
-
       function clearCanvas() {
         if (ctx) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -179,6 +167,10 @@ export const NgPdf = ($window, $document, $log) => {
           renderPage(scope.pdf.currentPage);
         }
       });
+
+      scope.$watch(() => { return scope.pdf.rotation }, (newVal) => {
+        canvas.setAttribute('class', 'rotate'+parseInt(newVal));
+      })
     }
   }
 }
