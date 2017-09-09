@@ -62,7 +62,7 @@ export const NgPdf = ($window, $document, $log) => {
 
       renderPDF()
 
-      scope.renderPage = num => {
+      const renderPage = num => {
         if (renderTask) {
           renderTask._internalRenderTask.cancel();
         }
@@ -102,7 +102,7 @@ export const NgPdf = ($window, $document, $log) => {
       };
 
       scope.changePage = () => {
-        scope.renderPage(scope.pageToDisplay);
+        renderPage(scope.pageToDisplay);
       };
 
       scope.rotate = () => {
@@ -146,7 +146,7 @@ export const NgPdf = ($window, $document, $log) => {
               }
 
               pdfDoc = _pdfDoc;
-              scope.renderPage(scope.pageToDisplay);
+              renderPage(scope.pageToDisplay);
 
               scope.$apply(() => {
                 scope.pageCount = _pdfDoc.numPages;
@@ -166,21 +166,21 @@ export const NgPdf = ($window, $document, $log) => {
       scope.$watch(() => { return scope.pdf.options.currentPage }, (newVal) => {
         scope.pageToDisplay = parseInt(newVal);
         if (pdfDoc !== null) {
-          scope.renderPage(scope.pageToDisplay);
+          renderPage(scope.pageToDisplay);
         }
       });
 
       scope.$watch(() => { return scope.pdf.options.scale }, (newVal) => {
         scope.pageToDisplay = parseInt(scope.pdf.options.currentPage);
         if (pdfDoc !== null) {
-          scope.renderPage(scope.pageToDisplay);
+          renderPage(scope.pageToDisplay);
         }
       });
 
       scope.$watch(() => { return scope.pdf.options.fitToPage }, (newVal) => {
         scope.pageToDisplay = parseInt(scope.pdf.options.currentPage);
         if (newVal && pdfDoc !== null) {
-          scope.renderPage(scope.pageToDisplay);
+          renderPage(scope.pageToDisplay);
         }
       });
     }
