@@ -63,8 +63,7 @@ export const NgPdf = ($window, $document, $log) => {
       });
 
       PDFJS.disableWorker = true;
-      scope.pageNum = pageToDisplay;
-      
+
       renderPDF()
 
       scope.renderPage = num => {
@@ -104,22 +103,6 @@ export const NgPdf = ($window, $document, $log) => {
             $log.log(reason);
           });
         });
-      };
-
-      scope.goPrevious = () => {
-        if (scope.pageToDisplay <= 1) {
-          return;
-        }
-        scope.pageToDisplay = parseInt(scope.pageToDisplay) - 1;
-        scope.pageNum = scope.pageToDisplay;
-      };
-
-      scope.goNext = () => {
-        if (scope.pageToDisplay >= pdfDoc.numPages) {
-          return;
-        }
-        scope.pageToDisplay = parseInt(scope.pageToDisplay) + 1;
-        scope.pageNum = scope.pageToDisplay;
       };
 
       scope.zoomIn = () => {

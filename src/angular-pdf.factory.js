@@ -14,5 +14,19 @@ export const NgPdfFactory = function () {
 
   return function (opts) {
     this.options = Object.assign({}, defaultOptions, opts);
+
+    this.goPrevious = () => {
+      if (this.options.currentPage <= 1) {
+        return;
+      }
+      this.options.currentPage -= 1;
+    };
+
+    this.goNext = () => {
+      if (this.options.currentPage >= this.options.pageCount) {
+        return;
+      }
+      this.options.currentPage += 1;
+    };
   };
 }
