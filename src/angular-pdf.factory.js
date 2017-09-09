@@ -13,38 +13,45 @@ export const NgPdfFactory = function () {
   };
 
   return function (opts) {
-    this.options = Object.assign({}, defaultOptions, opts);
+    let self = this
 
-    this.url = () => {
-      return this.options.url
-    }
+    let options = Object.assign({}, defaultOptions, opts)
+
+    // defined all properties in defaultOptions and opts as property of this object
+    Object.keys(options).forEach((e) => {
+      Object.defineProperty(self, e, {
+        enumerable: true,
+        set: (value) => { options[e] = value },
+        get: () => { return options[e] }
+      });
+    })
 
     this.goPrevious = () => {
-      if (this.options.currentPage <= 1) {
+      if (options.currentPage <= 1) {
         return;
       }
-      this.options.currentPage -= 1;
+      options.currentPage -= 1;
     };
 
     this.goNext = () => {
-      if (this.options.currentPage >= this.options.pageCount) {
+      if (options.currentPage >= options.pageCount) {
         return;
       }
-      this.options.currentPage += 1;
+      options.currentPage += 1;
     };
 
     this.zoomIn = () => {
-      this.options.fitToPage = false;
-      this.options.scale = parseFloat(this.options.scale) + 0.2
+      options.fitToPage = false;
+      options.scale = parseFloat(options.scale) + 0.2
     };
 
     this.zoomOut = () => {
-      this.options.fitToPage = false;
-      this.options.scale = parseFloat(this.options.scale) - 0.2
+      options.fitToPage = false;
+      options.scale = parseFloat(options.scale) - 0.2
     };
 
     this.fit = () => {
-      this.options.fitToPage = true;
+      options.fitToPage = true;
     }
   };
 }
