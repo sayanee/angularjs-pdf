@@ -9,6 +9,12 @@ app.controller('DocCtrl', function($scope, NgPdfFactory) {
 
   $scope.pdfConfig = new NgPdfFactory($scope.pdfUrl, { fitToPage: true });
 
+  $scope.$watch('pdfUrl', (newVal, oldVal) => {
+    if (newVal !== '' && newVal !== oldVal) {
+      $scope.pdfConfig = new NgPdfFactory(newVal, { fitToPage: true });
+    }
+  });
+
   $scope.$watch('changePdfPage', (newVal, oldVal) => {
     if (newVal !== '' && newVal !== oldVal) {
       $scope.pdfConfig.goToPage(newVal)

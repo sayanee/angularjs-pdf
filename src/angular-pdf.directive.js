@@ -60,6 +60,11 @@ export const NgPdf = ($window, $document, $log) => {
       PDFJS.disableWorker = true;
 
       renderPDF()
+      scope.$watch(() => scope.pdf, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          renderPDF();
+        }
+      });
 
       const renderPage = num => {
         if (pdfDoc === null) {
