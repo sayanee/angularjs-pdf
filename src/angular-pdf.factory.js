@@ -38,5 +38,9 @@ export const NgPdfFactory = function () {
       this.options.fitToPage = false;
       this.options.scale = parseFloat(this.options.scale) - 0.2
     };
+
+    this.fit = () => {
+      this.options.fitToPage = true;
+    }
   };
 }

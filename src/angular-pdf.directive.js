@@ -105,11 +105,6 @@ export const NgPdf = ($window, $document, $log) => {
         });
       };
 
-      scope.fit = () => {
-        pageFit = true;
-        scope.renderPage(scope.pageToDisplay);
-      }
-
       scope.changePage = () => {
         scope.renderPage(scope.pageToDisplay);
       };
@@ -183,6 +178,15 @@ export const NgPdf = ($window, $document, $log) => {
         scope.pageToDisplay = parseInt(scope.pdf.options.currentPage);
         if (pdfDoc !== null) {
           scale = newVal;
+          pageFit = false;
+          scope.renderPage(scope.pageToDisplay);
+        }
+      });
+
+      scope.$watch(() => { return scope.pdf.options.fitToPage }, (newVal) => {
+        scope.pageToDisplay = parseInt(scope.pdf.options.currentPage);
+        if (newVal && pdfDoc !== null) {
+          pageFit = 'page-fit';
           scope.renderPage(scope.pageToDisplay);
         }
       });
