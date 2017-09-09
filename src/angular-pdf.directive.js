@@ -126,14 +126,14 @@ export const NgPdf = ($window, $document, $log) => {
           'withCredentials': creds
         };
 
-        if (httpHeaders) {
-          params.httpHeaders = httpHeaders;
-        }
+        // if (httpHeaders) {
+        //   params.httpHeaders = httpHeaders;
+        // }
 
         if (scope.pdf.url && scope.pdf.url.length) {
           pdfLoaderTask = PDFJS.getDocument(params);
           pdfLoaderTask.onProgress = scope.onProgress;
-          pdfLoaderTask.onPassword = scope.onPassword;
+          // pdfLoaderTask.onPassword = scope.onPassword;
           pdfLoaderTask.then(
             _pdfDoc => {
               run_success_hook()
