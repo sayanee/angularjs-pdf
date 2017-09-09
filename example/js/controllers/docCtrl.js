@@ -1,10 +1,14 @@
-app.controller('DocCtrl', function($scope) {
+app.controller('DocCtrl', function($scope, NgPdfFactory) {
 
   $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
   $scope.pdfUrl = 'pdf/relativity.pdf';
   $scope.pdfPassword = 'test';
   $scope.scroll = 0;
   $scope.loading = 'loading';
+  
+  $scope.pdfConfig = new NgPdfFactory({
+    url: 'pdf/relativity.pdf',
+  });
 
   $scope.getNavStyle = function(scroll) {
     if(scroll > 100) return 'pdf-controls fixed';

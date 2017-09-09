@@ -33,20 +33,25 @@ export const NgPdf = ($window, $document, $log) => {
     templateUrl(element, attr) {
       return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html';
     },
+    scope: {
+      pdf: '='
+    },
     link(scope, element, attrs) {
       let renderTask = null;
       let pdfLoaderTask = null;
       let debug = false;
-      let url = scope.pdfUrl;
-      let httpHeaders = scope.httpHeaders;
-      let pdfDoc = null;
-      let pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
-      let pageFit = attrs.scale === 'page-fit';
+      let url = scope.pdf.options.url;
+      let httpHeaders = scope.pdf.options.httpHeaders;
       let limitHeight = attrs.limitcanvasheight === '1';
-      let scale = attrs.scale > 0 ? attrs.scale : 1;
+      let pdfDoc = null;
+      // let pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
+      let pageToDisplay = scope.pdf.options.currentPage;
+      let pageFit = scope.pdf.options.scale === 'page-fit';
+      // let scale = attrs.scale > 0 ? attrs.scale : 1;
+      let scale = scope.pdf.options.scale;
       let canvas = $document[0].createElement('canvas');
       initCanvas(element, canvas);
-      let creds = attrs.usecredentials;
+      let creds = scope.pdf.options.useCredentials;
       debug = attrs.hasOwnProperty('debug') ? attrs.debug : false;
 
       let ctx = canvas.getContext('2d');
@@ -62,6 +67,8 @@ export const NgPdf = ($window, $document, $log) => {
 
       PDFJS.disableWorker = true;
       scope.pageNum = pageToDisplay;
+      
+      renderPDF()
 
       scope.renderPage = num => {
         if (renderTask) {
@@ -186,6 +193,7 @@ export const NgPdf = ($window, $document, $log) => {
 
               scope.$apply(() => {
                 scope.pageCount = _pdfDoc.numPages;
+                scope.pdf.options.pageCount = _pdfDoc.numPages;
               });
             }, error => {
               if (error) {
@@ -198,7 +206,7 @@ export const NgPdf = ($window, $document, $log) => {
         }
       }
 
-      scope.$watch('pageNum', newVal => {
+      scope.$watch(() => { return scope.pdf.options.currentPage }, (newVal) => {
         scope.pageToDisplay = parseInt(newVal);
         if (pdfDoc !== null) {
           scope.renderPage(scope.pageToDisplay);
