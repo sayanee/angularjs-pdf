@@ -43,9 +43,6 @@ export const NgPdf = ($window, $document, $log) => {
       let pdfDoc = null;
       // let pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
       let pageToDisplay = scope.pdf.options.currentPage;
-      let pageFit = scope.pdf.options.scale === 'page-fit';
-      // let scale = attrs.scale > 0 ? attrs.scale : 1;
-      let scale = scope.pdf.options.scale;
       let canvas = $document[0].createElement('canvas');
       initCanvas(element, canvas);
       let creds = scope.pdf.options.useCredentials;
@@ -76,16 +73,16 @@ export const NgPdf = ($window, $document, $log) => {
           let pageWidthScale;
           let renderContext;
 
-          if (pageFit) {
+          if (scope.pdf.options.fitToPage) {
             viewport = page.getViewport(1);
             const clientRect = element[0].getBoundingClientRect();
             pageWidthScale = clientRect.width / viewport.width;
             if (limitHeight) {
               pageWidthScale = Math.min(pageWidthScale, clientRect.height / viewport.height);
             }
-            scale = pageWidthScale;
+            scope.pdf.options.scale = pageWidthScale;
           }
-          viewport = page.getViewport(scale);
+          viewport = page.getViewport(scope.pdf.options.scale);
 
           setCanvasDimensions(canvas, viewport.width, viewport.height);
 
@@ -177,8 +174,6 @@ export const NgPdf = ($window, $document, $log) => {
       scope.$watch(() => { return scope.pdf.options.scale }, (newVal) => {
         scope.pageToDisplay = parseInt(scope.pdf.options.currentPage);
         if (pdfDoc !== null) {
-          scale = newVal;
-          pageFit = false;
           scope.renderPage(scope.pageToDisplay);
         }
       });
@@ -186,7 +181,6 @@ export const NgPdf = ($window, $document, $log) => {
       scope.$watch(() => { return scope.pdf.options.fitToPage }, (newVal) => {
         scope.pageToDisplay = parseInt(scope.pdf.options.currentPage);
         if (newVal && pdfDoc !== null) {
-          pageFit = 'page-fit';
           scope.renderPage(scope.pageToDisplay);
         }
       });
