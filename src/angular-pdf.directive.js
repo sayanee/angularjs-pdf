@@ -62,6 +62,10 @@ export const NgPdf = ($window, $document, $log) => {
       renderPDF()
 
       const renderPage = num => {
+        if (pdfDoc === null) {
+          console.warn("pdfDoc is null")
+          return;
+        }
         if (renderTask) {
           renderTask._internalRenderTask.cancel();
         }
@@ -163,19 +167,15 @@ export const NgPdf = ($window, $document, $log) => {
       }
 
       scope.$watch(() => { return scope.pdf.currentPage }, () => {
-        if (pdfDoc !== null) {
-          renderPage(scope.pdf.currentPage);
-        }
+        renderPage(scope.pdf.currentPage);
       });
 
       scope.$watch(() => { return scope.pdf.scale }, () => {
-        if (pdfDoc !== null) {
-          renderPage(scope.pdf.currentPage);
-        }
+        renderPage(scope.pdf.currentPage);
       });
 
       scope.$watch(() => { return scope.pdf.fitToPage }, (newVal) => {
-        if (newVal && pdfDoc !== null) {
+        if (newVal === true) {
           renderPage(scope.pdf.currentPage);
         }
       });
