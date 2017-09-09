@@ -31,7 +31,10 @@ export const NgPdf = ($window, $document, $log) => {
   return {
     restrict: 'E',
     scope: {
-      pdf: '='
+      pdf: '=',
+      onError: '&',
+      onProgress: '&',
+      onSuccess: '&',
     },
     link(scope, element, attrs) {
       let renderTask = null;
@@ -133,9 +136,7 @@ export const NgPdf = ($window, $document, $log) => {
           pdfLoaderTask.onPassword = scope.onPassword;
           pdfLoaderTask.then(
             _pdfDoc => {
-              if (angular.isFunction(scope.onLoad)) {
-                scope.onLoad();
-              }
+              run_success_hook()
 
               pdfDoc = _pdfDoc;
               renderPage(scope.pdf.currentPage);
@@ -144,11 +145,7 @@ export const NgPdf = ($window, $document, $log) => {
                 scope.pdf.pageCount = _pdfDoc.numPages;
               });
             }, error => {
-              if (error) {
-                if (angular.isFunction(scope.onError)) {
-                  scope.onError(error);
-                }
-              }
+              run_error_hook(error)
             }
           );
         }
@@ -171,6 +168,18 @@ export const NgPdf = ($window, $document, $log) => {
       scope.$watch(() => { return scope.pdf.rotation }, (newVal) => {
         canvas.setAttribute('class', 'rotate'+parseInt(newVal));
       })
+
+      const run_success_hook = () => {
+        if (angular.isFunction(scope.onSuccess)) {
+          scope.onSuccess();
+        }
+      };
+
+      const run_error_hook = (error) => {
+        if (angular.isFunction(scope.onError)) {
+          scope.onError(error);
+        }
+      };
     }
   }
 }

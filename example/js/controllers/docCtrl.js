@@ -34,16 +34,16 @@ app.controller('DocCtrl', function($scope, NgPdfFactory) {
     else return 'pdf-controls';
   }
 
-  $scope.onError = function(error) {
-    console.log(error);
-  }
+  $scope.onPdfLoadingSuccess = function() {
+    console.log('pdf loaded')
+  };
 
-  $scope.onLoad = function() {
-    $scope.loading = '';
-  }
+  $scope.onPdfLoadingProgress = function (progressData) {
+    console.log('pdf loading on progress', progressData);
+  };
 
-  $scope.onProgress = function (progressData) {
-    console.log(progressData);
+  $scope.onPdfLoadingError = function(error) {
+    console.log('pdf loading error', error);
   };
 
   $scope.onPassword = function (updatePasswordFn, passwordResponse) {
