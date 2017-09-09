@@ -40,7 +40,6 @@ export const NgPdf = ($window, $document, $log) => {
       let httpHeaders = scope.pdf.httpHeaders;
       let limitHeight = attrs.limitcanvasheight === '1';
       let pdfDoc = null;
-      // let pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
       let pageToDisplay = scope.pdf.currentPage;
       let canvas = $document[0].createElement('canvas');
       initCanvas(element, canvas);
@@ -102,7 +101,7 @@ export const NgPdf = ($window, $document, $log) => {
       };
 
       scope.changePage = () => {
-        renderPage(scope.pageToDisplay);
+        renderPage(scope.pdf.currentPage);
       };
 
       scope.rotate = () => {
@@ -146,7 +145,7 @@ export const NgPdf = ($window, $document, $log) => {
               }
 
               pdfDoc = _pdfDoc;
-              renderPage(scope.pageToDisplay);
+              renderPage(scope.pdf.currentPage);
 
               scope.$apply(() => {
                 scope.pageCount = _pdfDoc.numPages;
@@ -163,24 +162,21 @@ export const NgPdf = ($window, $document, $log) => {
         }
       }
 
-      scope.$watch(() => { return scope.pdf.currentPage }, (newVal) => {
-        scope.pageToDisplay = parseInt(newVal);
+      scope.$watch(() => { return scope.pdf.currentPage }, () => {
         if (pdfDoc !== null) {
-          renderPage(scope.pageToDisplay);
+          renderPage(scope.pdf.currentPage);
         }
       });
 
-      scope.$watch(() => { return scope.pdf.scale }, (newVal) => {
-        scope.pageToDisplay = parseInt(scope.pdf.currentPage);
+      scope.$watch(() => { return scope.pdf.scale }, () => {
         if (pdfDoc !== null) {
-          renderPage(scope.pageToDisplay);
+          renderPage(scope.pdf.currentPage);
         }
       });
 
       scope.$watch(() => { return scope.pdf.fitToPage }, (newVal) => {
-        scope.pageToDisplay = parseInt(scope.pdf.currentPage);
         if (newVal && pdfDoc !== null) {
-          renderPage(scope.pageToDisplay);
+          renderPage(scope.pdf.currentPage);
         }
       });
     }
