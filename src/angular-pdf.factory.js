@@ -7,6 +7,7 @@ export const NgPdfFactory = function () {
     httpHeaders: null,
     scale: 1,
     useCredentials: false,
+    password: null,
     rotation: 0,
     pageCount: null,
   };

@@ -28,6 +28,18 @@ export const NgPdf = ($window, $document, $log) => {
     element.append(canvas);
   };
 
+  const onPassword = function (password) {
+    return function (updatePasswordFn, passwordResponse) {
+      switch (passwordResponse) {
+        case PDFJS.PasswordResponses.NEED_PASSWORD:
+          updatePasswordFn(password);
+          break;
+        case PDFJS.PasswordResponses.INCORRECT_PASSWORD:
+          break;
+      }
+    };
+  };
+
   return {
     restrict: 'E',
     scope: {
@@ -46,7 +58,6 @@ export const NgPdf = ($window, $document, $log) => {
       let pageToDisplay = scope.pdf.currentPage;
       let canvas = $document[0].createElement('canvas');
       initCanvas(element, canvas);
-      let creds = scope.pdf.useCredentials;
       debug = attrs.hasOwnProperty('debug') ? attrs.debug : false;
 
       let ctx = canvas.getContext('2d');
@@ -123,7 +134,7 @@ export const NgPdf = ($window, $document, $log) => {
 
         let params = {
           'url': scope.pdf.url,
-          'withCredentials': creds
+          'withCredentials': scope.pdf.useCredentials
         };
 
         // if (httpHeaders) {
@@ -133,7 +144,7 @@ export const NgPdf = ($window, $document, $log) => {
         if (scope.pdf.url && scope.pdf.url.length) {
           pdfLoaderTask = PDFJS.getDocument(params);
           pdfLoaderTask.onProgress = scope.onProgress;
-          // pdfLoaderTask.onPassword = scope.onPassword;
+          pdfLoaderTask.onPassword = onPassword(scope.pdf.password);
           pdfLoaderTask.then(
             _pdfDoc => {
               run_success_hook()
