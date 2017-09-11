@@ -1,13 +1,12 @@
 app.controller('DocCtrl', function($scope, NgPdfFactory) {
 
   $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
-  $scope.pdfUrl = 'pdf/relativity.pdf';
-  $scope.pdfPassword = 'test';
   $scope.scroll = 0;
   $scope.loading = 'loading';
   $scope.changePdfPage = 1;
 
-  $scope.pdfConfig = new NgPdfFactory($scope.pdfUrl, { fitToPage: true });
+  $scope.pdfConfig = new NgPdfFactory('pdf/relativity.pdf', { fitToPage: true });
+  $scope.protectedPdfConfig = new NgPdfFactory('pdf/relativity.protected.pdf', { fitToPage: true, useCredentials: true, password: 'test' });
 
   $scope.$watch('pdfUrl', (newVal, oldVal) => {
     if (newVal !== '' && newVal !== oldVal) {
@@ -26,8 +25,6 @@ app.controller('DocCtrl', function($scope, NgPdfFactory) {
       $scope.changePdfPage = newVal;
     }
   });
-
-
 
   $scope.getNavStyle = function(scroll) {
     if(scroll > 100) return 'pdf-controls fixed';
