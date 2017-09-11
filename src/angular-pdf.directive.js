@@ -28,13 +28,14 @@ export const NgPdf = ($window, $document, $log) => {
     element.append(canvas);
   };
 
-  const onPassword = function (password) {
+  const onPassword = function (password, incorrectPasswordCallback) {
     return function (updatePasswordFn, passwordResponse) {
       switch (passwordResponse) {
         case PDFJS.PasswordResponses.NEED_PASSWORD:
           updatePasswordFn(password);
           break;
         case PDFJS.PasswordResponses.INCORRECT_PASSWORD:
+          incorrectPasswordCallback();
           break;
       }
     };
@@ -47,6 +48,7 @@ export const NgPdf = ($window, $document, $log) => {
       onError: '&',
       onProgress: '&',
       onSuccess: '&',
+      onIncorrectPassword: '&'
     },
     link(scope, element, attrs) {
       let renderTask = null;
@@ -144,7 +146,7 @@ export const NgPdf = ($window, $document, $log) => {
         if (scope.pdf.url && scope.pdf.url.length) {
           pdfLoaderTask = PDFJS.getDocument(params);
           pdfLoaderTask.onProgress = scope.onProgress;
-          pdfLoaderTask.onPassword = onPassword(scope.pdf.password);
+          pdfLoaderTask.onPassword = onPassword(scope.pdf.password, scope.onIncorrectPassword);
           pdfLoaderTask.then(
             _pdfDoc => {
               run_success_hook()

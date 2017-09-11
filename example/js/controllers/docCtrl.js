@@ -46,5 +46,8 @@ app.controller('DocCtrl', function($scope, NgPdfFactory) {
     console.log('pdf loading error', error);
   };
 
+  $scope.onIncorrectPdfPassword = function () {
+    console.error('password is wrong!');
+  };
 
 });
