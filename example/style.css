@@ -1,8 +1,59 @@
-*{box-sizing: border-box;}
-.wrapper {margin: 0 auto; width: 960px; }
-.pdf-controls { width: 100%; display: block; background: #eee; padding: 1em;}
-.rotate0 {-webkit-transform: rotate(0deg); transform: rotate(0deg); }
-.rotate90 {-webkit-transform: rotate(90deg); transform: rotate(90deg); }
-.rotate180 {-webkit-transform: rotate(180deg); transform: rotate(180deg); }
-.rotate270 {-webkit-transform: rotate(270deg); transform: rotate(270deg); }
-.fixed { position: fixed; top: 0; left: calc(50% - 480px); z-index: 100; width: 100%; padding: 1em; background: rgba(238, 238, 238,.9); width: 960px; }
+html, body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+ng-pdf {
+    text-align: center;
+    background: darkslategray;
+    height: 100%;
+}
+
+.wrapper {
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+}
+
+.pdf-controls {
+    width: 100%;
+    display: block;
+    background: #eee;
+    padding: 1em;
+}
+
+.rotate0 {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+
+.rotate90 {
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.rotate180 {
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.rotate270 {
+    -webkit-transform: rotate(270deg);
+    transform: rotate(270deg);
+}
+
+.fixed {
+    position: fixed;
+    top: 0;
+    left: calc(50% - 480px);
+    z-index: 100;
+    width: 100%;
+    padding: 1em;
+    background: rgba(238, 238, 238, .9);
+    width: 960px;
+}

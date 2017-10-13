@@ -1,4 +1,4 @@
-<nav ng-class="getNavStyle(scroll)">
+<nav ng-class="getNavStyle(scroll)" ng-if="false">
   <button ng-click="goPrevious()"><span>&lt;</span></button>
   <button ng-click="goNext()"><span>&gt;</span></button>
 
@@ -16,7 +16,5 @@
   <span>Document URL: </span>
   <input type="text" ng-model="pdfUrl">
 </nav>
-
-<hr>
 
 {{loading}}

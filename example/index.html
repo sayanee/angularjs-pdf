@@ -9,13 +9,12 @@
 <body ng-app="App">
 
 <div class="wrapper" ng-controller="DocCtrl">
-  <h1>{{pdfName}}</h1>
-  <ng-pdf template-url="partials/viewer.html" scale="page-fit" page=13></ng-pdf>
+  <!--<h1>{{pdfName}}</h1>-->
+  <ng-pdf template-url="partials/viewer.html" scale="page-fit" limitcanvasheight="1" page={{page}} ng-swipe-left="swipeLeft()" ng-swipe-right="swipeRight()"></ng-pdf>
 </div>
 
-<a href="https://github.com/sayanee/angularjs-pdf"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
-
 <script src="js/lib/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular-touch.js"></script>
 <script src="js/lib/pdf.js"></script>
 <script src="angular-pdf.min.js"></script>
 <script src="js/app.js"></script>
