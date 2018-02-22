@@ -44,7 +44,11 @@ export const NgPdf = ($window, $document, $log) => {
       let pageFit = attrs.scale === 'page-fit';
       let limitHeight = attrs.limitcanvasheight === '1';
       let scale = attrs.scale > 0 ? attrs.scale : 1;
-      let canvas = $document[0].createElement('canvas');
+      if(attrs.hasOwnProperty('canvasid')){
+          var canvas = $document[0].getElementById(attrs.canvasid);
+      } else {
+          var canvas = $document[0].createElement('canvas');
+      }
       initCanvas(element, canvas);
       let creds = attrs.usecredentials;
       debug = attrs.hasOwnProperty('debug') ? attrs.debug : false;

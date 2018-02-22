@@ -62,5 +62,9 @@
   "peerDependencies": {
     "angular": "^1.5.0",
     "pdfjs-dist": "^1.6.0"
+  },
+  "dependencies": {
+    "angular": "^1.6.9",
+    "pdfjs-dist": "^2.0.385"
   }
 }
