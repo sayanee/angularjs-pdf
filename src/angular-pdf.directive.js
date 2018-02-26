@@ -37,6 +37,7 @@ export const NgPdf = ($window, $document, $log) => {
       let renderTask = null;
       let pdfLoaderTask = null;
       let debug = false;
+      let canvas = null;
       let url = scope.pdfUrl;
       let httpHeaders = scope.httpHeaders;
       let pdfDoc = null;
@@ -44,10 +45,11 @@ export const NgPdf = ($window, $document, $log) => {
       let pageFit = attrs.scale === 'page-fit';
       let limitHeight = attrs.limitcanvasheight === '1';
       let scale = attrs.scale > 0 ? attrs.scale : 1;
-      if(attrs.hasOwnProperty('canvasid')){
-          var canvas = $document[0].getElementById(attrs.canvasid);
+
+      if (attrs.hasOwnProperty('canvasid')) {
+          canvas = $document[0].getElementById(attrs.canvasid);
       } else {
-          var canvas = $document[0].createElement('canvas');
+          canvas = $document[0].createElement('canvas');
       }
       initCanvas(element, canvas);
       let creds = attrs.usecredentials;
