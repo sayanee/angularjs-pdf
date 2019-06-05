@@ -89,6 +89,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 
+var PDFJS = pdfjsLib;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
