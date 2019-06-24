@@ -1,20 +1,20 @@
 <nav ng-class="getNavStyle(scroll)">
-  <button ng-click="goPrevious()"><span>&lt;</span></button>
-  <button ng-click="goNext()"><span>&gt;</span></button>
+  <button ng-click="pdfConfig.goPrevious()"><span>&lt;</span></button>
+  <button ng-click="pdfConfig.goNext()"><span>&gt;</span></button>
 
-  <button ng-click="zoomIn()"><span>+</span></button>
-  <button ng-click="fit()"><span>100%</span></button>
-  <button ng-click="zoomOut()"><span>-</span></button>
+  <button ng-click="pdfConfig.zoomIn()"><span>+</span></button>
+  <button ng-click="pdfConfig.fit()"><span>100%</span></button>
+  <button ng-click="pdfConfig.zoomOut()"><span>-</span></button>
 
-  <button ng-click="rotate()"><span>90</span></button>
+  <button ng-click="pdfConfig.rotateLeft()"><span>rotate left</span></button>
+  <button ng-click="pdfConfig.rotateRight()"><span>rotate right</span></button>
 
   <span>Page: </span>
-  <input type="text" min=1 ng-model="pageNum">
-  <span> / {{pageCount}}</span>
+  <input type="text" min=1 ng-model="$parent.changePdfPage">
+  <span> / {{pdfConfig.pageCount}}</span>
 
   &nbsp;&nbsp;
-  <span>Document URL: </span>
-  <input type="text" ng-model="pdfUrl">
+  <span>Document URL: <em>{{pdfConfig.url}}</em></span>
 </nav>
 
 <hr>

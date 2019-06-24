@@ -22,31 +22,44 @@ export const NgPdf = ($window, $document, $log) => {
     canvas.getContext('2d').setTransform(ratio, 0, 0, ratio, 0, 0);
     return canvas;
   };
-  
+
   const initCanvas = (element, canvas) => {
     angular.element(canvas).addClass('rotate0');
     element.append(canvas);
   };
 
+  const onPassword = function (password, incorrectPasswordCallback) {
+    return function (updatePasswordFn, passwordResponse) {
+      switch (passwordResponse) {
+        case PDFJS.PasswordResponses.NEED_PASSWORD:
+          updatePasswordFn(password);
+          break;
+        case PDFJS.PasswordResponses.INCORRECT_PASSWORD:
+          incorrectPasswordCallback();
+          break;
+      }
+    };
+  };
+
   return {
     restrict: 'E',
-    templateUrl(element, attr) {
-      return attr.templateUrl ? attr.templateUrl : 'partials/viewer.html';
+    scope: {
+      pdf: '=',
+      onError: '&',
+      onProgress: '&',
+      onSuccess: '&',
+      onIncorrectPassword: '&'
     },
     link(scope, element, attrs) {
       let renderTask = null;
       let pdfLoaderTask = null;
       let debug = false;
-      let url = scope.pdfUrl;
-      let httpHeaders = scope.httpHeaders;
-      let pdfDoc = null;
-      let pageToDisplay = isFinite(attrs.page) ? parseInt(attrs.page) : 1;
-      let pageFit = attrs.scale === 'page-fit';
+      let httpHeaders = scope.pdf.httpHeaders;
       let limitHeight = attrs.limitcanvasheight === '1';
-      let scale = attrs.scale > 0 ? attrs.scale : 1;
+      let pdfDoc = null;
+      let pageToDisplay = scope.pdf.currentPage;
       let canvas = $document[0].createElement('canvas');
       initCanvas(element, canvas);
-      let creds = attrs.usecredentials;
       debug = attrs.hasOwnProperty('debug') ? attrs.debug : false;
 
       let ctx = canvas.getContext('2d');
@@ -61,9 +74,19 @@ export const NgPdf = ($window, $document, $log) => {
       });
 
       PDFJS.disableWorker = true;
-      scope.pageNum = pageToDisplay;
 
-      scope.renderPage = num => {
+      renderPDF()
+      scope.$watch(() => scope.pdf, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          renderPDF();
+        }
+      });
+
+      const renderPage = num => {
+        if (pdfDoc === null) {
+          console.warn("pdfDoc is null")
+          return;
+        }
         if (renderTask) {
           renderTask._internalRenderTask.cancel();
         }
@@ -73,16 +96,16 @@ export const NgPdf = ($window, $document, $log) => {
           let pageWidthScale;
           let renderContext;
 
-          if (pageFit) {
+          if (scope.pdf.fitToPage) {
             viewport = page.getViewport(1);
             const clientRect = element[0].getBoundingClientRect();
             pageWidthScale = clientRect.width / viewport.width;
             if (limitHeight) {
               pageWidthScale = Math.min(pageWidthScale, clientRect.height / viewport.height);
             }
-            scale = pageWidthScale;
+            scope.pdf.scale = pageWidthScale;
           }
-          viewport = page.getViewport(scale);
+          viewport = page.getViewport(scope.pdf.scale);
 
           setCanvasDimensions(canvas, viewport.width, viewport.height);
 
@@ -102,57 +125,6 @@ export const NgPdf = ($window, $document, $log) => {
         });
       };
 
-      scope.goPrevious = () => {
-        if (scope.pageToDisplay <= 1) {
-          return;
-        }
-        scope.pageToDisplay = parseInt(scope.pageToDisplay) - 1;
-        scope.pageNum = scope.pageToDisplay;
-      };
-
-      scope.goNext = () => {
-        if (scope.pageToDisplay >= pdfDoc.numPages) {
-          return;
-        }
-        scope.pageToDisplay = parseInt(scope.pageToDisplay) + 1;
-        scope.pageNum = scope.pageToDisplay;
-      };
-
-      scope.zoomIn = () => {
-        pageFit = false;
-        scale = parseFloat(scale) + 0.2;
-        scope.renderPage(scope.pageToDisplay);
-        return scale;
-      };
-
-      scope.zoomOut = () => {
-        pageFit = false;
-        scale = parseFloat(scale) - 0.2;
-        scope.renderPage(scope.pageToDisplay);
-        return scale;
-      };
-
-      scope.fit = () => {
-        pageFit = true;
-        scope.renderPage(scope.pageToDisplay);
-      }
-
-      scope.changePage = () => {
-        scope.renderPage(scope.pageToDisplay);
-      };
-
-      scope.rotate = () => {
-        if (canvas.getAttribute('class') === 'rotate0') {
-          canvas.setAttribute('class', 'rotate90');
-        } else if (canvas.getAttribute('class') === 'rotate90') {
-          canvas.setAttribute('class', 'rotate180');
-        } else if (canvas.getAttribute('class') === 'rotate180') {
-          canvas.setAttribute('class', 'rotate270');
-        } else {
-          canvas.setAttribute('class', 'rotate0');
-        }
-      };
-
       function clearCanvas() {
         if (ctx) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -163,64 +135,64 @@ export const NgPdf = ($window, $document, $log) => {
         clearCanvas();
 
         let params = {
-          'url': url,
-          'withCredentials': creds
+          'url': scope.pdf.url,
+          'withCredentials': scope.pdf.useCredentials
         };
 
-        if (httpHeaders) {
-          params.httpHeaders = httpHeaders;
-        }
+        // if (httpHeaders) {
+        //   params.httpHeaders = httpHeaders;
+        // }
 
-        if (url && url.length) {
+        if (scope.pdf.url && scope.pdf.url.length) {
           pdfLoaderTask = PDFJS.getDocument(params);
           pdfLoaderTask.onProgress = scope.onProgress;
-          pdfLoaderTask.onPassword = scope.onPassword;
+          pdfLoaderTask.onPassword = onPassword(scope.pdf.password, scope.onIncorrectPassword);
           pdfLoaderTask.then(
             _pdfDoc => {
-              if (angular.isFunction(scope.onLoad)) {
-                scope.onLoad();
-              }
+              run_success_hook()
 
               pdfDoc = _pdfDoc;
-              scope.renderPage(scope.pageToDisplay);
+              renderPage(scope.pdf.currentPage);
 
               scope.$apply(() => {
-                scope.pageCount = _pdfDoc.numPages;
+                scope.pdf.pageCount = _pdfDoc.numPages;
               });
             }, error => {
-              if (error) {
-                if (angular.isFunction(scope.onError)) {
-                  scope.onError(error);
-                }
-              }
+              run_error_hook(error)
             }
           );
         }
       }
 
-      scope.$watch('pageNum', newVal => {
-        scope.pageToDisplay = parseInt(newVal);
-        if (pdfDoc !== null) {
-          scope.renderPage(scope.pageToDisplay);
+      scope.$watch(() => { return scope.pdf.currentPage }, () => {
+        renderPage(scope.pdf.currentPage);
+      });
+
+      scope.$watch(() => { return scope.pdf.scale }, () => {
+        renderPage(scope.pdf.currentPage);
+      });
+
+      scope.$watch(() => { return scope.pdf.fitToPage }, (newVal) => {
+        if (newVal === true) {
+          renderPage(scope.pdf.currentPage);
         }
       });
 
-      scope.$watch('pdfUrl', newVal => {
-        if (newVal !== '') {
-          if (debug) {
-            $log.log('pdfUrl value change detected: ', scope.pdfUrl);
-          }
-          url = newVal;
-          scope.pageNum = scope.pageToDisplay = pageToDisplay;
-          if (pdfLoaderTask) {
-            pdfLoaderTask.destroy().then(() => {
-              renderPDF();
-            });
-          } else {
-            renderPDF();
-          }
+      scope.$watch(() => { return scope.pdf.rotation }, (newVal) => {
+        canvas.setAttribute('class', 'rotate'+parseInt(newVal));
+      })
+
+      const run_success_hook = () => {
+        if (angular.isFunction(scope.onSuccess)) {
+          scope.onSuccess();
         }
-      });
+      };
+
+      const run_error_hook = (error) => {
+        if (angular.isFunction(scope.onError)) {
+          scope.onError(error);
+        }
+      };
     }
   }
 }
